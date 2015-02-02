@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Camera View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="CameraViewController" customModule="LocationSpotter" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +16,70 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <subviews>
+                            <textField clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Getting Ready" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9Ho-57-5aK">
+                                <rect key="frame" x="213" y="283.5" width="175" height="32"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="9Ho-57-5aK" secondAttribute="centerY" id="RbI-gN-eTn"/>
+                            <constraint firstAttribute="centerX" secondItem="9Ho-57-5aK" secondAttribute="centerX" id="xpE-UF-9ke"/>
+                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="yee-C7-yCv" appends="YES" id="7bv-7V-n4P"/>
+                        </connections>
                     </view>
+                    <connections>
+                        <outlet property="mainView" destination="8bC-Xf-vdC" id="JP2-D0-Lhb"/>
+                        <outlet property="tapGestureRecognizer" destination="yee-C7-yCv" id="ONK-zP-gCh"/>
+                        <outlet property="textField" destination="9Ho-57-5aK" id="orG-un-4Ki"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="yee-C7-yCv">
+                    <connections>
+                        <action selector="tapGestureAction:" destination="BYZ-38-t0r" id="nze-2n-FOl"/>
+                        <outlet property="delegate" destination="8bC-Xf-vdC" id="yny-oa-CdD"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
+        </scene>
+        <!--Map View Controller-->
+        <scene sceneID="2vP-73-faK">
+            <objects>
+                <viewController storyboardIdentifier="mapViewControllerID" id="5m1-X9-2Zk" customClass="MapViewController" customModule="LocationSpotter" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="MvB-eW-P07"/>
+                        <viewControllerLayoutGuide type="bottom" id="a3j-y4-0py"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Q9o-Kl-HCg">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lMX-0J-ayV">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="lMX-0J-ayV" secondAttribute="trailing" constant="-16" id="35g-YO-cyL"/>
+                            <constraint firstItem="a3j-y4-0py" firstAttribute="top" secondItem="lMX-0J-ayV" secondAttribute="bottom" id="9mz-7W-53T"/>
+                            <constraint firstItem="lMX-0J-ayV" firstAttribute="leading" secondItem="Q9o-Kl-HCg" secondAttribute="leadingMargin" constant="-16" id="jpr-ca-o7V"/>
+                            <constraint firstItem="lMX-0J-ayV" firstAttribute="top" secondItem="Q9o-Kl-HCg" secondAttribute="topMargin" id="utA-oE-Ejm"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="lMX-0J-ayV" id="uBk-na-QIX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6Xk-EW-bYZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="928" y="254"/>
         </scene>
     </scenes>
 </document>
