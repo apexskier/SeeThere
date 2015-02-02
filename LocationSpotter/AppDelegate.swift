@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     var currentLocation: CLLocation?
     var currentDirection: CLLocationDirection?
+    var currentPitch: Double?
 
     let locationManager = CLLocationManager()
     let motionManager = CMMotionManager()
@@ -87,7 +88,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // start getting motion
         motionManager.deviceMotionUpdateInterval = 0.02; // 50 Hz
         if motionManager.deviceMotionAvailable {
-            motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrameXArbitraryZVertical)
+            //motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrameXArbitraryZVertical)
+            motionManager.startDeviceMotionUpdatesToQueue(NSOperationQueue.mainQueue(), withHandler: { (data: CMDeviceMotion!, error: NSError!) -> Void in
+
+                self.currentPitch = { () -> Double in
+                    switch UIDevice.currentDevice().orientation {
+                    case UIDeviceOrientation.Portrait:
+                        return data.attitude.pitch
+                    case UIDeviceOrientation.PortraitUpsideDown:
+                        return -data.attitude.pitch
+                    case UIDeviceOrientation.LandscapeLeft:
+                        return data.attitude.roll
+                    case UIDeviceOrientation.LandscapeRight:
+                        return -data.attitude.roll
+                    default:
+                        fatalError("Unknown device orientation")
+                    }
+                }()
+                NSNotificationCenter.defaultCenter().postNotificationName("pitchUpdated", object: self.currentPitch)
+            })
         }
     }
 

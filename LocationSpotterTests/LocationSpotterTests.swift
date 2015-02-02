@@ -9,6 +9,7 @@
 import UIKit
 import XCTest
 import CoreLocation
+import CoreMotion
 
 import LocationSpotter
 
@@ -33,6 +34,13 @@ class LocationSpotterTests: XCTestCase {
         // assert that the ViewController.view is not nil
         XCTAssertNotNil(v.view, "view did not load")
     }*/
+
+    func testRadiansDegrees() {
+        XCTAssertEqualWithAccuracy(radians(180), M_PI, 0.000001, "180 degrees doesn't equal pi radians")
+        XCTAssertEqualWithAccuracy(radians(75), (5*M_PI)/12, 0.000001, "radians failed")
+        XCTAssertEqualWithAccuracy(degrees(M_PI), 180, 0.000001, "180 degrees doesn't equal pi radians")
+        XCTAssertEqualWithAccuracy(degrees((5*M_PI)/12), 75, 0.000001, "degrees failed")
+    }
     
     func testInvalidElevationQuery() {
         let lat = -999.0
@@ -67,7 +75,7 @@ class LocationSpotterTests: XCTestCase {
     func testNewLocation() {
         let lat = 48.72277
         let lng = -122.489905
-        let pos = CLLocationCoordinate2D(latitude: lat, longitude: lng)
+        let pos = CLLocation(latitude: lat, longitude: lng)
         
         let newLoc = newLocation(pos, 250, radians(12))
         

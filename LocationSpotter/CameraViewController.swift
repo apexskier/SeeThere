@@ -19,6 +19,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var mainView: UIView!
     @IBOutlet var tapGestureRecognizer: UITapGestureRecognizer!
     @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var pitchText: UITextField!
+    @IBOutlet weak var headingText: UITextField!
+    @IBOutlet weak var locationText: UITextField!
     
     private let device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
     private var spottedLocation: CLLocationCoordinate2D?
@@ -48,14 +51,23 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
 
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("locationUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+            if let loc = self.appDelegate.currentLocation {
+                self.locationText.text = "(\(loc.coordinate.latitude), \(loc.coordinate.longitude)) at \(loc.altitude)"
+            }
             self.locationReady = true
             self.sayReady()
         }))
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("headingUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+            self.headingText.text = "\(self.appDelegate.currentDirection?)"
             self.headingReady = true
             self.sayReady()
         }))
-        
+        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("pitchUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+            self.pitchText.text = "\(self.appDelegate.currentPitch?)"
+            self.pitchReady = true
+            self.sayReady()
+        }))
+
         // set up video capturing
         let session = AVCaptureSession()
         session.sessionPreset = AVCaptureSessionPresetHigh
@@ -194,7 +206,22 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         let offset = pointY - height/2
         let offsetAngle = atan2(offset, a)
 
-        return calcPitch(appDelegate.motionManager.deviceMotion.attitude.quaternion) + offsetAngle
+        /*let pitch = { () -> Double in
+            switch UIDevice.currentDevice().orientation {
+            case UIDeviceOrientation.Portrait:
+                return self.appDelegate.motionManager.deviceMotion.attitude.pitch
+            case UIDeviceOrientation.PortraitUpsideDown:
+                return -self.appDelegate.motionManager.deviceMotion.attitude.pitch
+            case UIDeviceOrientation.LandscapeLeft:
+                return self.appDelegate.motionManager.deviceMotion.attitude.roll
+            case UIDeviceOrientation.LandscapeRight:
+                return -self.appDelegate.motionManager.deviceMotion.attitude.roll
+            default:
+                fatalError("Unknown device orientation")
+            }
+        }()*/
+
+        return appDelegate.currentPitch! + offsetAngle
     }
 
     func getDirection(pointX: Double) -> CLLocationDirection {

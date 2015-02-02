@@ -14,20 +14,41 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Getting Ready" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9Ho-57-5aK">
-                                <rect key="frame" x="213" y="283.5" width="175" height="32"/>
+                                <rect key="frame" x="213" y="284" width="175" height="32"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Heading" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rjZ-dM-6gL">
+                                <rect key="frame" x="78" y="28" width="75" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Location" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="w6j-gd-jOs">
+                                <rect key="frame" x="161" y="28" width="77" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Pitch" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kPt-on-F4P">
+                                <rect key="frame" x="16" y="28" width="54" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="w6j-gd-jOs" firstAttribute="leading" secondItem="rjZ-dM-6gL" secondAttribute="trailing" constant="8" id="AUI-D2-d8u"/>
+                            <constraint firstItem="kPt-on-F4P" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="IIH-JG-YZx"/>
+                            <constraint firstItem="w6j-gd-jOs" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="MeG-Ii-jn1"/>
+                            <constraint firstItem="rjZ-dM-6gL" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="PrX-2m-EBY"/>
                             <constraint firstAttribute="centerY" secondItem="9Ho-57-5aK" secondAttribute="centerY" id="RbI-gN-eTn"/>
+                            <constraint firstItem="kPt-on-F4P" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="nPK-5C-plT"/>
+                            <constraint firstItem="rjZ-dM-6gL" firstAttribute="leading" secondItem="kPt-on-F4P" secondAttribute="trailing" constant="8" id="pBg-zK-Tuz"/>
                             <constraint firstAttribute="centerX" secondItem="9Ho-57-5aK" secondAttribute="centerX" id="xpE-UF-9ke"/>
                         </constraints>
                         <connections>
@@ -35,7 +56,10 @@
                         </connections>
                     </view>
                     <connections>
+                        <outlet property="headingText" destination="rjZ-dM-6gL" id="Ub5-u2-Nef"/>
+                        <outlet property="locationText" destination="w6j-gd-jOs" id="OKU-ot-Y0W"/>
                         <outlet property="mainView" destination="8bC-Xf-vdC" id="JP2-D0-Lhb"/>
+                        <outlet property="pitchText" destination="kPt-on-F4P" id="sjZ-XQ-Q6h"/>
                         <outlet property="tapGestureRecognizer" destination="yee-C7-yCv" id="ONK-zP-gCh"/>
                         <outlet property="textField" destination="9Ho-57-5aK" id="orG-un-4Ki"/>
                     </connections>

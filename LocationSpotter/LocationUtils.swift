@@ -23,10 +23,15 @@ func degrees(radians: Double) -> Double {
 }
 
 func calcPitch(quaternion: CMQuaternion) -> Double {
-    let num: Double = (2 * quaternion.x * quaternion.w) - (2 * quaternion.y * quaternion.z)
-    let den: Double = 1 - (2 * quaternion.x * quaternion.x) - (2 * quaternion.z * quaternion.z)
-    
-    return atan2(num, den)
+    //let num: Double = (2 * quaternion.x * quaternion.w) - (2 * quaternion.y * quaternion.z)
+    //let den: Double = 1 - (2 * quaternion.x * quaternion.x) - (2 * quaternion.z * quaternion.z)
+
+    //let num: Double = 2 * (quaternion.y * quaternion.z + quaternion.w * quaternion.x)
+    //let den: Double = quaternion.w * quaternion.w - quaternion.x * quaternion.x - quaternion.y * quaternion.y + quaternion.z * quaternion.z
+
+    return asin(2 * (quaternion.w * quaternion.y - quaternion.z * quaternion.x))
+
+    //return atan2(num, den)
 }
 
 func getElevationAt(coordinate: CLLocationCoordinate2D) -> CLLocationDistance? {
@@ -42,6 +47,7 @@ func getElevationAt(coordinate: CLLocationCoordinate2D) -> CLLocationDistance? {
     var data = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
     if error != nil {
         fatalError("\(error?.description)")
+        return nil
     }
     
     if (data!.length > 0) {
@@ -59,11 +65,19 @@ func getElevationAt(coordinate: CLLocationCoordinate2D) -> CLLocationDistance? {
     return nil
 }
 
+/* Get a list of locations, with altitude information between a start point and an end point.
+ * Returned locations will be DISTANCE_STEP apart.
+ *
+ */
 func getElevationPath(start: CLLocation, end: CLLocation) -> [CLLocation] {
     var ret: [CLLocation] = []
     
     let dist = start.distanceFromLocation(end)
-    let samples = min(Int(dist / DISTANCE_STEP), 512)
+    //let samples = min(Int(dist / DISTANCE_STEP), 512)
+    let samples = Int(dist / DISTANCE_STEP)
+    if samples > 512 {
+        fatalError("getElevationPath start and end too far apart.")
+    }
     
     let reqURLString = "https://maps.googleapis.com/maps/api/elevation/json?key=\(googleAPIKey)&path=\(start.coordinate.latitude),\(start.coordinate.longitude)%7C\(end.coordinate.latitude),\(end.coordinate.longitude)&samples=\(samples)"
     let reqURL = NSURL(string: reqURLString)
@@ -101,13 +115,13 @@ func estimateElevation(distance: CLLocationDistance, startAltitude: CLLocationDi
     return startAltitude + heightDiff
 }
 
-func newLocation(start: CLLocationCoordinate2D, distance: CLLocationDistance, direction: CLLocationDirection) -> CLLocation {
+func newLocation(start: CLLocation, distance: CLLocationDistance, direction: CLLocationDirection) -> CLLocation {
     /*if !CLLocationCoordinate2DIsValid(start) {
     return nil
     }*/
     
-    let startLat = radians(start.latitude)
-    let startLng = radians(start.longitude)
+    let startLat = radians(start.coordinate.latitude)
+    let startLng = radians(start.coordinate.longitude)
     
     let sinStartLat = sin(startLat)
     let cosStartLat = cos(startLat)
@@ -121,17 +135,18 @@ func newLocation(start: CLLocationCoordinate2D, distance: CLLocationDistance, di
     return CLLocation(latitude: degrees(finLat), longitude: degrees(finLng))
 }
 
-func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double) -> CLLocationCoordinate2D? {
+func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double) -> CLLocation? {
     var distance = 1000.0
     var from = start
     
     while (distance < MAX_DISTANCE) {
         // fetch a set of points
-        let to = newLocation(start.coordinate, distance, direction)
+        let to = newLocation(start, distance, direction)
         
         let pathLocs = getElevationPath(from, to)
         if pathLocs.count == 0 {
             fatalError("Failed to get elevation path")
+            return nil
         }
         
         for loc in pathLocs {
@@ -140,7 +155,7 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
             let actual = loc.altitude
             
             if (estimate < actual) {
-                return loc.coordinate
+                return loc
             }
         }
         
