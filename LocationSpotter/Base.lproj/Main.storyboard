@@ -63,6 +63,24 @@
                             <constraint firstAttribute="centerY" secondItem="wSK-a0-BoB" secondAttribute="centerY" id="va6-qz-BE7"/>
                             <constraint firstItem="gCe-ft-EZb" firstAttribute="top" secondItem="kPt-on-F4P" secondAttribute="bottom" constant="8" id="wjb-XP-kce"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="kPt-on-F4P"/>
+                                <exclude reference="gCe-ft-EZb"/>
+                                <exclude reference="sJN-kW-Tgs"/>
+                                <exclude reference="rjZ-dM-6gL"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="IIH-JG-YZx"/>
+                                <exclude reference="nPK-5C-plT"/>
+                                <exclude reference="PUx-ZF-p9f"/>
+                                <exclude reference="wjb-XP-kce"/>
+                                <exclude reference="65P-Wv-yea"/>
+                                <exclude reference="N2A-Ru-Pzf"/>
+                                <exclude reference="MSi-T8-P9G"/>
+                                <exclude reference="PrX-2m-EBY"/>
+                            </mask>
+                        </variation>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="yee-C7-yCv" appends="YES" id="7bv-7V-n4P"/>
                         </connections>
