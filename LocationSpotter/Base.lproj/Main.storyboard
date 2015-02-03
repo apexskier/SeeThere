@@ -17,8 +17,11 @@
                         <rect key="frame" x="0.0" y="64" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <activityIndicatorView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="wSK-a0-BoB">
+                                <rect key="frame" x="290" y="290" width="20" height="20"/>
+                            </activityIndicatorView>
                             <textField clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Getting Ready" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9Ho-57-5aK">
-                                <rect key="frame" x="213" y="284" width="175" height="32"/>
+                                <rect key="frame" x="213" y="250" width="175" height="32"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -48,15 +51,17 @@
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="sJN-kW-Tgs" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="65P-Wv-yea"/>
+                            <constraint firstAttribute="centerX" secondItem="9Ho-57-5aK" secondAttribute="centerX" id="8Hu-zp-zBX"/>
                             <constraint firstItem="kPt-on-F4P" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="IIH-JG-YZx"/>
                             <constraint firstItem="rjZ-dM-6gL" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="MSi-T8-P9G"/>
                             <constraint firstItem="sJN-kW-Tgs" firstAttribute="top" secondItem="gCe-ft-EZb" secondAttribute="bottom" constant="8" id="N2A-Ru-Pzf"/>
                             <constraint firstItem="gCe-ft-EZb" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="PUx-ZF-p9f"/>
                             <constraint firstItem="rjZ-dM-6gL" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="PrX-2m-EBY"/>
-                            <constraint firstAttribute="centerY" secondItem="9Ho-57-5aK" secondAttribute="centerY" id="RbI-gN-eTn"/>
+                            <constraint firstAttribute="centerX" secondItem="wSK-a0-BoB" secondAttribute="centerX" id="bU2-dl-gxv"/>
+                            <constraint firstItem="wSK-a0-BoB" firstAttribute="top" secondItem="9Ho-57-5aK" secondAttribute="bottom" constant="8" id="meU-OR-L9T"/>
                             <constraint firstItem="kPt-on-F4P" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="nPK-5C-plT"/>
+                            <constraint firstAttribute="centerY" secondItem="wSK-a0-BoB" secondAttribute="centerY" id="va6-qz-BE7"/>
                             <constraint firstItem="gCe-ft-EZb" firstAttribute="top" secondItem="kPt-on-F4P" secondAttribute="bottom" constant="8" id="wjb-XP-kce"/>
-                            <constraint firstAttribute="centerX" secondItem="9Ho-57-5aK" secondAttribute="centerX" id="xpE-UF-9ke"/>
                         </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="yee-C7-yCv" appends="YES" id="7bv-7V-n4P"/>
@@ -64,6 +69,7 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="wSK-a0-BoB" id="faf-Ay-NaX"/>
                         <outlet property="headingText" destination="rjZ-dM-6gL" id="Ub5-u2-Nef"/>
                         <outlet property="mainView" destination="8bC-Xf-vdC" id="JP2-D0-Lhb"/>
                         <outlet property="pitchText" destination="kPt-on-F4P" id="sjZ-XQ-Q6h"/>
