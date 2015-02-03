@@ -83,7 +83,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // start getting motion
         motionManager.deviceMotionUpdateInterval = 0.02; // 50 Hz
         if motionManager.deviceMotionAvailable {
-            //motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrameXArbitraryZVertical)
             motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrameXArbitraryCorrectedZVertical, toQueue: NSOperationQueue.mainQueue(), withHandler: { (data: CMDeviceMotion!, error: NSError!) -> Void in
                 let q = data.attitude.quaternion
 
@@ -103,10 +102,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                     return asin((2 * q.x * q.y) + (2 * q.z * q.w))
                 }()
 
-                //self.currentPitch = data.attitude.pitch
-                //self.currentRoll = data.attitude.roll
-                //self.currentYaw = data.attitude.yaw
-
                 /*
                 self.currentPitch = { () -> Double? in
                     switch UIDevice.currentDevice().orientation {
@@ -123,8 +118,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                     }
                 }()*/
                 NSNotificationCenter.defaultCenter().postNotificationName("pitchUpdated", object: self.currentPitch)
-                NSNotificationCenter.defaultCenter().postNotificationName("yawUpdated", object: self.currentYaw)
-                NSNotificationCenter.defaultCenter().postNotificationName("rollUpdated", object: self.currentRoll)
             })
         }
     }
@@ -132,7 +125,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
 
 }
 

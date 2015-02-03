@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 
 private let HEIGHT_TOLERANCE: Double = 10
-private let MAX_DISTANCE: Double = 10000
+private let MAX_DISTANCE: Double = 20000
 private let MIN_DISTANCE: Double = 20
 private let DISTANCE_STEP: Double = 10
 

@@ -23,8 +23,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var yawText: UITextField!
     @IBOutlet weak var rollText: UITextField!
     @IBOutlet weak var headingText: UITextField!
-    @IBOutlet weak var locationText: UITextField!
-    
+
     private let device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
     private var spottedLocation: CLLocation?
 
@@ -77,17 +76,12 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     func setUpObservers() {
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("locationUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
             self.locationReady = self.appDelegate.currentLocation != nil
-            if let loc = self.appDelegate.currentLocation {
-                self.locationText.text = NSString(format: "(%.02f, %.02f) at %.02f", loc.coordinate.latitude, loc.coordinate.longitude, loc.altitude)
-            } else {
-                self.locationText.text = ""
-            }
             self.sayReady()
         }))
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("headingUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
             self.headingReady = self.appDelegate.currentDirection != nil
             if self.headingReady {
-                self.headingText.text = NSString(format: "%.02f", self.appDelegate.currentDirection!)
+                self.headingText.text = NSString(format: "Heading: %.02f", self.appDelegate.currentDirection!)
             } else {
                 self.headingText.text = ""
             }
@@ -96,25 +90,24 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("pitchUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
             self.pitchReady = self.appDelegate.currentPitch != nil
             if self.pitchReady {
-                self.pitchText.text = NSString(format: "%.02f", self.appDelegate.currentPitch!)
+                self.pitchText.text = NSString(format: "Pitch: %.02f", self.appDelegate.currentPitch!)
             } else {
                 self.pitchText.text = ""
             }
-            self.sayReady()
-        }))
-        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("yawUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+
             if self.appDelegate.currentYaw != nil {
-                self.yawText.text = NSString(format: "%.02f", self.appDelegate.currentYaw!)
+                self.yawText.text = NSString(format: "Yaw: %.02f", self.appDelegate.currentYaw!)
             } else {
                 self.yawText.text = ""
             }
-        }))
-        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("rollUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+
             if self.appDelegate.currentRoll != nil {
-                self.rollText.text = NSString(format: "%.02f", self.appDelegate.currentRoll!)
+                self.rollText.text = NSString(format: "Roll: %.02f", self.appDelegate.currentRoll!)
             } else {
                 self.rollText.text = ""
             }
+
+            self.sayReady()
         }))
     }
 
@@ -152,7 +145,14 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         let geoCoder = CLGeocoder()
         geoCoder.reverseGeocodeLocation(spottedLocation, completionHandler: { (placemarks: [AnyObject]!, error: NSError!) in
 
-            let actionSheet = UIAlertController(title: "Do something", message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+            let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+
+            // Apple Maps Action
+            let appleMapsAction = UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+                let locURL = NSURL(string: "http://maps.apple.com/?ll=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)")!
+                UIApplication.sharedApplication().openURL(locURL)
+            })
+            actionSheet.addAction(appleMapsAction)
 
             // Google Maps action
             if UIApplication.sharedApplication().canOpenURL(NSURL(string: "comgooglemaps://")!) {
@@ -163,14 +163,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                 actionSheet.addAction(action)
             }
 
-            // Apple Maps Action
-            let appleMapsAction = UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                let locURL = NSURL(string: "http://maps.apple.com/?ll=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)")!
-                UIApplication.sharedApplication().openURL(locURL)
-            })
-            actionSheet.addAction(appleMapsAction)
-
-            // Share LINK action
+            // Share url action
             let shareLinkAction = UIAlertAction(title: "Share Link", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 let locURL = NSURL(string: "http://maps.apple.com/?ll=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)")!
                 let sheet = UIActivityViewController(activityItems: [locURL], applicationActivities: nil)
@@ -186,7 +179,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             })
             actionSheet.addAction(shareLinkAction)
 
-            // Share Text action
+            // Share text action
             let shareTextAction = UIAlertAction(title: "Share Latitude and Longitude", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 let locString = "\(self.spottedLocation!.coordinate.latitude), \(self.spottedLocation!.coordinate.longitude)"
                 let sheet = UIActivityViewController(activityItems: [locString], applicationActivities: nil)
@@ -203,7 +196,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             actionSheet.addAction(shareTextAction)
 
             // Share GPX action
-            let shareGPXAction = UIAlertAction(title: "Share GPX File", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+            let shareGPXAction = UIAlertAction(title: "GPX File", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 let actpro = GPXFileActivityProvider(location: self.spottedLocation!)
                 let share = self.mapViewController.toolbarItems![1] as UIBarButtonItem
                 let activity = OpenInActivity(url: actpro.fileURL, barItem: share)
@@ -222,7 +215,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             actionSheet.addAction(shareGPXAction)
 
             // Share VCard action
-            let shareVCardAction = UIAlertAction(title: "Share VCard", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+            let shareVCardAction = UIAlertAction(title: "VCard", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 // Generate VCard with location as home
                 let rootPlacemark = placemarks[0] as CLPlacemark
                 let evolvedPlacemark = MKPlacemark(placemark: rootPlacemark)
