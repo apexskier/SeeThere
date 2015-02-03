@@ -19,6 +19,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var mainView: UIView!
     @IBOutlet var tapGestureRecognizer: UITapGestureRecognizer!
     @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var pitchText: UITextField!
     @IBOutlet weak var yawText: UITextField!
     @IBOutlet weak var rollText: UITextField!
@@ -41,9 +42,14 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     private var headingReady = false
     private var pitchReady = false
     private var cameraReady = false
+    private var working = false
     var ready: Bool {
         get {
-            return locationReady && headingReady && pitchReady && cameraReady
+            let r = locationReady && headingReady && pitchReady && cameraReady && !working
+            if r {
+                activityIndicator.stopAnimating()
+            }
+            return r
         }
     }
 
@@ -144,7 +150,6 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     func actionLocation() {
         let geoCoder = CLGeocoder()
         geoCoder.reverseGeocodeLocation(spottedLocation, completionHandler: { (placemarks: [AnyObject]!, error: NSError!) in
-
             let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
 
             // Apple Maps Action
@@ -267,27 +272,35 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             cancelObservers()
             var tapLocation = sender.locationInView(self.view)
             textField.text = "Looking..."
-            spottedLocation = walkOutFrom(appDelegate.currentLocation!,
-                getDirection(Double(tapLocation.y)),
-                getPitch(Double(tapLocation.x)))
-            if spottedLocation != nil {
-                mapViewController.locationSpotted = spottedLocation
-                mapViewNavController.title = "Spotted Location"
-                textField.text = "Found!"
-                
-                self.presentViewController(mapViewNavController, animated: true, completion: {
-                    self.sayReady()
-                    self.setUpObservers()
-                })
-            } else {
-                textField.text = "Failed!"
-                let alert = UIAlertController(title: "Failed", message: "Couldn't spot a location.", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
-                self.presentViewController(alert, animated: true, completion: {
-                    self.sayReady()
-                    self.setUpObservers()
-                })
-            }
+            activityIndicator.startAnimating()
+            working = true
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                self.spottedLocation = walkOutFrom(self.appDelegate.currentLocation!,
+                    self.getDirection(Double(tapLocation.y)),
+                    self.getPitch(Double(tapLocation.x)))
+
+                if self.spottedLocation != nil {
+                    self.mapViewController.locationSpotted = self.spottedLocation
+                    self.textField.text = "Found!"
+
+                    self.presentViewController(self.mapViewNavController, animated: true, completion: {
+                        self.activityIndicator.stopAnimating()
+                        self.sayReady()
+                        self.setUpObservers()
+                        self.working = false
+                    })
+                } else {
+                    self.textField.text = "Failed!"
+                    let alert = UIAlertController(title: "Failed", message: "Couldn't spot a location.", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: {
+                        self.activityIndicator.stopAnimating()
+                        self.sayReady()
+                        self.setUpObservers()
+                        self.working = false
+                    })
+                }
+            })
         }
     }
     
@@ -300,6 +313,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     }()
     lazy private var fovHorizontal: Double = {
         if self.device == nil {
+            self.cancelObservers()
             self.textField.text = "No camera found"
             return 0
         }
