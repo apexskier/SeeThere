@@ -38,30 +38,47 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Yaw" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gCe-ft-EZb">
+                                <rect key="frame" x="16" y="66" width="48" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Roll" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sJN-kW-Tgs">
+                                <rect key="frame" x="16" y="104" width="46" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="sJN-kW-Tgs" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="65P-Wv-yea"/>
                             <constraint firstItem="w6j-gd-jOs" firstAttribute="leading" secondItem="rjZ-dM-6gL" secondAttribute="trailing" constant="8" id="AUI-D2-d8u"/>
                             <constraint firstItem="kPt-on-F4P" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="IIH-JG-YZx"/>
                             <constraint firstItem="w6j-gd-jOs" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="MeG-Ii-jn1"/>
+                            <constraint firstItem="sJN-kW-Tgs" firstAttribute="top" secondItem="gCe-ft-EZb" secondAttribute="bottom" constant="8" id="N2A-Ru-Pzf"/>
+                            <constraint firstItem="gCe-ft-EZb" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="PUx-ZF-p9f"/>
                             <constraint firstItem="rjZ-dM-6gL" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="PrX-2m-EBY"/>
                             <constraint firstAttribute="centerY" secondItem="9Ho-57-5aK" secondAttribute="centerY" id="RbI-gN-eTn"/>
                             <constraint firstItem="kPt-on-F4P" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="nPK-5C-plT"/>
                             <constraint firstItem="rjZ-dM-6gL" firstAttribute="leading" secondItem="kPt-on-F4P" secondAttribute="trailing" constant="8" id="pBg-zK-Tuz"/>
+                            <constraint firstItem="gCe-ft-EZb" firstAttribute="top" secondItem="kPt-on-F4P" secondAttribute="bottom" constant="8" id="wjb-XP-kce"/>
                             <constraint firstAttribute="centerX" secondItem="9Ho-57-5aK" secondAttribute="centerX" id="xpE-UF-9ke"/>
                         </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="yee-C7-yCv" appends="YES" id="7bv-7V-n4P"/>
                         </connections>
                     </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="headingText" destination="rjZ-dM-6gL" id="Ub5-u2-Nef"/>
                         <outlet property="locationText" destination="w6j-gd-jOs" id="OKU-ot-Y0W"/>
                         <outlet property="mainView" destination="8bC-Xf-vdC" id="JP2-D0-Lhb"/>
                         <outlet property="pitchText" destination="kPt-on-F4P" id="sjZ-XQ-Q6h"/>
+                        <outlet property="rollText" destination="sJN-kW-Tgs" id="W8R-hn-KcV"/>
                         <outlet property="tapGestureRecognizer" destination="yee-C7-yCv" id="ONK-zP-gCh"/>
                         <outlet property="textField" destination="9Ho-57-5aK" id="orG-un-4Ki"/>
+                        <outlet property="yawText" destination="gCe-ft-EZb" id="6An-0S-E6N"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

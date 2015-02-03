@@ -20,11 +20,13 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var tapGestureRecognizer: UITapGestureRecognizer!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var pitchText: UITextField!
+    @IBOutlet weak var yawText: UITextField!
+    @IBOutlet weak var rollText: UITextField!
     @IBOutlet weak var headingText: UITextField!
     @IBOutlet weak var locationText: UITextField!
     
     private let device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
-    private var spottedLocation: CLLocationCoordinate2D?
+    private var spottedLocation: CLLocation?
 
     func sayReady() {
         if ready {
@@ -38,10 +40,11 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     private var locationReady = false
     private var headingReady = false
-    private var pitchReady = true // I think this should essentially be always available.
+    private var pitchReady = false
+    private var cameraReady = false
     var ready: Bool {
         get {
-            return locationReady// && headingReady && pitchReady
+            return locationReady && headingReady && pitchReady && cameraReady
         }
     }
 
@@ -50,49 +53,76 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("locationUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
-            if let loc = self.appDelegate.currentLocation {
-                self.locationText.text = "(\(loc.coordinate.latitude), \(loc.coordinate.longitude)) at \(loc.altitude)"
-            }
-            self.locationReady = true
-            self.sayReady()
-        }))
-        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("headingUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
-            self.headingText.text = "\(self.appDelegate.currentDirection?)"
-            self.headingReady = true
-            self.sayReady()
-        }))
-        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("pitchUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
-            self.pitchText.text = "\(self.appDelegate.currentPitch?)"
-            self.pitchReady = true
-            self.sayReady()
-        }))
-
         // set up video capturing
         let session = AVCaptureSession()
         session.sessionPreset = AVCaptureSessionPresetHigh
         var error: NSError?
         let input: AVCaptureDeviceInput? = AVCaptureDeviceInput.deviceInputWithDevice(device, error: &error) as? AVCaptureDeviceInput
-        if (input == nil) {
+        if input == nil {
             println("Couldn't set up camera")
         } else {
             // add video into main view
             session.addInput(input!)
-            
             var previewLayer = AVCaptureVideoPreviewLayer.layerWithSession(session) as AVCaptureVideoPreviewLayer
             previewLayer.frame = mainView.bounds
-            
-            mainView.layer.addSublayer(previewLayer)
+            mainView.layer.insertSublayer(previewLayer, atIndex: 0)
+            session.startRunning()
+            cameraReady = true
         }
 
+        self.setUpObservers()
         self.sayReady()
     }
 
-    /*override func viewDidUnload() {
+    func setUpObservers() {
+        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("locationUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+            self.locationReady = self.appDelegate.currentLocation != nil
+            if let loc = self.appDelegate.currentLocation {
+                self.locationText.text = NSString(format: "(%.02f, %.02f) at %.02f", loc.coordinate.latitude, loc.coordinate.longitude, loc.altitude)
+            } else {
+                self.locationText.text = ""
+            }
+            self.sayReady()
+        }))
+        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("headingUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+            self.headingReady = self.appDelegate.currentDirection != nil
+            if self.headingReady {
+                self.headingText.text = NSString(format: "%.02f", self.appDelegate.currentDirection!)
+            } else {
+                self.headingText.text = ""
+            }
+            self.sayReady()
+        }))
+        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("pitchUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+            self.pitchReady = self.appDelegate.currentPitch != nil
+            if self.pitchReady {
+                self.pitchText.text = NSString(format: "%.02f", self.appDelegate.currentPitch!)
+            } else {
+                self.pitchText.text = ""
+            }
+            self.sayReady()
+        }))
+        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("yawUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+            if self.appDelegate.currentYaw != nil {
+                self.yawText.text = NSString(format: "%.02f", self.appDelegate.currentYaw!)
+            } else {
+                self.yawText.text = ""
+            }
+        }))
+        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("rollUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
+            if self.appDelegate.currentRoll != nil {
+                self.rollText.text = NSString(format: "%.02f", self.appDelegate.currentRoll!)
+            } else {
+                self.rollText.text = ""
+            }
+        }))
+    }
+
+    func cancelObservers() {
         for observer in observers {
             NSNotificationCenter.defaultCenter().removeObserver(observer)
         }
-    }*/
+    }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
         return ready
@@ -119,66 +149,152 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     func actionLocation() {
-        let actLocation = CLLocation(latitude: spottedLocation!.latitude, longitude: spottedLocation!.longitude)
-
         let geoCoder = CLGeocoder()
-        geoCoder.reverseGeocodeLocation(actLocation
-            , completionHandler: { (placemarks: [AnyObject]!, error: NSError!) in
-            let locString = "\(self.spottedLocation!.latitude), \(self.spottedLocation!.longitude)"
-            let locURL = NSURL(string: "http://maps.apple.com/?q=&ll=\(self.spottedLocation!.latitude),\(self.spottedLocation!.longitude)")!
-            let location = CLLocation(latitude: self.spottedLocation!.latitude, longitude: self.spottedLocation!.longitude)
+        geoCoder.reverseGeocodeLocation(spottedLocation, completionHandler: { (placemarks: [AnyObject]!, error: NSError!) in
 
-            var items = [locURL, locString]
+            let actionSheet = UIAlertController(title: "Do something", message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
 
-            let rootPlacemark = placemarks[0] as CLPlacemark
-            let evolvedPlacemark = MKPlacemark(placemark: rootPlacemark)
-
-            let persona: ABRecord = ABPersonCreate().takeUnretainedValue()
-            ABRecordSetValue(persona, kABPersonFirstNameProperty, evolvedPlacemark.name, nil)
-            let multiHome: ABMutableMultiValue = ABMultiValueCreateMutable(UInt32(kABMultiDictionaryPropertyType)).takeUnretainedValue()
-
-            let didAddHome = ABMultiValueAddValueAndLabel(multiHome, evolvedPlacemark.addressDictionary, kABHomeLabel, nil)
-
-            if didAddHome {
-                ABRecordSetValue(persona, kABPersonAddressProperty, multiHome, nil)
-                let vcards = ABPersonCreateVCardRepresentationWithPeople([persona]).takeUnretainedValue()
-                let vcardString = NSString(data: vcards, encoding: NSASCIIStringEncoding)
-                let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
-                var error: NSError?
-                let filePath = documentsDirectory.stringByAppendingPathComponent("pin.loc.vcf")
-                vcardString?.writeToFile(filePath, atomically: true, encoding: NSUTF8StringEncoding, error: &error)
-                let fileURL = NSURL(fileURLWithPath: filePath)!
-                items.append(fileURL)
+            // Google Maps action
+            if UIApplication.sharedApplication().canOpenURL(NSURL(string: "comgooglemaps://")!) {
+                let action = UIAlertAction(title: "Open in Google Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+                    let str = "comgooglemaps://?center=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)"
+                    UIApplication.sharedApplication().openURL(NSURL(string: str)!)
+                })
+                actionSheet.addAction(action)
             }
 
-            let sheet = UIActivityViewController(activityItems: items, applicationActivities: nil)
-            sheet.excludedActivityTypes =
-                [UIActivityTypePostToWeibo,
-                UIActivityTypePrint,
-                UIActivityTypeSaveToCameraRoll,
-                UIActivityTypeAddToReadingList,
-                UIActivityTypePostToFlickr,
-                UIActivityTypePostToVimeo,
-                UIActivityTypePostToTencentWeibo]
+            // Apple Maps Action
+            let appleMapsAction = UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+                let locURL = NSURL(string: "http://maps.apple.com/?ll=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)")!
+                UIApplication.sharedApplication().openURL(locURL)
+            })
+            actionSheet.addAction(appleMapsAction)
 
-            self.mapViewController.presentViewController(sheet, animated: true, completion: nil)
+            // Share LINK action
+            let shareLinkAction = UIAlertAction(title: "Share Link", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+                let locURL = NSURL(string: "http://maps.apple.com/?ll=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)")!
+                let sheet = UIActivityViewController(activityItems: [locURL], applicationActivities: nil)
+                sheet.excludedActivityTypes =
+                    [UIActivityTypePostToWeibo,
+                        UIActivityTypePrint,
+                        UIActivityTypeSaveToCameraRoll,
+                        UIActivityTypeAddToReadingList,
+                        UIActivityTypePostToFlickr,
+                        UIActivityTypePostToVimeo,
+                        UIActivityTypePostToTencentWeibo]
+                self.mapViewController.presentViewController(sheet, animated: true, completion: nil)
+            })
+            actionSheet.addAction(shareLinkAction)
+
+            // Share Text action
+            let shareTextAction = UIAlertAction(title: "Share Latitude and Longitude", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+                let locString = "\(self.spottedLocation!.coordinate.latitude), \(self.spottedLocation!.coordinate.longitude)"
+                let sheet = UIActivityViewController(activityItems: [locString], applicationActivities: nil)
+                sheet.excludedActivityTypes =
+                    [UIActivityTypePostToWeibo,
+                        UIActivityTypePrint,
+                        UIActivityTypeSaveToCameraRoll,
+                        UIActivityTypeAddToReadingList,
+                        UIActivityTypePostToFlickr,
+                        UIActivityTypePostToVimeo,
+                        UIActivityTypePostToTencentWeibo]
+                self.mapViewController.presentViewController(sheet, animated: true, completion: nil)
+            })
+            actionSheet.addAction(shareTextAction)
+
+            // Share GPX action
+            let shareGPXAction = UIAlertAction(title: "Share GPX File", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+                let actpro = GPXFileActivityProvider(location: self.spottedLocation!)
+                let share = self.mapViewController.toolbarItems![1] as UIBarButtonItem
+                let activity = OpenInActivity(url: actpro.fileURL, barItem: share)
+
+                let sheet = UIActivityViewController(activityItems: [actpro], applicationActivities: [activity])
+                sheet.excludedActivityTypes =
+                    [UIActivityTypePostToWeibo,
+                        UIActivityTypePrint,
+                        UIActivityTypeSaveToCameraRoll,
+                        UIActivityTypeAddToReadingList,
+                        UIActivityTypePostToFlickr,
+                        UIActivityTypePostToVimeo,
+                        UIActivityTypePostToTencentWeibo]
+                self.mapViewController.presentViewController(sheet, animated: true, completion: nil)
+            })
+            actionSheet.addAction(shareGPXAction)
+
+            // Share VCard action
+            let shareVCardAction = UIAlertAction(title: "Share VCard", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+                // Generate VCard with location as home
+                let rootPlacemark = placemarks[0] as CLPlacemark
+                let evolvedPlacemark = MKPlacemark(placemark: rootPlacemark)
+
+                let persona: ABRecord = ABPersonCreate().takeUnretainedValue()
+                ABRecordSetValue(persona, kABPersonFirstNameProperty, evolvedPlacemark.name, nil)
+                let multiHome: ABMutableMultiValue = ABMultiValueCreateMutable(UInt32(kABMultiDictionaryPropertyType)).takeUnretainedValue()
+
+                let didAddHome = ABMultiValueAddValueAndLabel(multiHome, evolvedPlacemark.addressDictionary, kABHomeLabel, nil)
+
+                if didAddHome {
+                    ABRecordSetValue(persona, kABPersonAddressProperty, multiHome, nil)
+                    let vcards = ABPersonCreateVCardRepresentationWithPeople([persona]).takeUnretainedValue()
+                    let vcardString = NSString(data: vcards, encoding: NSASCIIStringEncoding)
+                    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+                    var error: NSError?
+                    let filePath = documentsDirectory.stringByAppendingPathComponent("pin.loc.vcf")
+                    vcardString?.writeToFile(filePath, atomically: true, encoding: NSUTF8StringEncoding, error: &error)
+                    let fileURL = NSURL(fileURLWithPath: filePath)!
+
+                    let sheet = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+                    sheet.excludedActivityTypes =
+                        [UIActivityTypePostToWeibo,
+                            UIActivityTypePrint,
+                            UIActivityTypeSaveToCameraRoll,
+                            UIActivityTypeAddToReadingList,
+                            UIActivityTypePostToFlickr,
+                            UIActivityTypePostToVimeo,
+                            UIActivityTypePostToTencentWeibo]
+                    self.mapViewController.presentViewController(sheet, animated: true, completion: nil)
+                } else {
+                    let alert = UIAlertController(title: "Failed", message: "Couldn't generate VCard.", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
+                    self.mapViewController.presentViewController(alert, animated: true, completion: nil)
+                }
+            })
+            actionSheet.addAction(shareVCardAction)
+
+            // Cancel action
+            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+            actionSheet.addAction(cancelAction)
+
+            self.mapViewController.presentViewController(actionSheet, animated: true, completion: nil)
         })
     }
 
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
+            cancelObservers()
             var tapLocation = sender.locationInView(self.view)
-
-            //spottedLocation = walkOutFrom(appDelegate.currentLocation!,
-            //                           getDirection(Double(tapLocation.y)),
-            //                           getPitch(Double(tapLocation.x)))
-
-            spottedLocation = CLLocationCoordinate2D(latitude: 48.82277, longitude: -122.489905)
-
-            mapViewController.locationSpotted = spottedLocation
-            mapViewNavController.title = "Spotted Location"
-
-            self.presentViewController(mapViewNavController, animated: true, completion: nil)
+            textField.text = "Looking..."
+            spottedLocation = walkOutFrom(appDelegate.currentLocation!,
+                getDirection(Double(tapLocation.y)),
+                getPitch(Double(tapLocation.x)))
+            if spottedLocation != nil {
+                mapViewController.locationSpotted = spottedLocation
+                mapViewNavController.title = "Spotted Location"
+                textField.text = "Found!"
+                
+                self.presentViewController(mapViewNavController, animated: true, completion: {
+                    self.sayReady()
+                    self.setUpObservers()
+                })
+            } else {
+                textField.text = "Failed!"
+                let alert = UIAlertController(title: "Failed", message: "Couldn't spot a location.", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
+                self.presentViewController(alert, animated: true, completion: {
+                    self.sayReady()
+                    self.setUpObservers()
+                })
+            }
         }
     }
     
@@ -205,21 +321,6 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
         let offset = pointY - height/2
         let offsetAngle = atan2(offset, a)
-
-        /*let pitch = { () -> Double in
-            switch UIDevice.currentDevice().orientation {
-            case UIDeviceOrientation.Portrait:
-                return self.appDelegate.motionManager.deviceMotion.attitude.pitch
-            case UIDeviceOrientation.PortraitUpsideDown:
-                return -self.appDelegate.motionManager.deviceMotion.attitude.pitch
-            case UIDeviceOrientation.LandscapeLeft:
-                return self.appDelegate.motionManager.deviceMotion.attitude.roll
-            case UIDeviceOrientation.LandscapeRight:
-                return -self.appDelegate.motionManager.deviceMotion.attitude.roll
-            default:
-                fatalError("Unknown device orientation")
-            }
-        }()*/
 
         return appDelegate.currentPitch! + offsetAngle
     }

@@ -15,7 +15,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet var mapView: MKMapView!
 
     var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
-    var locationSpotted: CLLocationCoordinate2D?
+    var locationSpotted: CLLocation?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,15 +24,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
 
     override func viewDidAppear(animated: Bool) {
+        if locationSpotted == nil {
+            return
+        }
         if mapView.pitchEnabled {
             let locPin = MKPointAnnotation()
-            locPin.setCoordinate(locationSpotted!)
+            locPin.setCoordinate(locationSpotted!.coordinate)
             locPin.title = "Spotted Location"
             mapView.addAnnotation(locPin)
 
             var eye: CLLocationCoordinate2D = appDelegate.currentLocation!.coordinate
             var alt: CLLocationDistance = appDelegate.currentLocation!.altitude
-            var camera = MKMapCamera(lookingAtCenterCoordinate: locationSpotted!, fromEyeCoordinate: eye, eyeAltitude: alt)
+            var camera = MKMapCamera(lookingAtCenterCoordinate: locationSpotted!.coordinate, fromEyeCoordinate: eye, eyeAltitude: 1)
             mapView.camera = camera
         }
     }

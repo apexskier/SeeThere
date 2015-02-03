@@ -8,11 +8,10 @@
 
 import Foundation
 import CoreLocation
-import CoreMotion
 
 private let HEIGHT_TOLERANCE: Double = 10
 private let MAX_DISTANCE: Double = 10000
-private let MIN_DISTANCE: Double = 10
+private let MIN_DISTANCE: Double = 20
 private let DISTANCE_STEP: Double = 10
 
 func radians(degrees: Double) -> Double {
@@ -20,18 +19,6 @@ func radians(degrees: Double) -> Double {
 }
 func degrees(radians: Double) -> Double {
     return radians * (180 / M_PI)
-}
-
-func calcPitch(quaternion: CMQuaternion) -> Double {
-    //let num: Double = (2 * quaternion.x * quaternion.w) - (2 * quaternion.y * quaternion.z)
-    //let den: Double = 1 - (2 * quaternion.x * quaternion.x) - (2 * quaternion.z * quaternion.z)
-
-    //let num: Double = 2 * (quaternion.y * quaternion.z + quaternion.w * quaternion.x)
-    //let den: Double = quaternion.w * quaternion.w - quaternion.x * quaternion.x - quaternion.y * quaternion.y + quaternion.z * quaternion.z
-
-    return asin(2 * (quaternion.w * quaternion.y - quaternion.z * quaternion.x))
-
-    //return atan2(num, den)
 }
 
 func getElevationAt(coordinate: CLLocationCoordinate2D) -> CLLocationDistance? {
@@ -116,12 +103,10 @@ func estimateElevation(distance: CLLocationDistance, startAltitude: CLLocationDi
 }
 
 func newLocation(start: CLLocation, distance: CLLocationDistance, direction: CLLocationDirection) -> CLLocation {
-    /*if !CLLocationCoordinate2DIsValid(start) {
-    return nil
-    }*/
-    
     let startLat = radians(start.coordinate.latitude)
     let startLng = radians(start.coordinate.longitude)
+
+    let dir = radians(direction)
     
     let sinStartLat = sin(startLat)
     let cosStartLat = cos(startLat)
@@ -129,15 +114,17 @@ func newLocation(start: CLLocation, distance: CLLocationDistance, direction: CLL
     let earthRadius: CLLocationDistance = 6367.4447 * 1000 // meters
     let scaledDistance = distance / earthRadius
     
-    let finLat = asin((sinStartLat * cos(scaledDistance)) + (cosStartLat * sin(scaledDistance) * cos(direction)))
-    let finLng = startLng + atan2(sin(direction) * sin(scaledDistance) * cosStartLat, cos(scaledDistance) - sinStartLat * sin(finLat))
+    let finLat = asin((sinStartLat * cos(scaledDistance)) + (cosStartLat * sin(scaledDistance) * cos(dir)))
+    let finLng = startLng + atan2(sin(dir) * sin(scaledDistance) * cosStartLat, cos(scaledDistance) - sinStartLat * sin(finLat))
     
     return CLLocation(latitude: degrees(finLat), longitude: degrees(finLng))
 }
 
 func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double) -> CLLocation? {
     var distance = 1000.0
-    var from = start
+    var from = newLocation(start, MIN_DISTANCE, direction)
+    println("starting at elevation \(start.altitude)")
+    let adjAlt = start.altitude + start.verticalAccuracy
     
     while (distance < MAX_DISTANCE) {
         // fetch a set of points
@@ -150,10 +137,10 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
         }
         
         for loc in pathLocs {
-            println("\(loc.coordinate.latitude),\(loc.coordinate.longitude)")
-            let estimate = estimateElevation(loc.distanceFromLocation(start), start.altitude, pitch)
+            let estimate = estimateElevation(loc.distanceFromLocation(start), adjAlt, pitch)
             let actual = loc.altitude
-            
+            println("\(loc.distanceFromLocation(start)): \(estimate)/\(actual)")
+
             if (estimate < actual) {
                 return loc
             }

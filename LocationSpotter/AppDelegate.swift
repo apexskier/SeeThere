@@ -18,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     var currentLocation: CLLocation?
     var currentDirection: CLLocationDirection?
     var currentPitch: Double?
+    var currentYaw: Double?
+    var currentRoll: Double?
 
     let locationManager = CLLocationManager()
     let motionManager = CMMotionManager()
@@ -27,10 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if mostRecentLocation == nil {
             return
         }
-
         currentLocation = mostRecentLocation
-        println("got location (\(currentLocation?.coordinate.latitude),\(currentLocation?.coordinate.longitude)) at \(currentLocation?.altitude)")
-
         NSNotificationCenter.defaultCenter().postNotificationName("locationUpdated", object: currentLocation)
     }
 
@@ -38,11 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if newHeading.headingAccuracy < 0 {
             return
         }
-
-        var theHeading = (newHeading.trueHeading > 0) ? newHeading.trueHeading : newHeading.magneticHeading
-        currentDirection = theHeading
-        println("got heading: \(currentDirection?)")
-
+        currentDirection = (newHeading.trueHeading > 0) ? newHeading.trueHeading : newHeading.magneticHeading
         NSNotificationCenter.defaultCenter().postNotificationName("headingUpdated", object: currentLocation)
     }
 
@@ -89,12 +84,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         motionManager.deviceMotionUpdateInterval = 0.02; // 50 Hz
         if motionManager.deviceMotionAvailable {
             //motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrameXArbitraryZVertical)
-            motionManager.startDeviceMotionUpdatesToQueue(NSOperationQueue.mainQueue(), withHandler: { (data: CMDeviceMotion!, error: NSError!) -> Void in
+            motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrameXArbitraryCorrectedZVertical, toQueue: NSOperationQueue.mainQueue(), withHandler: { (data: CMDeviceMotion!, error: NSError!) -> Void in
+                let q = data.attitude.quaternion
 
                 self.currentPitch = { () -> Double in
+                    let num: Double = (2 * q.x * q.w) - (2 * q.y * q.z)
+                    let den: Double = 1 - (2 * q.x * q.x) - (2 * q.z * q.z)
+                    return abs(atan2(num, den)) - M_PI_2
+                }()
+
+                self.currentRoll = { () -> Double in
+                    let num: Double = (2 * q.y * q.w) - (2 * q.x * q.z)
+                    let den: Double = 1 - (2 * q.x * q.x) - (2 * q.z * q.z)
+                    return atan2(num, den)
+                }()
+
+                self.currentYaw = { () -> Double in
+                    return asin((2 * q.x * q.y) + (2 * q.z * q.w))
+                }()
+
+                //self.currentPitch = data.attitude.pitch
+                //self.currentRoll = data.attitude.roll
+                //self.currentYaw = data.attitude.yaw
+
+                /*
+                self.currentPitch = { () -> Double? in
                     switch UIDevice.currentDevice().orientation {
                     case UIDeviceOrientation.Portrait:
-                        return data.attitude.pitch
+                        return data.attitude.pitch - M_PI/2
                     case UIDeviceOrientation.PortraitUpsideDown:
                         return -data.attitude.pitch
                     case UIDeviceOrientation.LandscapeLeft:
@@ -102,10 +119,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                     case UIDeviceOrientation.LandscapeRight:
                         return -data.attitude.roll
                     default:
-                        fatalError("Unknown device orientation")
+                        return nil
                     }
-                }()
+                }()*/
                 NSNotificationCenter.defaultCenter().postNotificationName("pitchUpdated", object: self.currentPitch)
+                NSNotificationCenter.defaultCenter().postNotificationName("yawUpdated", object: self.currentYaw)
+                NSNotificationCenter.defaultCenter().postNotificationName("rollUpdated", object: self.currentRoll)
             })
         }
     }
