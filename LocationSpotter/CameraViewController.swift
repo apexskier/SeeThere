@@ -219,15 +219,15 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     lazy private var height: Double = {
         return Double(self.screenRect.size.height)
     }()
-    lazy private var fovHorizontal: Double = {
-        return Double(self.camera.activeFormat.videoFieldOfView)
-    }()
     lazy private var fovVertical: Double = {
-        return (self.width / self.height) * self.fovHorizontal
+        return radians(Double(self.camera.activeFormat.videoFieldOfView))
+    }()
+    lazy private var fovHorizontal: Double = {
+        return radians((self.width / self.height) * self.fovVertical)
     }()
 
     func getPitch(pointY: Double) -> Double {
-        let a = (height / 2) / tan(radians(fovVertical / 2))
+        let a = (height / 2) / tan(fovVertical / 2)
 
         let offset = height/2 - pointY
         let offsetAngle = atan2(offset, a)
@@ -236,7 +236,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     func getDirection(pointX: Double) -> CLLocationDirection {
-        let a = (width / 2) / tan(radians(fovHorizontal / 2))
+        let a = (width / 2) / tan(fovHorizontal / 2)
 
         let offset = pointX - width/2
         let offsetAngle = atan2(offset, a)
