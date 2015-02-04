@@ -60,7 +60,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
 
             // Apple Maps Action
-            let appleMapsAction = UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+            let appleMapsAction = UIAlertAction(title: NSLocalizedString("OpenMaps", comment: "open in apple maps app"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 let placemark = MKPlacemark(coordinate: self.spottedLocation!.coordinate, addressDictionary: nil)
                 let mapItem = MKMapItem(placemark: placemark)
                 mapItem.name = "Location Spotted \(self.spottedLocation!.timestamp)"
@@ -70,7 +70,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
             // Google Maps action
             if UIApplication.sharedApplication().canOpenURL(NSURL(string: "comgooglemaps://")!) {
-                let action = UIAlertAction(title: "Open in Google Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+                let action = UIAlertAction(title: NSLocalizedString("OpenGoogleMaps", comment: "open in google maps app"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                     let str = "comgooglemaps://?q=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)&center=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)"
                     UIApplication.sharedApplication().openURL(NSURL(string: str)!)
                 })
@@ -78,7 +78,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
 
             // Share url action
-            let shareLinkAction = UIAlertAction(title: "Share Link", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+            let shareLinkAction = UIAlertAction(title: NSLocalizedString("ShareLink", comment: "open in google maps app"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 let locURL = NSURL(string: "http://maps.apple.com/?ll=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)")!
                 let sheet = UIActivityViewController(activityItems: [locURL], applicationActivities: nil)
                 sheet.excludedActivityTypes =
@@ -94,7 +94,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             actionSheet.addAction(shareLinkAction)
 
             // Share text action
-            let shareTextAction = UIAlertAction(title: "Share Latitude and Longitude", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+            let shareTextAction = UIAlertAction(title: NSLocalizedString("ShareLatLng", comment: "share latitude and longitude"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 let locString = "\(self.spottedLocation!.coordinate.latitude), \(self.spottedLocation!.coordinate.longitude)"
                 let sheet = UIActivityViewController(activityItems: [locString], applicationActivities: nil)
                 sheet.excludedActivityTypes =
@@ -110,7 +110,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             actionSheet.addAction(shareTextAction)
 
             // Share GPX action
-            let shareGPXAction = UIAlertAction(title: "GPX File", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+            let shareGPXAction = UIAlertAction(title: NSLocalizedString("GPXFile", comment: "a gpx file"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 let actpro = GPXFileActivityProvider(location: self.spottedLocation!)
                 let share = self.toolbarItems![1] as UIBarButtonItem
                 let activity = OpenInActivity(url: actpro.fileURL, barItem: share)
@@ -129,7 +129,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             actionSheet.addAction(shareGPXAction)
 
             // Share VCard action
-            let shareVCardAction = UIAlertAction(title: "VCard", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+            let shareVCardAction = UIAlertAction(title: NSLocalizedString("VCard", comment: "a v card with contact information"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 // Generate VCard with location as home
                 let rootPlacemark = placemarks[0] as CLPlacemark
                 let evolvedPlacemark = MKPlacemark(placemark: rootPlacemark)
@@ -161,15 +161,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                             UIActivityTypePostToTencentWeibo]
                     self.presentViewController(sheet, animated: true, completion: nil)
                 } else {
-                    let alert = UIAlertController(title: "Failed", message: "Couldn't generate VCard.", preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
+                    let alert = UIAlertController(title: NSLocalizedString("Failed", comment: "failed"), message: NSLocalizedString("FailedVCardMessage", comment: "failed to generate vcard"), preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: nil))
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
             })
             actionSheet.addAction(shareVCardAction)
 
             // Cancel action
-            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+            let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "cancel"), style: UIAlertActionStyle.Cancel, handler: nil)
             actionSheet.addAction(cancelAction)
             
             self.presentViewController(actionSheet, animated: true, completion: nil)

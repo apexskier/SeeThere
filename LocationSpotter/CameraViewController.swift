@@ -28,9 +28,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     func sayReady() {
         if ready {
-            textField.text = "Ready!"
+            textField.text = NSLocalizedString("Ready", comment: "text when ready to go")
         } else {
-            textField.text = "Getting Ready"
+            textField.text = NSLocalizedString("GettingReady", comment: "text when waiting for something to be ready")
         }
     }
 
@@ -173,7 +173,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         if ready {
             cancelObservers()
             var tapLocation = sender.locationInView(self.view)
-            textField.text = "Looking..."
+            textField.text = NSLocalizedString("Looking", comment: "looking for location")
             activityIndicator.startAnimating()
             working = true
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
@@ -184,7 +184,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                 dispatch_async(dispatch_get_main_queue(), {
                     if self.spottedLocation != nil {
                         self.mapViewController.spottedLocation = self.spottedLocation
-                        self.textField.text = "Found!"
+                        self.textField.text = NSLocalizedString("Found", comment: "found a location")
                         self.activityIndicator.stopAnimating()
                         self.presentViewController(self.mapViewNavController, animated: true, completion: {
                             self.setUpObservers()
@@ -192,10 +192,10 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                             self.sayReady()
                         })
                     } else {
-                        self.textField.text = "Failed!"
+                        self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
                         self.activityIndicator.stopAnimating()
-                        let alert = UIAlertController(title: "Failed!", message: "Couldn't spot a location.", preferredStyle: UIAlertControllerStyle.Alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
+                        let alert = UIAlertController(title:  NSLocalizedString("Failed", comment: "failed"), message:  NSLocalizedString("FailedLocationMessage", comment: "failed to find a location"), preferredStyle: UIAlertControllerStyle.Alert)
+                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: nil))
                         self.presentViewController(alert, animated: true, completion: {
                             self.setUpObservers()
                             self.working = false

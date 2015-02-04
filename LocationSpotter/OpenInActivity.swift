@@ -26,7 +26,7 @@ class OpenInActivity: UIActivity {
     }
 
     override func activityTitle() -> String? {
-        return "Open File in App"
+        return NSLocalizedString("OpenInApp", comment: "open file in app")
     }
 
     override func activityImage() -> UIImage? {

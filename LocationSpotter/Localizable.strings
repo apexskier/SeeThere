@@ -1,0 +1,29 @@
+/* 
+  Localizable.strings
+  LocationSpotter
+
+  Created by Cameron Little on 2/3/15.
+  Copyright (c) 2015 Cameron Little. All rights reserved.
+*/
+
+// Text
+"Ready" = "Ready!";
+"GettingReady" = "Getting Ready";
+"Looking" = "Looking...";
+"Found" = "Found!";
+"Failed" = "Failed";
+"OK" = "OK";
+"Cancel" = "Cancel";
+
+// Messages
+"FailedLocationMessage" = "Failed to find a location.";
+"FailedVCardMessage" = "Failed to generate VCard.";
+
+// Actions
+"OpenMaps" = "Open in Maps";
+"OpenGoogleMaps" = "Open in Google Maps";
+"ShareLink" = "Share Link";
+"ShareLatLng" = "Share Latitude and Longitude";
+"GPXFile" = "GPX File";
+"VCard" = "VCard";
+"OpenInApp" = "Open File in App";
