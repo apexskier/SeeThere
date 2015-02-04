@@ -24,7 +24,6 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var rollText: UITextField!
     @IBOutlet weak var headingText: UITextField!
 
-    private let device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
     private var spottedLocation: CLLocation?
 
     func sayReady() {
@@ -54,28 +53,35 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     var observers: [AnyObject] = []
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // set up video capturing
+    private let camera = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+    private lazy var cameraSession: AVCaptureSession = {
         let session = AVCaptureSession()
         session.sessionPreset = AVCaptureSessionPresetHigh
         var error: NSError?
-        let input: AVCaptureDeviceInput? = AVCaptureDeviceInput.deviceInputWithDevice(device, error: &error) as? AVCaptureDeviceInput
+        let input: AVCaptureDeviceInput? = AVCaptureDeviceInput.deviceInputWithDevice(self.camera, error: &error) as? AVCaptureDeviceInput
         if input == nil {
-            println("Couldn't set up camera")
-        } else {
-            // add video into main view
-            session.addInput(input!)
-            var previewLayer = AVCaptureVideoPreviewLayer.layerWithSession(session) as AVCaptureVideoPreviewLayer
-            previewLayer.frame = mainView.bounds
-            mainView.layer.insertSublayer(previewLayer, atIndex: 0)
-            session.startRunning()
-            cameraReady = true
+            fatalError("Couldn't set up camera")
         }
+        session.addInput(input!)
 
-        self.setUpObservers()
-        self.sayReady()
+        return session
+    }()
+    private lazy var cameraPreview: AVCaptureVideoPreviewLayer = {
+        var layer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as AVCaptureVideoPreviewLayer
+        layer.frame = self.mainView.bounds
+        self.mainView.layer.insertSublayer(layer, atIndex: 0)
+        return layer
+    }()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        cameraPreview.connection.videoScaleAndCropFactor = 1
+        cameraSession.startRunning()
+        cameraReady = true
+
+        setUpObservers()
+        sayReady()
     }
 
     func setUpObservers() {
@@ -148,6 +154,14 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 
+    @IBAction func pinchGestureAction(gesture: UIPinchGestureRecognizer) {
+        if gesture.state == UIGestureRecognizerState.Changed {
+            let lowerBound = max(1.0, gesture.scale * cameraPreview.connection.videoScaleAndCropFactor)
+            let upperBound = min(lowerBound, cameraPreview.connection.videoMaxScaleAndCropFactor)
+            cameraPreview.connection.videoScaleAndCropFactor = upperBound
+        }
+    }
+
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
             cancelObservers()
@@ -192,12 +206,12 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         return Double(self.screenRect.size.height)
     }()
     lazy private var fovHorizontal: Double = {
-        if self.device == nil {
+        if self.camera == nil {
             self.cancelObservers()
             self.textField.text = "No camera found"
             return 0
         }
-        return Double(self.device.activeFormat.videoFieldOfView)
+        return Double(self.camera.activeFormat.videoFieldOfView)
     }()
     lazy private var fovVertical: Double = {
         return (self.width / self.height) * self.fovHorizontal

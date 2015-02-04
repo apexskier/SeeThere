@@ -83,6 +83,7 @@
                         </variation>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="yee-C7-yCv" appends="YES" id="7bv-7V-n4P"/>
+                            <outletCollection property="gestureRecognizers" destination="gkP-N6-Rcu" appends="YES" id="bDC-kw-yzt"/>
                         </connections>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
@@ -104,6 +105,11 @@
                         <outlet property="delegate" destination="8bC-Xf-vdC" id="yny-oa-CdD"/>
                     </connections>
                 </tapGestureRecognizer>
+                <pinchGestureRecognizer id="gkP-N6-Rcu">
+                    <connections>
+                        <action selector="pinchGestureAction:" destination="BYZ-38-t0r" id="9mY-Ck-EBz"/>
+                    </connections>
+                </pinchGestureRecognizer>
             </objects>
         </scene>
         <!--Map View Controller-->
