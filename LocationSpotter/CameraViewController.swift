@@ -44,23 +44,30 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     var ready: Bool {
         get {
             let r = locationReady && headingReady && pitchReady && cameraReady && !working
-            if r {
-                activityIndicator.stopAnimating()
-            }
             return r
         }
     }
 
     var observers: [AnyObject] = []
 
-    private let camera = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+    private let camera: AVCaptureDevice = {
+        let c = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+        var error: NSError?
+        c.lockForConfiguration(&error)
+        if error != nil {
+            fatalError("Couldn't lock to set up camera")
+        }
+        c.focusMode = AVCaptureFocusMode.Locked
+        c.unlockForConfiguration()
+        return c
+    }()
     private lazy var cameraSession: AVCaptureSession = {
         let session = AVCaptureSession()
         session.sessionPreset = AVCaptureSessionPresetHigh
         var error: NSError?
         let input: AVCaptureDeviceInput? = AVCaptureDeviceInput.deviceInputWithDevice(self.camera, error: &error) as? AVCaptureDeviceInput
         if input == nil {
-            fatalError("Couldn't set up camera")
+            fatalError("Couldn't set up camera capture")
         }
         session.addInput(input!)
 
@@ -174,26 +181,28 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.getDirection(Double(tapLocation.y)),
                     self.getPitch(Double(tapLocation.x)))
 
-                if self.spottedLocation != nil {
-                    self.mapViewController.spottedLocation = self.spottedLocation
-                    self.textField.text = "Found!"
-                    self.activityIndicator.stopAnimating()
-                    self.sayReady()
-                    self.presentViewController(self.mapViewNavController, animated: true, completion: {
-                        self.setUpObservers()
-                        self.working = false
-                    })
-                } else {
-                    self.textField.text = "Failed!"
-                    let alert = UIAlertController(title: "Failed", message: "Couldn't spot a location.", preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
-                    self.activityIndicator.stopAnimating()
-                    self.sayReady()
-                    self.presentViewController(alert, animated: true, completion: {
-                        self.setUpObservers()
-                        self.working = false
-                    })
-                }
+                dispatch_async(dispatch_get_main_queue(), {
+                    if self.spottedLocation != nil {
+                        self.mapViewController.spottedLocation = self.spottedLocation
+                        self.textField.text = "Found!"
+                        self.activityIndicator.stopAnimating()
+                        self.presentViewController(self.mapViewNavController, animated: true, completion: {
+                            self.setUpObservers()
+                            self.working = false
+                            self.sayReady()
+                        })
+                    } else {
+                        self.textField.text = "Failed!"
+                        self.activityIndicator.stopAnimating()
+                        let alert = UIAlertController(title: "Failed!", message: "Couldn't spot a location.", preferredStyle: UIAlertControllerStyle.Alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
+                        self.presentViewController(alert, animated: true, completion: {
+                            self.setUpObservers()
+                            self.working = false
+                            self.sayReady()
+                        })
+                    }
+                })
             })
         }
     }
@@ -206,11 +215,6 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         return Double(self.screenRect.size.height)
     }()
     lazy private var fovHorizontal: Double = {
-        if self.camera == nil {
-            self.cancelObservers()
-            self.textField.text = "No camera found"
-            return 0
-        }
         return Double(self.camera.activeFormat.videoFieldOfView)
     }()
     lazy private var fovVertical: Double = {

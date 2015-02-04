@@ -18,10 +18,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
     var spottedLocation: CLLocation?
 
+    var locPin = MKPointAnnotation()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         mapView.delegate = self
+        mapView.addAnnotation(locPin)
+
+        mapView.mapType = MKMapType.Hybrid
+        switchMapStyle()
     }
 
     func switchMapStyle() {
@@ -172,16 +178,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     override func viewDidAppear(animated: Bool) {
         if spottedLocation == nil {
-            return
+            fatalError("Showing map view without a location.")
         }
 
-        let locPin = MKPointAnnotation()
         locPin.setCoordinate(spottedLocation!.coordinate)
-        locPin.title = spottedLocation!.timestamp.description
-        mapView.addAnnotation(locPin)
-
-        mapView.mapType = MKMapType.Hybrid
-        switchMapStyle()
+        locPin.title = spottedLocation!.description
     }
 
     override func didReceiveMemoryWarning() {
