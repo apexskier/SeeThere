@@ -84,5 +84,15 @@ class LocationSpotterTests: XCTestCase {
         XCTAssertEqualWithAccuracy(newLoc.coordinate.latitude, 48.7250195443385, epsilon, "latitude not accurate")
         XCTAssertEqualWithAccuracy(newLoc.coordinate.longitude, -122.489892534681, epsilon, "longitude not accurate")
     }
+
+    /*func testPitchAdj() {
+        let ad = AppDelegate()
+        ad.currentPitch = 0
+        let cvc = CameraViewController()
+        cvc.appDelegate = ad
+
+        XCTAssertGreaterThan(cvc.getPitch(0), 0, "positive offset")
+        XCTAssertLessThan(cvc.getPitch(1000), 0, "negative offset")
+    }*/
     
 }

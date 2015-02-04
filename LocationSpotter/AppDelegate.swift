@@ -77,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if CLLocationManager.headingAvailable() {
             locationManager.startUpdatingHeading()
         } else {
-            println("Heading not available")
+            fatalError("Heading not available")
         }
 
         // start getting motion

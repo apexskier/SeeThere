@@ -184,8 +184,8 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             working = true
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
                 self.spottedLocation = walkOutFrom(self.appDelegate.currentLocation!,
-                    self.getDirection(Double(tapLocation.y)),
-                    self.getPitch(Double(tapLocation.x)))
+                    self.getDirection(Double(tapLocation.x)),
+                    self.getPitch(Double(tapLocation.y)))
 
                 dispatch_async(dispatch_get_main_queue(), {
                     if self.spottedLocation != nil {
@@ -229,7 +229,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     func getPitch(pointY: Double) -> Double {
         let a = (height / 2) / tan(radians(fovVertical / 2))
 
-        let offset = pointY - height/2
+        let offset = height/2 - pointY
         let offsetAngle = atan2(offset, a)
 
         return appDelegate.currentPitch! + offsetAngle
