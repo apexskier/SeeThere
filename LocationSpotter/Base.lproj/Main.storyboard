@@ -79,7 +79,6 @@
                                 <exclude reference="kPt-on-F4P"/>
                                 <exclude reference="gCe-ft-EZb"/>
                                 <exclude reference="sJN-kW-Tgs"/>
-                                <exclude reference="rjZ-dM-6gL"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="IIH-JG-YZx"/>
@@ -88,8 +87,6 @@
                                 <exclude reference="wjb-XP-kce"/>
                                 <exclude reference="65P-Wv-yea"/>
                                 <exclude reference="N2A-Ru-Pzf"/>
-                                <exclude reference="MSi-T8-P9G"/>
-                                <exclude reference="PrX-2m-EBY"/>
                             </mask>
                         </variation>
                         <connections>

@@ -34,7 +34,10 @@
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+        <string>armv7</string>
+        <string>location-services</string>
+        <string>magnetometer</string>
+        <string>gps</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -44,27 +47,27 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-    <key>UTImportedTypeDeclarations</key>
-    <array>
-        <dict>
-            <key>UTTypeIdentifier</key>
-            <string>com.topografix.gpx</string>
-            <key>UTTypeReferenceURL</key>
-            <string>http://www.topografix.com/GPX/1/1</string>
-            <key>UTTypeDescription</key>
-            <string>GPS Exchange Format (GPX)</string>
-            <key>UTTypeConformsTo</key>
-            <array>
-                <string>public.xml</string>
-            </array>
-            <key>UTTypeTagSpecification</key>
-            <dict>
-                <key>public.filename-extension</key>
-                <string>gpx</string>
-                <key>public.mime-type</key>
-                <string>application/gpx+xml</string>
-            </dict>
-        </dict>   
-    </array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.topografix.gpx</string>
+			<key>UTTypeReferenceURL</key>
+			<string>http://www.topografix.com/GPX/1/1</string>
+			<key>UTTypeDescription</key>
+			<string>GPS Exchange Format (GPX)</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.xml</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<string>gpx</string>
+				<key>public.mime-type</key>
+				<string>application/gpx+xml</string>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>
