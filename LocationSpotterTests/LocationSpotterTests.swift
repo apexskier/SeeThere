@@ -14,6 +14,8 @@ import CoreMotion
 import LocationSpotter
 
 class LocationSpotterTests: XCTestCase {
+
+    private let epsilon = 0.0000001
     
     override func setUp() {
         super.setUp()
@@ -36,10 +38,10 @@ class LocationSpotterTests: XCTestCase {
     }*/
 
     func testRadiansDegrees() {
-        XCTAssertEqualWithAccuracy(radians(180), M_PI, 0.000001, "180 degrees doesn't equal pi radians")
-        XCTAssertEqualWithAccuracy(radians(75), (5*M_PI)/12, 0.000001, "radians failed")
-        XCTAssertEqualWithAccuracy(degrees(M_PI), 180, 0.000001, "180 degrees doesn't equal pi radians")
-        XCTAssertEqualWithAccuracy(degrees((5*M_PI)/12), 75, 0.000001, "degrees failed")
+        XCTAssertEqualWithAccuracy(radians(180), M_PI, epsilon, "180 degrees doesn't equal pi radians")
+        XCTAssertEqualWithAccuracy(radians(75), (5*M_PI)/12, epsilon, "radians failed")
+        XCTAssertEqualWithAccuracy(degrees(M_PI), 180, epsilon, "180 degrees doesn't equal pi radians")
+        XCTAssertEqualWithAccuracy(degrees((5*M_PI)/12), 75, epsilon, "degrees failed")
     }
     
     func testInvalidElevationQuery() {
@@ -57,7 +59,7 @@ class LocationSpotterTests: XCTestCase {
         let lng = -122.489905
         let pos = CLLocationCoordinate2D(latitude: lat, longitude: lng)
         
-        XCTAssertEqualWithAccuracy(estimateElevation(400, 400, 0.1), 440.13386883418, 0.00001, "estimated elevation not accurate")
+        XCTAssertEqualWithAccuracy(estimateElevation(400, 400, 0.1), 440.13386883418, epsilon, "estimated elevation not accurate")
     }
     
     func testGetElevationAt() {
@@ -79,8 +81,8 @@ class LocationSpotterTests: XCTestCase {
         
         let newLoc = newLocation(pos, 250, radians(12))
         
-        XCTAssertEqualWithAccuracy(newLoc.coordinate.latitude, 48.7249703989242, 0.00001, "latitude not accurate")
-        XCTAssertEqualWithAccuracy(newLoc.coordinate.longitude, -122.489195998955, 0.00001, "longitude not accurate")
+        XCTAssertEqualWithAccuracy(newLoc.coordinate.latitude, 48.7250195443385, epsilon, "latitude not accurate")
+        XCTAssertEqualWithAccuracy(newLoc.coordinate.longitude, -122.489892534681, epsilon, "longitude not accurate")
     }
     
 }

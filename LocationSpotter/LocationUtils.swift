@@ -9,10 +9,11 @@
 import Foundation
 import CoreLocation
 
-private let HEIGHT_TOLERANCE: Double = 10
+private let HEIGHT_TOLERANCE: Double = -10
 private let MAX_DISTANCE: Double = 20000
 private let MIN_DISTANCE: Double = 20
 private let DISTANCE_STEP: Double = 10
+private let SLOPE_FACTOR: Double = 0.02
 
 func radians(degrees: Double) -> Double {
     return degrees * (M_PI / 180)
@@ -123,10 +124,18 @@ func newLocation(start: CLLocation, distance: CLLocationDistance, direction: CLL
 func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double) -> CLLocation? {
     var distance = 1000.0
     var from = newLocation(start, MIN_DISTANCE, direction)
-    println("starting at elevation \(start.altitude)")
-    let adjAlt = start.altitude + start.verticalAccuracy
-    
-    while (distance < MAX_DISTANCE) {
+    println("starting at elevation \(start.altitude), with \(degrees(pitch))")
+    let adjAlt = start.altitude + abs(start.verticalAccuracy) // should be positive, but I'll check anyway
+
+    let flat = abs(pitch) < radians(10)
+
+    var lastElev: CLLocationDistance = start.altitude
+
+    func softenPitch(x: Double) -> Double {
+        return (-1/x) + 1
+    }
+
+    while distance < MAX_DISTANCE {
         // fetch a set of points
         let to = newLocation(start, distance, direction)
         
@@ -135,15 +144,37 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
             fatalError("Failed to get elevation path")
             return nil
         }
+
+        var gradient: Double = 0
         
         for loc in pathLocs {
-            let estimate = estimateElevation(loc.distanceFromLocation(start), adjAlt, pitch)
+            let softened = softenPitch(distance) * pitch
+            let estimate = estimateElevation(loc.distanceFromLocation(start), adjAlt, softened)
             let actual = loc.altitude
-            println("\(loc.distanceFromLocation(start)): \(estimate)/\(actual)")
+            let diff = estimate - actual
 
-            if (estimate < actual) {
+            println("distance: \(loc.distanceFromLocation(start))")
+            println(" estimate: \(estimate), actual: \(actual), diff: \(diff)")
+
+            if flat { // don't calculate unless flat
+                // NOTE: this slope's run may not be accurate
+                gradient = (actual - lastElev) / DISTANCE_STEP
+                println(" gradient: \(gradient)")
+            }
+
+            /* the flatness logic
+             * Say you're looking at something in the distance, and you're on flat ground. 
+             * There will be false intersections with the ground due to inaccuracies in
+             * elevation data. So, when looking along a relatively flat line, we wait until
+             * intersecting with a steepish slope, or something like a hill in the distance
+             * that's obvious.
+             */
+            if ((!flat) || (flat && ((gradient > SLOPE_FACTOR) || (diff < (4*HEIGHT_TOLERANCE))))) &&
+                (diff < HEIGHT_TOLERANCE) {
                 return loc
             }
+
+            lastElev = actual
         }
         
         distance += 1000

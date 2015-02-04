@@ -29,8 +29,10 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     func sayReady() {
         if ready {
             textField.text = NSLocalizedString("Ready", comment: "text when ready to go")
+            activityIndicator.stopAnimating()
         } else {
             textField.text = NSLocalizedString("GettingReady", comment: "text when waiting for something to be ready")
+            activityIndicator.startAnimating()
         }
     }
 
@@ -93,7 +95,11 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     func setUpObservers() {
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("locationUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
-            self.locationReady = self.appDelegate.currentLocation != nil
+            self.locationReady = (self.appDelegate.currentLocation != nil) &&
+                (self.appDelegate.currentLocation!.horizontalAccuracy > 0) &&
+                (self.appDelegate.currentLocation!.horizontalAccuracy < 60) &&
+                (self.appDelegate.currentLocation!.verticalAccuracy > 0) &&
+                (self.appDelegate.currentLocation!.verticalAccuracy < 40)
             self.sayReady()
         }))
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("headingUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
@@ -185,8 +191,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                     if self.spottedLocation != nil {
                         self.mapViewController.spottedLocation = self.spottedLocation
                         self.textField.text = NSLocalizedString("Found", comment: "found a location")
-                        self.activityIndicator.stopAnimating()
-                        self.presentViewController(self.mapViewNavController, animated: true, completion: {
+                              self.presentViewController(self.mapViewNavController, animated: true, completion: {
                             self.setUpObservers()
                             self.working = false
                             self.sayReady()

@@ -25,33 +25,44 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
         mapView.delegate = self
         mapView.addAnnotation(locPin)
-
-        mapView.mapType = MKMapType.Hybrid
-        switchMapStyle()
     }
 
-    func switchMapStyle() {
+    func switchMapStyle(animated: Bool) {
         if mapView.mapType == MKMapType.Standard {
-            mapView.mapType = MKMapType.Hybrid
-
-            let aLoc = appDelegate.currentLocation!.coordinate
-            let bLoc = spottedLocation!.coordinate
-
-            let sw = CLLocation(latitude: min(aLoc.latitude, bLoc.latitude), longitude: min(aLoc.longitude, bLoc.longitude))
-            let ne = CLLocation(latitude: max(aLoc.latitude, bLoc.latitude), longitude: max(aLoc.longitude, bLoc.longitude))
-            let dist = sw.distanceFromLocation(ne)
-
-            let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: (sw.coordinate.latitude + ne.coordinate.latitude) / 2, longitude: (sw.coordinate.longitude + ne.coordinate.longitude) / 2), span: MKCoordinateSpan(latitudeDelta: dist / 111319.5, longitudeDelta: 0))
-
-            mapView.setRegion(mapView.regionThatFits(region), animated: true)
+            setMapSat(animated)
         } else {
-            if mapView.pitchEnabled {
-                var eye: CLLocationCoordinate2D = appDelegate.currentLocation!.coordinate
-                var alt: CLLocationDistance = appDelegate.currentLocation!.altitude
-                var camera = MKMapCamera(lookingAtCenterCoordinate: spottedLocation!.coordinate, fromEyeCoordinate: eye, eyeAltitude: 1)
-                mapView.camera = camera
-            }
+            setMapStandard(animated)
         }
+    }
+
+    func setMapSat(animated: Bool) {
+        mapView.mapType = MKMapType.Hybrid
+        setMapRegion(animated)
+    }
+
+    func setMapStandard(animated: Bool) {
+        mapView.mapType = MKMapType.Standard
+        if mapView.pitchEnabled {
+            var eye: CLLocationCoordinate2D = appDelegate.currentLocation!.coordinate
+            var alt: CLLocationDistance = appDelegate.currentLocation!.altitude
+            var camera = MKMapCamera(lookingAtCenterCoordinate: spottedLocation!.coordinate, fromEyeCoordinate: eye, eyeAltitude: 1)
+            mapView.camera = camera
+        } else {
+            setMapRegion(animated)
+        }
+    }
+
+    func setMapRegion(animated: Bool) {
+        let aLoc = appDelegate.currentLocation!.coordinate
+        let bLoc = spottedLocation!.coordinate
+
+        let sw = CLLocation(latitude: min(aLoc.latitude, bLoc.latitude), longitude: min(aLoc.longitude, bLoc.longitude))
+        let ne = CLLocation(latitude: max(aLoc.latitude, bLoc.latitude), longitude: max(aLoc.longitude, bLoc.longitude))
+        let dist = sw.distanceFromLocation(ne)
+
+        let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: (sw.coordinate.latitude + ne.coordinate.latitude) / 2, longitude: (sw.coordinate.longitude + ne.coordinate.longitude) / 2), span: MKCoordinateSpan(latitudeDelta: dist / 111319.5, longitudeDelta: 0))
+
+        mapView.setRegion(mapView.regionThatFits(region), animated: animated)
     }
 
     func actionLocation() {
@@ -176,13 +187,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         })
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewWillAppear(animated: Bool) {
         if spottedLocation == nil {
             fatalError("Showing map view without a location.")
         }
 
         locPin.setCoordinate(spottedLocation!.coordinate)
         locPin.title = spottedLocation!.description
+
+        mapView.mapType = MKMapType.Hybrid
+        setMapRegion(false)
+    }
+
+    override func viewDidAppear(animated: Bool) {
     }
 
     override func didReceiveMemoryWarning() {
