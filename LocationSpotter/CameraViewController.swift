@@ -12,7 +12,6 @@ import CoreLocation
 import CoreMotion
 import Social
 import MapKit
-import AddressBookUI
 
 class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
@@ -131,10 +130,12 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let m = storyboard.instantiateViewControllerWithIdentifier("mapViewControllerID") as MapViewController
         let done = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "closeMap")
-        let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: self, action: "actionLocation")
-        let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: self, action: nil)
+        let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: m, action: "actionLocation")
+        let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        let switchMap = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.PageCurl, target: m, action: "switchMapStyle")
+
         m.navigationItem.leftBarButtonItem = done
-        m.toolbarItems = [flex, share, flex]
+        m.toolbarItems = [flex, share, flex, switchMap]
         return m
     }()
     lazy var mapViewNavController: UINavigationController = {
@@ -145,126 +146,6 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     func closeMap() {
         self.dismissViewControllerAnimated(true, completion: nil)
-    }
-
-    func actionLocation() {
-        let geoCoder = CLGeocoder()
-        geoCoder.reverseGeocodeLocation(spottedLocation, completionHandler: { (placemarks: [AnyObject]!, error: NSError!) in
-            let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
-
-            // Apple Maps Action
-            let appleMapsAction = UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                let locURL = NSURL(string: "http://maps.apple.com/?ll=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)")!
-                UIApplication.sharedApplication().openURL(locURL)
-            })
-            actionSheet.addAction(appleMapsAction)
-
-            // Google Maps action
-            if UIApplication.sharedApplication().canOpenURL(NSURL(string: "comgooglemaps://")!) {
-                let action = UIAlertAction(title: "Open in Google Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                    let str = "comgooglemaps://?center=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)"
-                    UIApplication.sharedApplication().openURL(NSURL(string: str)!)
-                })
-                actionSheet.addAction(action)
-            }
-
-            // Share url action
-            let shareLinkAction = UIAlertAction(title: "Share Link", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                let locURL = NSURL(string: "http://maps.apple.com/?ll=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)")!
-                let sheet = UIActivityViewController(activityItems: [locURL], applicationActivities: nil)
-                sheet.excludedActivityTypes =
-                    [UIActivityTypePostToWeibo,
-                        UIActivityTypePrint,
-                        UIActivityTypeSaveToCameraRoll,
-                        UIActivityTypeAddToReadingList,
-                        UIActivityTypePostToFlickr,
-                        UIActivityTypePostToVimeo,
-                        UIActivityTypePostToTencentWeibo]
-                self.mapViewController.presentViewController(sheet, animated: true, completion: nil)
-            })
-            actionSheet.addAction(shareLinkAction)
-
-            // Share text action
-            let shareTextAction = UIAlertAction(title: "Share Latitude and Longitude", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                let locString = "\(self.spottedLocation!.coordinate.latitude), \(self.spottedLocation!.coordinate.longitude)"
-                let sheet = UIActivityViewController(activityItems: [locString], applicationActivities: nil)
-                sheet.excludedActivityTypes =
-                    [UIActivityTypePostToWeibo,
-                        UIActivityTypePrint,
-                        UIActivityTypeSaveToCameraRoll,
-                        UIActivityTypeAddToReadingList,
-                        UIActivityTypePostToFlickr,
-                        UIActivityTypePostToVimeo,
-                        UIActivityTypePostToTencentWeibo]
-                self.mapViewController.presentViewController(sheet, animated: true, completion: nil)
-            })
-            actionSheet.addAction(shareTextAction)
-
-            // Share GPX action
-            let shareGPXAction = UIAlertAction(title: "GPX File", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                let actpro = GPXFileActivityProvider(location: self.spottedLocation!)
-                let share = self.mapViewController.toolbarItems![1] as UIBarButtonItem
-                let activity = OpenInActivity(url: actpro.fileURL, barItem: share)
-
-                let sheet = UIActivityViewController(activityItems: [actpro], applicationActivities: [activity])
-                sheet.excludedActivityTypes =
-                    [UIActivityTypePostToWeibo,
-                        UIActivityTypePrint,
-                        UIActivityTypeSaveToCameraRoll,
-                        UIActivityTypeAddToReadingList,
-                        UIActivityTypePostToFlickr,
-                        UIActivityTypePostToVimeo,
-                        UIActivityTypePostToTencentWeibo]
-                self.mapViewController.presentViewController(sheet, animated: true, completion: nil)
-            })
-            actionSheet.addAction(shareGPXAction)
-
-            // Share VCard action
-            let shareVCardAction = UIAlertAction(title: "VCard", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                // Generate VCard with location as home
-                let rootPlacemark = placemarks[0] as CLPlacemark
-                let evolvedPlacemark = MKPlacemark(placemark: rootPlacemark)
-
-                let persona: ABRecord = ABPersonCreate().takeUnretainedValue()
-                ABRecordSetValue(persona, kABPersonFirstNameProperty, evolvedPlacemark.name, nil)
-                let multiHome: ABMutableMultiValue = ABMultiValueCreateMutable(UInt32(kABMultiDictionaryPropertyType)).takeUnretainedValue()
-
-                let didAddHome = ABMultiValueAddValueAndLabel(multiHome, evolvedPlacemark.addressDictionary, kABHomeLabel, nil)
-
-                if didAddHome {
-                    ABRecordSetValue(persona, kABPersonAddressProperty, multiHome, nil)
-                    let vcards = ABPersonCreateVCardRepresentationWithPeople([persona]).takeUnretainedValue()
-                    let vcardString = NSString(data: vcards, encoding: NSASCIIStringEncoding)
-                    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
-                    var error: NSError?
-                    let filePath = documentsDirectory.stringByAppendingPathComponent("pin.loc.vcf")
-                    vcardString?.writeToFile(filePath, atomically: true, encoding: NSUTF8StringEncoding, error: &error)
-                    let fileURL = NSURL(fileURLWithPath: filePath)!
-
-                    let sheet = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
-                    sheet.excludedActivityTypes =
-                        [UIActivityTypePostToWeibo,
-                            UIActivityTypePrint,
-                            UIActivityTypeSaveToCameraRoll,
-                            UIActivityTypeAddToReadingList,
-                            UIActivityTypePostToFlickr,
-                            UIActivityTypePostToVimeo,
-                            UIActivityTypePostToTencentWeibo]
-                    self.mapViewController.presentViewController(sheet, animated: true, completion: nil)
-                } else {
-                    let alert = UIAlertController(title: "Failed", message: "Couldn't generate VCard.", preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
-                    self.mapViewController.presentViewController(alert, animated: true, completion: nil)
-                }
-            })
-            actionSheet.addAction(shareVCardAction)
-
-            // Cancel action
-            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
-            actionSheet.addAction(cancelAction)
-
-            self.mapViewController.presentViewController(actionSheet, animated: true, completion: nil)
-        })
     }
 
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
@@ -280,12 +161,11 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.getPitch(Double(tapLocation.x)))
 
                 if self.spottedLocation != nil {
-                    self.mapViewController.locationSpotted = self.spottedLocation
+                    self.mapViewController.spottedLocation = self.spottedLocation
                     self.textField.text = "Found!"
-
+                    self.activityIndicator.stopAnimating()
+                    self.sayReady()
                     self.presentViewController(self.mapViewNavController, animated: true, completion: {
-                        self.activityIndicator.stopAnimating()
-                        self.sayReady()
                         self.setUpObservers()
                         self.working = false
                     })
@@ -293,9 +173,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.textField.text = "Failed!"
                     let alert = UIAlertController(title: "Failed", message: "Couldn't spot a location.", preferredStyle: UIAlertControllerStyle.Alert)
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil))
+                    self.activityIndicator.stopAnimating()
+                    self.sayReady()
                     self.presentViewController(alert, animated: true, completion: {
-                        self.activityIndicator.stopAnimating()
-                        self.sayReady()
                         self.setUpObservers()
                         self.working = false
                     })

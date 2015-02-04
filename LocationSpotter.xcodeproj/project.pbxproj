@@ -84,6 +84,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C57B50AB1A8190A200D477E1 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				C5D7CB1D1A817E9B00F5823F /* open-in-icon@2x.png */,
+				C5D7CB161A817A7400F5823F /* open-in-icon.png */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
 		C5FCB7521A7C750C00B6607A = {
 			isa = PBXGroup;
 			children = (
@@ -113,12 +122,11 @@
 				C5D7CB111A81707C00F5823F /* GPX.swift */,
 				C5D7CB141A81766E00F5823F /* OpenInActivity.swift */,
 				C5FCB7811A7D45B200B6607A /* LocationUtils.swift */,
-				C5D7CB1D1A817E9B00F5823F /* open-in-icon@2x.png */,
-				C5D7CB161A817A7400F5823F /* open-in-icon.png */,
 				C51C94171A80002800F5B49D /* Private.swift */,
 				C5FCB7641A7C750C00B6607A /* Main.storyboard */,
 				C5FCB7671A7C750C00B6607A /* Images.xcassets */,
 				C5FCB7691A7C750C00B6607A /* LaunchScreen.xib */,
+				C57B50AB1A8190A200D477E1 /* Icons */,
 				C5FCB75E1A7C750C00B6607A /* Supporting Files */,
 			);
 			path = LocationSpotter;
