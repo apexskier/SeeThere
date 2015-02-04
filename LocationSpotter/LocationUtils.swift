@@ -121,7 +121,7 @@ func newLocation(start: CLLocation, distance: CLLocationDistance, direction: CLL
     return CLLocation(latitude: degrees(finLat), longitude: degrees(finLng))
 }
 
-func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double) -> CLLocation? {
+func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double, operation: NSOperation) -> CLLocation? {
     var distance = 1000.0
     var from = newLocation(start, MIN_DISTANCE, direction)
     println("starting at elevation \(start.altitude), with \(degrees(pitch))")
@@ -146,6 +146,10 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
         }
 
         var gradient: Double = 0
+
+        if operation.cancelled {
+            return nil
+        }
         
         for loc in pathLocs {
             let softened = softenPitch(distance) * pitch

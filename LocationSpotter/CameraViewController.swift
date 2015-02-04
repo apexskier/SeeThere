@@ -29,11 +29,20 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     func sayReady() {
         if ready {
             textField.text = NSLocalizedString("Ready", comment: "text when ready to go")
-            activityIndicator.stopAnimating()
+            hideBlur()
         } else {
             textField.text = NSLocalizedString("GettingReady", comment: "text when waiting for something to be ready")
-            activityIndicator.startAnimating()
+            showBlur()
         }
+    }
+
+    func hideBlur() {
+        self.blurView.hidden = true
+        self.activityIndicator.stopAnimating()
+    }
+    func showBlur() {
+        self.blurView.hidden = false
+        self.activityIndicator.startAnimating()
     }
 
     var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
@@ -75,10 +84,16 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
         return session
     }()
+    private lazy var blurView: UIVisualEffectView = {
+        let v = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
+        v.frame = self.mainView.bounds
+        return v
+    }()
     private lazy var cameraPreview: AVCaptureVideoPreviewLayer = {
         var layer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as AVCaptureVideoPreviewLayer
         layer.frame = self.mainView.bounds
         self.mainView.layer.insertSublayer(layer, atIndex: 0)
+        self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
         return layer
     }()
 
@@ -88,6 +103,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         cameraPreview.connection.videoScaleAndCropFactor = 1
         cameraSession.startRunning()
         cameraReady = true
+        cancelButton.hidden = true
 
         setUpObservers()
         sayReady()
@@ -97,9 +113,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("locationUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
             self.locationReady = (self.appDelegate.currentLocation != nil) &&
                 (self.appDelegate.currentLocation!.horizontalAccuracy > 0) &&
-                (self.appDelegate.currentLocation!.horizontalAccuracy < 60) &&
-                (self.appDelegate.currentLocation!.verticalAccuracy > 0) &&
-                (self.appDelegate.currentLocation!.verticalAccuracy < 40)
+                //(self.appDelegate.currentLocation!.horizontalAccuracy < 60) &&
+                (self.appDelegate.currentLocation!.verticalAccuracy > 0) //&&
+                //(self.appDelegate.currentLocation!.verticalAccuracy < 40)
             self.sayReady()
         }))
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("headingUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
@@ -168,6 +184,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     @IBAction func pinchGestureAction(gesture: UIPinchGestureRecognizer) {
+        // TODO: Add zoom simulation
         if gesture.state == UIGestureRecognizerState.Changed {
             let lowerBound = max(1.0, gesture.scale * cameraPreview.connection.videoScaleAndCropFactor)
             let upperBound = min(lowerBound, cameraPreview.connection.videoMaxScaleAndCropFactor)
@@ -175,39 +192,57 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
 
+    @IBOutlet weak var cancelButton: UIButton!
+    @IBAction func cancelAction(sender: AnyObject) {
+        if work != nil && !work!.finished && !work!.cancelled {
+            work?.cancel()
+        }
+    }
+    var work: NSBlockOperation?
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
             cancelObservers()
             var tapLocation = sender.locationInView(self.view)
             textField.text = NSLocalizedString("Looking", comment: "looking for location")
-            activityIndicator.startAnimating()
+            self.activityIndicator.startAnimating()
             working = true
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            cancelButton.hidden = false
+            work = NSBlockOperation()
+            work!.addExecutionBlock({
                 self.spottedLocation = walkOutFrom(self.appDelegate.currentLocation!,
                     self.getDirection(Double(tapLocation.x)),
-                    self.getPitch(Double(tapLocation.y)))
+                    self.getPitch(Double(tapLocation.y)), self.work!
+                )
 
                 dispatch_async(dispatch_get_main_queue(), {
+                    self.working = false
+                    self.cancelButton.hidden = true
                     if self.spottedLocation != nil {
                         self.mapViewController.spottedLocation = self.spottedLocation
                         self.textField.text = NSLocalizedString("Found", comment: "found a location")
-                              self.presentViewController(self.mapViewNavController, animated: true, completion: {
+                        self.presentViewController(self.mapViewNavController, animated: true, completion: {
                             self.setUpObservers()
-                            self.working = false
                             self.sayReady()
                         })
                     } else {
-                        self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
-                        self.activityIndicator.stopAnimating()
-                        let alert = UIAlertController(title:  NSLocalizedString("Failed", comment: "failed"), message:  NSLocalizedString("FailedLocationMessage", comment: "failed to find a location"), preferredStyle: UIAlertControllerStyle.Alert)
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: nil))
-                        self.presentViewController(alert, animated: true, completion: {
+                        func done() {
                             self.setUpObservers()
-                            self.working = false
                             self.sayReady()
-                        })
+                        }
+                        if !self.work!.cancelled {
+                            self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
+                            self.hideBlur()
+                            let alert = UIAlertController(title:  NSLocalizedString("Failed", comment: "failed"), message:  NSLocalizedString("FailedLocationMessage", comment: "failed to find a location"), preferredStyle: UIAlertControllerStyle.Alert)
+                            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: nil))
+                            self.presentViewController(alert, animated: true, completion: done)
+                        } else {
+                            done()
+                        }
                     }
                 })
+            })
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                self.work!.start()
             })
         }
     }
