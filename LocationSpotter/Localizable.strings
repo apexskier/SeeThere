@@ -8,7 +8,7 @@
 
 // Text
 "Ready" = "Ready!";
-"GettingReady" = "Finding Location...";
+"GettingReady" = "Finding You...";
 "Looking" = "Looking...";
 "Found" = "Found!";
 "Failed" = "Failed";
