@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  LocationSpotter
+//  SeeThere
 //
 //  Created by Cameron Little on 1/30/15.
 //  Copyright (c) 2015 Cameron Little. All rights reserved.

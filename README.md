@@ -1,4 +1,4 @@
-# LocationSpotter
+# SeeThere
 
 An iOS app that can identify the geographical location of something seen through the camera.
 

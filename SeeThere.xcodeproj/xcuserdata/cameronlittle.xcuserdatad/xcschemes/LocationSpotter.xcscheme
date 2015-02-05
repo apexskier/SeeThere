@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C5FCB75A1A7C750C00B6607A"
-               BuildableName = "LocationSpotter.app"
-               BlueprintName = "LocationSpotter"
-               ReferencedContainer = "container:LocationSpotter.xcodeproj">
+               BuildableName = "SeeThere.app"
+               BlueprintName = "See There"
+               ReferencedContainer = "container:SeeThere.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C5FCB76F1A7C750C00B6607A"
-               BuildableName = "LocationSpotterTests.xctest"
-               BlueprintName = "LocationSpotterTests"
-               ReferencedContainer = "container:LocationSpotter.xcodeproj">
+               BuildableName = "SeeThereTests.xctest"
+               BlueprintName = "SeeThereTests"
+               ReferencedContainer = "container:SeeThere.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C5FCB76F1A7C750C00B6607A"
-               BuildableName = "LocationSpotterTests.xctest"
-               BlueprintName = "LocationSpotterTests"
-               ReferencedContainer = "container:LocationSpotter.xcodeproj">
+               BuildableName = "SeeThereTests.xctest"
+               BlueprintName = "SeeThereTests"
+               ReferencedContainer = "container:SeeThere.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,9 +57,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C5FCB75A1A7C750C00B6607A"
-            BuildableName = "LocationSpotter.app"
-            BlueprintName = "LocationSpotter"
-            ReferencedContainer = "container:LocationSpotter.xcodeproj">
+            BuildableName = "SeeThere.app"
+            BlueprintName = "See There"
+            ReferencedContainer = "container:SeeThere.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C5FCB75A1A7C750C00B6607A"
-            BuildableName = "LocationSpotter.app"
-            BlueprintName = "LocationSpotter"
-            ReferencedContainer = "container:LocationSpotter.xcodeproj">
+            BuildableName = "SeeThere.app"
+            BlueprintName = "See There"
+            ReferencedContainer = "container:SeeThere.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C5FCB75A1A7C750C00B6607A"
-            BuildableName = "LocationSpotter.app"
-            BlueprintName = "LocationSpotter"
-            ReferencedContainer = "container:LocationSpotter.xcodeproj">
+            BuildableName = "SeeThere.app"
+            BlueprintName = "See There"
+            ReferencedContainer = "container:SeeThere.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
