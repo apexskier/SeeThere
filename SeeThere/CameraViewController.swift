@@ -17,7 +17,8 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet var mainView: UIView!
     @IBOutlet var tapGestureRecognizer: UITapGestureRecognizer!
-    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var textField: UILabel!
+    @IBOutlet weak var initialInstructions: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var pitchText: UITextField!
     @IBOutlet weak var yawText: UITextField!
@@ -109,6 +110,8 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        initialInstructions.text = NSLocalizedString("Instructions", comment: "initial instructions")
 
         cameraPreview.connection.videoScaleAndCropFactor = 1
         cameraSession.startRunning()
@@ -216,6 +219,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
+            initialInstructions.hidden = true
             cancelObservers()
             cameraSession.stopRunning()
 

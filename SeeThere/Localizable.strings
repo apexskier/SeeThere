@@ -18,6 +18,7 @@
 // Messages
 "FailedLocationMessage" = "Failed to find a location.";
 "FailedVCardMessage" = "Failed to generate VCard.";
+"Instructions" = "Tap somewhere to find a location.";
 
 // Actions
 "OpenMaps" = "Open in Maps";
