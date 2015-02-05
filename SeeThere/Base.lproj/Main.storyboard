@@ -9,7 +9,7 @@
         <!--Camera View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="CameraViewController" customModule="SeeThere" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="CameraViewController" customModule="SeeThereTests" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -79,6 +79,7 @@
                                 <exclude reference="kPt-on-F4P"/>
                                 <exclude reference="gCe-ft-EZb"/>
                                 <exclude reference="sJN-kW-Tgs"/>
+                                <exclude reference="rjZ-dM-6gL"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="IIH-JG-YZx"/>
@@ -87,6 +88,8 @@
                                 <exclude reference="wjb-XP-kce"/>
                                 <exclude reference="65P-Wv-yea"/>
                                 <exclude reference="N2A-Ru-Pzf"/>
+                                <exclude reference="MSi-T8-P9G"/>
+                                <exclude reference="PrX-2m-EBY"/>
                             </mask>
                         </variation>
                         <connections>
@@ -124,7 +127,7 @@
         <!--Map View Controller-->
         <scene sceneID="2vP-73-faK">
             <objects>
-                <viewController storyboardIdentifier="mapViewControllerID" id="5m1-X9-2Zk" customClass="MapViewController" customModule="SeeThere" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="mapViewControllerID" id="5m1-X9-2Zk" customClass="MapViewController" customModule="SeeThereTests" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MvB-eW-P07"/>
                         <viewControllerLayoutGuide type="bottom" id="a3j-y4-0py"/>

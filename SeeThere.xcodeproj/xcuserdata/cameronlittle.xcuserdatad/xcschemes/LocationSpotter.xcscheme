@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C5FCB75A1A7C750C00B6607A"
-               BuildableName = "SeeThere.app"
-               BlueprintName = "See There"
+               BuildableName = "See There.app"
+               BlueprintName = "SeeThere"
                ReferencedContainer = "container:SeeThere.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -57,8 +57,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C5FCB75A1A7C750C00B6607A"
-            BuildableName = "SeeThere.app"
-            BlueprintName = "See There"
+            BuildableName = "See There.app"
+            BlueprintName = "SeeThere"
             ReferencedContainer = "container:SeeThere.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -76,8 +76,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C5FCB75A1A7C750C00B6607A"
-            BuildableName = "SeeThere.app"
-            BlueprintName = "See There"
+            BuildableName = "See There.app"
+            BlueprintName = "SeeThere"
             ReferencedContainer = "container:SeeThere.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -94,8 +94,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C5FCB75A1A7C750C00B6607A"
-            BuildableName = "SeeThere.app"
-            BlueprintName = "See There"
+            BuildableName = "See There.app"
+            BlueprintName = "SeeThere"
             ReferencedContainer = "container:SeeThere.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

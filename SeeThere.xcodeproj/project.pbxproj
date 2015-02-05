@@ -54,7 +54,7 @@
 		C5D7CB181A817A9200F5823F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		C5D7CB1D1A817E9B00F5823F /* open-in-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "open-in-icon@2x.png"; sourceTree = "<group>"; };
 		C5F2740D1A7EA19700D4CB5D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-		C5FCB75B1A7C750C00B6607A /* SeeThere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeeThere.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C5FCB75B1A7C750C00B6607A /* SeeThere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = SeeThere.app; path = "See There.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5FCB75F1A7C750C00B6607A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5FCB7601A7C750C00B6607A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C5FCB7621A7C750C00B6607A /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
@@ -163,9 +163,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C5FCB75A1A7C750C00B6607A /* See There */ = {
+		C5FCB75A1A7C750C00B6607A /* SeeThere */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C5FCB77A1A7C750C00B6607A /* Build configuration list for PBXNativeTarget "See There" */;
+			buildConfigurationList = C5FCB77A1A7C750C00B6607A /* Build configuration list for PBXNativeTarget "SeeThere" */;
 			buildPhases = (
 				C5FCB7571A7C750C00B6607A /* Sources */,
 				C5FCB7581A7C750C00B6607A /* Frameworks */,
@@ -175,7 +175,7 @@
 			);
 			dependencies = (
 			);
-			name = "See There";
+			name = SeeThere;
 			productName = SeeThere;
 			productReference = C5FCB75B1A7C750C00B6607A /* SeeThere.app */;
 			productType = "com.apple.product-type.application";
@@ -235,7 +235,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C5FCB75A1A7C750C00B6607A /* See There */,
+				C5FCB75A1A7C750C00B6607A /* SeeThere */,
 				C5FCB76F1A7C750C00B6607A /* SeeThereTests */,
 			);
 		};
@@ -302,7 +302,7 @@
 /* Begin PBXTargetDependency section */
 		C5FCB7721A7C750C00B6607A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C5FCB75A1A7C750C00B6607A /* See There */;
+			target = C5FCB75A1A7C750C00B6607A /* SeeThere */;
 			targetProxy = C5FCB7711A7C750C00B6607A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -415,7 +415,7 @@
 				INFOPLIST_FILE = SeeThere/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = SeeThere;
+				PRODUCT_NAME = "See There";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -430,7 +430,7 @@
 				INFOPLIST_FILE = SeeThere/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = SeeThere;
+				PRODUCT_NAME = "See There";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -482,7 +482,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C5FCB77A1A7C750C00B6607A /* Build configuration list for PBXNativeTarget "See There" */ = {
+		C5FCB77A1A7C750C00B6607A /* Build configuration list for PBXNativeTarget "SeeThere" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C5FCB77B1A7C750C00B6607A /* Debug */,

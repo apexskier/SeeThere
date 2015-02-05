@@ -72,16 +72,18 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         c.unlockForConfiguration()
         return c
     }()
-    private lazy var cameraSession: AVCaptureSession = {
-        let session = AVCaptureSession()
-        session.sessionPreset = AVCaptureSessionPresetHigh
+    private lazy var cameraInput: AVCaptureInput = {
         var error: NSError?
         let input: AVCaptureDeviceInput? = AVCaptureDeviceInput.deviceInputWithDevice(self.camera, error: &error) as? AVCaptureDeviceInput
         if input == nil {
             fatalError("Couldn't set up camera capture")
         }
-        session.addInput(input!)
-
+        return input!
+    }()
+    private lazy var cameraSession: AVCaptureSession = {
+        let session = AVCaptureSession()
+        session.sessionPreset = AVCaptureSessionPresetHigh
+        session.addInput(self.cameraInput)
         return session
     }()
     private lazy var blurView: UIVisualEffectView = {
@@ -89,13 +91,21 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         v.frame = self.mainView.bounds
         return v
     }()
+    private lazy var imgPreview: CALayer = {
+        let l = CALayer()
+        l.frame = self.mainView.bounds
+        l.hidden = true
+        return l
+    }()
     private lazy var cameraPreview: AVCaptureVideoPreviewLayer = {
         var layer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as AVCaptureVideoPreviewLayer
         layer.frame = self.mainView.bounds
         self.mainView.layer.insertSublayer(layer, atIndex: 0)
         self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
+        self.mainView.layer.insertSublayer(self.imgPreview, atIndex: 2)
         return layer
     }()
+    private var imgOutput = AVCaptureStillImageOutput()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -199,16 +209,23 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     var work: NSBlockOperation?
+    func workDone() {
+        self.cameraSession.startRunning()
+        self.setUpObservers()
+        self.sayReady()
+    }
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
             cancelObservers()
+            cameraSession.stopRunning()
+
             var tapLocation = sender.locationInView(self.view)
-            textField.text = NSLocalizedString("Looking", comment: "looking for location")
+            self.textField.text = NSLocalizedString("Looking", comment: "looking for location")
             self.activityIndicator.startAnimating()
-            working = true
-            cancelButton.hidden = false
-            work = NSBlockOperation()
-            work!.addExecutionBlock({
+            self.working = true
+            self.cancelButton.hidden = false
+            self.work = NSBlockOperation()
+            self.work!.addExecutionBlock({
                 self.spottedLocation = walkOutFrom(self.appDelegate.currentLocation!,
                     self.getDirection(Double(tapLocation.x)),
                     self.getPitch(Double(tapLocation.y)), self.work!
@@ -221,22 +238,16 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                         self.mapViewController.spottedLocation = self.spottedLocation
                         self.textField.text = NSLocalizedString("Found", comment: "found a location")
                         self.presentViewController(self.mapViewNavController, animated: true, completion: {
-                            self.setUpObservers()
-                            self.sayReady()
+                            self.workDone()
                         })
                     } else {
-                        func done() {
-                            self.setUpObservers()
-                            self.sayReady()
-                        }
                         if !self.work!.cancelled {
                             self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
-                            self.hideBlur()
                             let alert = UIAlertController(title:  NSLocalizedString("Failed", comment: "failed"), message:  NSLocalizedString("FailedLocationMessage", comment: "failed to find a location"), preferredStyle: UIAlertControllerStyle.Alert)
                             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: nil))
-                            self.presentViewController(alert, animated: true, completion: done)
+                            self.presentViewController(alert, animated: true, completion: self.workDone)
                         } else {
-                            done()
+                            self.workDone()
                         }
                     }
                 })

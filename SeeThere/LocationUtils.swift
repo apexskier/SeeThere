@@ -122,18 +122,16 @@ func newLocation(start: CLLocation, distance: CLLocationDistance, direction: CLL
 }
 
 func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double, operation: NSOperation) -> CLLocation? {
-    var distance = 1000.0
+    var distance = DISTANCE_STEP * 512
     var from = newLocation(start, MIN_DISTANCE, direction)
-    println("starting at elevation \(start.altitude), with \(degrees(pitch))")
+    println("starting at elevation: \(start.altitude), pitch: \(pitch)")
     let adjAlt = start.altitude + abs(start.verticalAccuracy) // should be positive, but I'll check anyway
-
-    let flat = abs(pitch) < radians(10)
 
     var lastElev: CLLocationDistance = start.altitude
 
-    func softenPitch(x: Double) -> Double {
+    /*func softenPitch(x: Double) -> Double {
         return (-1/x) + 1
-    }
+    }*/
 
     while distance < MAX_DISTANCE {
         // fetch a set of points
@@ -145,43 +143,36 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
             return nil
         }
 
-        var gradient: Double = 0
-
         if operation.cancelled {
             return nil
         }
         
         for loc in pathLocs {
-            let softened = softenPitch(distance) * pitch
-            let estimate = estimateElevation(loc.distanceFromLocation(start), adjAlt, softened)
+            let estimate = estimateElevation(loc.distanceFromLocation(start), adjAlt, pitch)
             let actual = loc.altitude
             let diff = estimate - actual
+            let slopeAngle = tan((actual - lastElev) / DISTANCE_STEP)
 
-            println("distance: \(loc.distanceFromLocation(start))")
-            println(" estimate: \(estimate), actual: \(actual), diff: \(diff)")
+            println(" distance: \(loc.distanceFromLocation(start))")
+            println("  estimate: \(estimate), actual: \(actual), diff: \(diff)")
+            println("  slope: \(slopeAngle)")
 
-            if flat { // don't calculate unless flat
-                // NOTE: this slope's run may not be accurate
-                gradient = (actual - lastElev) / DISTANCE_STEP
-                println(" gradient: \(gradient)")
-            }
-
-            /* the flatness logic
-             * Say you're looking at something in the distance, and you're on flat ground. 
-             * There will be false intersections with the ground due to inaccuracies in
-             * elevation data. So, when looking along a relatively flat line, we wait until
-             * intersecting with a steepish slope, or something like a hill in the distance
-             * that's obvious.
+            /* the slope logic
+             * Looking out at something in the distance, often you will be looking
+             * along ground parallel with your pitch. To prevent intersections due
+             * to inaccuracies in elevation/altitude data, the intersection point
+             * needs to be along a slope that's not too parallel to the pitch or 
+             * is significantly different in elevation.
              */
-            if ((!flat) || (flat && ((gradient > SLOPE_FACTOR) || (diff < (4*HEIGHT_TOLERANCE))))) &&
-                (diff < HEIGHT_TOLERANCE) {
+            if ((slopeAngle - pitch > SLOPE_FACTOR) || (diff < 4 * HEIGHT_TOLERANCE)) &&
+                diff < HEIGHT_TOLERANCE {
                 return loc
             }
 
             lastElev = actual
         }
         
-        distance += 1000
+        distance += DISTANCE_STEP * 512
         from = to
     }
     return nil
