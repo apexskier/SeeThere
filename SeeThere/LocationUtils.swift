@@ -57,7 +57,7 @@ func getElevationAt(coordinate: CLLocationCoordinate2D) -> CLLocationDistance? {
  * Returned locations will be DISTANCE_STEP apart.
  *
  */
-func getElevationPath(start: CLLocation, end: CLLocation) -> [CLLocation] {
+func getElevationPath(start: CLLocation, end: CLLocation) -> ([CLLocation], NSError?) {
     var ret: [CLLocation] = []
     
     let dist = start.distanceFromLocation(end)
@@ -75,7 +75,8 @@ func getElevationPath(start: CLLocation, end: CLLocation) -> [CLLocation] {
     var response: NSURLResponse?
     var data = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
     if error != nil {
-        fatalError("\(error?.description)")
+        //return nil
+        return (ret, error)
     }
     
     if (data!.length > 0) {
@@ -93,9 +94,11 @@ func getElevationPath(start: CLLocation, end: CLLocation) -> [CLLocation] {
         } else if responseData?.objectForKey("status") as String == "OVER_QUERY_LIMIT" {
             return getElevationPath(start, end)
         }
+    } else {
+        return (ret, NSError(domain: "no data received", code: 1, userInfo: nil))
     }
     
-    return ret
+    return (ret, nil)
 }
 
 func estimateElevation(distance: CLLocationDistance, startAltitude: CLLocationDistance, pitch: Double) -> CLLocationDistance {
@@ -121,7 +124,7 @@ func newLocation(start: CLLocation, distance: CLLocationDistance, direction: CLL
     return CLLocation(latitude: degrees(finLat), longitude: degrees(finLng))
 }
 
-func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double, operation: NSOperation) -> CLLocation? {
+func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double, operation: NSOperation) -> (CLLocation?, NSError?) {
     var distance = DISTANCE_STEP * 512
     var from = newLocation(start, MIN_DISTANCE, direction)
     println("starting at elevation: \(start.altitude), pitch: \(pitch)")
@@ -137,14 +140,13 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
         // fetch a set of points
         let to = newLocation(start, distance, direction)
         
-        let pathLocs = getElevationPath(from, to)
-        if pathLocs.count == 0 {
-            fatalError("Failed to get elevation path")
-            return nil
+        let (pathLocs, error) = getElevationPath(from, to)
+        if error != nil {
+            return (nil, NSError(domain: NSLocalizedString("FailedGoogleElev", comment: "couldn't get data from google api"), code: 2, userInfo: nil))
         }
 
         if operation.cancelled {
-            return nil
+            return (nil, NSError(domain: NSLocalizedString("FailedCancelled", comment: "cancelled"), code: 0, userInfo: nil))
         }
         
         for loc in pathLocs {
@@ -166,7 +168,7 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
              */
             if ((slopeAngle - pitch > SLOPE_FACTOR) || (diff < 4 * HEIGHT_TOLERANCE)) &&
                 diff < HEIGHT_TOLERANCE {
-                return loc
+                return (loc, nil)
             }
 
             lastElev = actual
@@ -175,5 +177,5 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
         distance += DISTANCE_STEP * 512
         from = to
     }
-    return nil
+    return (nil, NSError(domain: NSLocalizedString("FailedLocationMessage", comment: "no location found"), code: 1, userInfo: nil))
 }

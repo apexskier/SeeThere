@@ -31,11 +31,17 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         if ready {
             textField.text = NSLocalizedString("Ready", comment: "text when ready to go")
             hideBlur()
+            if firstTime {
+                initialInstructions.text = NSLocalizedString("Instructions", comment: "initial instructions")
+                initialInstructions.hidden = false
+            }
         } else {
             textField.text = NSLocalizedString("GettingReady", comment: "text when waiting for something to be ready")
             showBlur()
         }
     }
+
+    private var firstTime = true
 
     func hideBlur() {
         self.blurView.hidden = true
@@ -111,7 +117,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        initialInstructions.text = NSLocalizedString("Instructions", comment: "initial instructions")
+        initialInstructions.hidden = true
 
         cameraPreview.connection.videoScaleAndCropFactor = 1
         cameraSession.startRunning()
@@ -230,28 +236,29 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             self.cancelButton.hidden = false
             self.work = NSBlockOperation()
             self.work!.addExecutionBlock({
-                self.spottedLocation = walkOutFrom(self.appDelegate.currentLocation!,
+                let (loc, error) = walkOutFrom(self.appDelegate.currentLocation!,
                     self.getDirection(Double(tapLocation.x)),
-                    self.getPitch(Double(tapLocation.y)), self.work!
-                )
+                    self.getPitch(Double(tapLocation.y)), self.work!)
 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.working = false
                     self.cancelButton.hidden = true
-                    if self.spottedLocation != nil {
-                        self.mapViewController.spottedLocation = self.spottedLocation
+
+                    if error == nil {
+                        self.spottedLocation = loc
+                        self.mapViewController.spottedLocation = loc
                         self.textField.text = NSLocalizedString("Found", comment: "found a location")
                         self.presentViewController(self.mapViewNavController, animated: true, completion: {
                             self.workDone()
                         })
                     } else {
-                        if !self.work!.cancelled {
+                        if self.work!.cancelled {
+                            self.workDone()
+                        } else {
                             self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
-                            let alert = UIAlertController(title:  NSLocalizedString("Failed", comment: "failed"), message:  NSLocalizedString("FailedLocationMessage", comment: "failed to find a location"), preferredStyle: UIAlertControllerStyle.Alert)
+                            let alert = UIAlertController(title:  NSLocalizedString("Failed", comment: "failed"), message: error?.domain, preferredStyle: UIAlertControllerStyle.Alert)
                             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: nil))
                             self.presentViewController(alert, animated: true, completion: self.workDone)
-                        } else {
-                            self.workDone()
                         }
                     }
                 })
