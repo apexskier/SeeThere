@@ -213,6 +213,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var cancelButton: UIButton!
     @IBAction func cancelAction(sender: AnyObject) {
+        cancelButton.hidden = true
         if work != nil && !work!.finished && !work!.cancelled {
             work?.cancel()
         }
