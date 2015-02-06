@@ -34,7 +34,6 @@ func getElevationAt(coordinate: CLLocationCoordinate2D) -> CLLocationDistance? {
     var response: NSURLResponse?
     var data = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
     if error != nil {
-        fatalError("\(error?.description)")
         return nil
     }
     
