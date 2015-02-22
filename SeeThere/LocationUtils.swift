@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 
 private let HEIGHT_TOLERANCE: Double = -10
-private let MAX_DISTANCE: Double = 50000
+private let MAX_DISTANCE: Double = 100000
 private let MIN_DISTANCE: Double = 20
 private let DISTANCE_STEP: Double = 10
 private let SLOPE_FACTOR: Double = 0.02
@@ -60,10 +60,9 @@ func getElevationPath(start: CLLocation, end: CLLocation) -> ([CLLocation], NSEr
     var ret: [CLLocation] = []
     
     let dist = start.distanceFromLocation(end)
-    //let samples = min(Int(dist / DISTANCE_STEP), 512)
     let samples = Int(dist / DISTANCE_STEP)
     if samples > 512 {
-        return ([], NSError(domain: "getElevationPath start and end too far apart.", code: 4, userInfo: nil))
+        return ([], NSError(domain: "getElevationPath start and end too far apart: \(dist)", code: 4, userInfo: nil))
     }
     
     let reqURLString = "https://maps.googleapis.com/maps/api/elevation/json?key=\(googleAPIKey)&path=\(start.coordinate.latitude),\(start.coordinate.longitude)%7C\(end.coordinate.latitude),\(end.coordinate.longitude)&samples=\(samples)"
@@ -74,7 +73,6 @@ func getElevationPath(start: CLLocation, end: CLLocation) -> ([CLLocation], NSEr
     var response: NSURLResponse?
     var data = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
     if error != nil {
-        //return nil
         return (ret, error)
     }
     
@@ -91,7 +89,10 @@ func getElevationPath(start: CLLocation, end: CLLocation) -> ([CLLocation], NSEr
                 ret.append(location)
             }
         } else if responseData?.objectForKey("status") as! String == "OVER_QUERY_LIMIT" {
+            // TODO: look into sleeping for 200ms or so
             return getElevationPath(start, end)
+        } else {
+            return (ret, NSError(domain: responseData?.objectForKey("status") as! String, code: 1, userInfo: nil))
         }
     } else {
         return (ret, NSError(domain: "no data received", code: 1, userInfo: nil))
@@ -124,15 +125,15 @@ func newLocation(start: CLLocation, distance: CLLocationDistance, direction: CLL
 }
 
 func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double, operation: NSOperation) -> (CLLocation?, NSError?) {
-    var distance = DISTANCE_STEP * 512
+    var distance = DISTANCE_STEP * 510
     var from = newLocation(start, MIN_DISTANCE, direction)
     println("starting at elevation: \(start.altitude), pitch: \(pitch)")
     let adjAlt = start.altitude + abs(start.verticalAccuracy) // should be positive, but I'll check anyway
 
     var lastElev: CLLocationDistance = start.altitude
 
-    var minDiff = Double.infinity
-    var minLoc = start
+    var maxAngleElev = -Double.infinity
+    var topLoc = start
 
     while distance < MAX_DISTANCE {
         // fetch a set of points
@@ -140,7 +141,8 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
         
         let (pathLocs, error) = getElevationPath(from, to)
         if error != nil {
-            return (nil, NSError(domain: NSLocalizedString("FailedGoogleElev", comment: "couldn't get data from google api"), code: 2, userInfo: nil))
+            let errMsg = NSLocalizedString("FailedGoogleElev", comment: "couldn't get data from google api")
+            return (nil, NSError(domain: "\(errMsg): \(error!.domain)", code: 2, userInfo: nil))
         }
 
         if operation.cancelled {
@@ -148,7 +150,8 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
         }
         
         for loc in pathLocs {
-            let estimate = estimateElevation(loc.distanceFromLocation(start), adjAlt, pitch)
+            let pointDist = loc.distanceFromLocation(start)
+            let estimate = estimateElevation(pointDist, adjAlt, pitch)
             let actual = loc.altitude
             let diff = estimate - actual
             let slopeAngle = tan((actual - lastElev) / DISTANCE_STEP)
@@ -173,17 +176,21 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
 
             lastElev = actual
 
-            if minDiff > diff {
-                minDiff = diff
-                minLoc = loc
+            // Keep track of the object that has the highest angle of view from
+            // where we're staying. That will be our approximation of a point.
+            // (such as when I'm pointing above a mountain range)
+            let angleElev = tan((actual - adjAlt) / pointDist)
+            if maxAngleElev < angleElev {
+                maxAngleElev = angleElev
+                topLoc = loc
             }
         }
         
-        distance += DISTANCE_STEP * 512
+        distance += DISTANCE_STEP * 510
         from = to
     }
 
-    return (minLoc, NSError(domain: "Falling back to closest vertical point.", code: 0, userInfo: nil))
+    return (topLoc, NSError(domain: "Falling back to closest vertical point.", code: 0, userInfo: nil))
 
     // return (nil, NSError(domain: NSLocalizedString("FailedLocationMessage", comment: "no location found"), code: 1, userInfo: nil))
 }

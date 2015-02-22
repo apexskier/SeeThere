@@ -254,7 +254,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.working = false
                     self.cancelButton.hidden = true
 
-                    if error == nil || error?.code == 0 {
+                    if error == nil || error?.code == 0 && !self.work!.cancelled {
                         self.spottedLocation = loc
                         self.mapViewController.spottedLocation = loc
                         self.textField.text = NSLocalizedString("Found", comment: "found a location")

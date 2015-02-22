@@ -18,7 +18,7 @@
 
 // Messages
 "FailedLocationMessage" = "Failed to find a location.";
-"FailedGoogleElev" = "Failed to fetch elevation data.";
+"FailedGoogleElev" = "Failed to fetch elevation data";
 "FailedCancelled" = "Operation was cancelled.";
 "FailedVCardMessage" = "Failed to generate VCard.";
 "FailedHeading" = "Couldn't find your directional heading.";
