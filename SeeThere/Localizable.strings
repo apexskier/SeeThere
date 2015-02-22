@@ -12,6 +12,7 @@
 "Looking" = "Looking...";
 "Found" = "Found!";
 "Failed" = "Failed";
+"Error" = "Error";
 "OK" = "OK";
 "Cancel" = "Cancel";
 
@@ -20,6 +21,9 @@
 "FailedGoogleElev" = "Failed to fetch elevation data.";
 "FailedCancelled" = "Operation was cancelled.";
 "FailedVCardMessage" = "Failed to generate VCard.";
+"FailedHeading" = "Couldn't find your directional heading.";
+"FailedCamera" = "Couldn't set up the camera.";
+"FailedMapLocation" = "Map view missing a location.";
 "Instructions" = "Tap somewhere to find a location.";
 
 // Actions

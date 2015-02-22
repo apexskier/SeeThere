@@ -40,11 +40,11 @@ func getElevationAt(coordinate: CLLocationCoordinate2D) -> CLLocationDistance? {
     if (data!.length > 0) {
         var responseData: AnyObject? = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions(0), error: &error)
         
-        if responseData?.objectForKey("status") as String == "OK" {
-            var results = responseData?.objectForKey("results")? as? [AnyObject]
-            var elevation = results?[0].objectForKey("elevation") as Double
+        if responseData?.objectForKey("status") as! String == "OK" {
+            var results = responseData?.objectForKey("results") as? [AnyObject]
+            var elevation = results?[0].objectForKey("elevation") as! Double
             return elevation
-        } else if responseData?.objectForKey("status") as String == "OVER_QUERY_LIMIT" {
+        } else if responseData?.objectForKey("status") as! String == "OVER_QUERY_LIMIT" {
             return getElevationAt(coordinate)
         }
     }
@@ -63,7 +63,7 @@ func getElevationPath(start: CLLocation, end: CLLocation) -> ([CLLocation], NSEr
     //let samples = min(Int(dist / DISTANCE_STEP), 512)
     let samples = Int(dist / DISTANCE_STEP)
     if samples > 512 {
-        fatalError("getElevationPath start and end too far apart.")
+        return ([], NSError(domain: "getElevationPath start and end too far apart.", code: 4, userInfo: nil))
     }
     
     let reqURLString = "https://maps.googleapis.com/maps/api/elevation/json?key=\(googleAPIKey)&path=\(start.coordinate.latitude),\(start.coordinate.longitude)%7C\(end.coordinate.latitude),\(end.coordinate.longitude)&samples=\(samples)"
@@ -80,17 +80,17 @@ func getElevationPath(start: CLLocation, end: CLLocation) -> ([CLLocation], NSEr
     
     if (data!.length > 0) {
         var responseData: AnyObject? = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions(0), error: &error)
-        if responseData?.objectForKey("status") as String == "OK" {
-            var results = responseData?.objectForKey("results")? as? [AnyObject]
+        if responseData?.objectForKey("status") as! String == "OK" {
+            var results = responseData?.objectForKey("results") as? [AnyObject]
             let now = NSDate()
             for loc in results! {
                 let rawLocation: AnyObject? = loc.objectForKey("location")
-                let coord = CLLocationCoordinate2D(latitude: rawLocation!.objectForKey("lat") as Double, longitude: rawLocation!.objectForKey("lng") as Double)
-                let elev = loc.objectForKey("elevation") as Double
+                let coord = CLLocationCoordinate2D(latitude: rawLocation!.objectForKey("lat") as! Double, longitude: rawLocation!.objectForKey("lng") as! Double)
+                let elev = loc.objectForKey("elevation") as! Double
                 let location = CLLocation(coordinate: coord, altitude: elev, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: now)
                 ret.append(location)
             }
-        } else if responseData?.objectForKey("status") as String == "OVER_QUERY_LIMIT" {
+        } else if responseData?.objectForKey("status") as! String == "OVER_QUERY_LIMIT" {
             return getElevationPath(start, end)
         }
     } else {
@@ -131,9 +131,8 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
 
     var lastElev: CLLocationDistance = start.altitude
 
-    /*func softenPitch(x: Double) -> Double {
-        return (-1/x) + 1
-    }*/
+    var minDiff = Double.infinity
+    var minLoc = start
 
     while distance < MAX_DISTANCE {
         // fetch a set of points
@@ -165,16 +164,26 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
              * needs to be along a slope that's not too parallel to the pitch or 
              * is significantly different in elevation.
              */
-            if ((slopeAngle - pitch > SLOPE_FACTOR) || (diff < 4 * HEIGHT_TOLERANCE)) &&
-                diff < HEIGHT_TOLERANCE {
+            if actual >= 0 &&
+                diff < HEIGHT_TOLERANCE &&
+                ((slopeAngle - pitch > SLOPE_FACTOR) || (diff < 4 * HEIGHT_TOLERANCE))
+                {
                 return (loc, nil)
             }
 
             lastElev = actual
+
+            if minDiff > diff {
+                minDiff = diff
+                minLoc = loc
+            }
         }
         
         distance += DISTANCE_STEP * 512
         from = to
     }
-    return (nil, NSError(domain: NSLocalizedString("FailedLocationMessage", comment: "no location found"), code: 1, userInfo: nil))
+
+    return (minLoc, NSError(domain: "Falling back to closest vertical point.", code: 0, userInfo: nil))
+
+    // return (nil, NSError(domain: NSLocalizedString("FailedLocationMessage", comment: "no location found"), code: 1, userInfo: nil))
 }

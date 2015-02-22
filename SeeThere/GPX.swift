@@ -15,7 +15,7 @@ class GPXFileActivityProvider: UIActivityItemProvider {
 
     lazy var fileURL: NSURL = {
         let gpxStr = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<gpx xmlns=\"http://www.topografix.com/GPX/1/1\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\"\nversion=\"1.1\"\ncreator=\"com.camlittle.locationspotter\">\n<wpt lat=\"\(self.location.coordinate.latitude)\" lon=\"\(self.location.coordinate.longitude)\">\n<ele>\(self.location.altitude)</ele>\n<time>\(self.location.timestamp)</time>\n</wpt>\n</gpx>"
-        let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+        let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! NSString
         var error: NSError?
         let filePath = documentsDirectory.stringByAppendingPathComponent("location-\(self.location.timestamp.description).gpx")
         gpxStr.writeToFile(filePath, atomically: true, encoding: NSUTF8StringEncoding, error: &error)

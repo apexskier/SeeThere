@@ -15,7 +15,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet var mapView: MKMapView!
 
-    var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+    var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var spottedLocation: CLLocation?
 
     var locPin = MKPointAnnotation()
@@ -123,7 +123,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // Share GPX action
             let shareGPXAction = UIAlertAction(title: NSLocalizedString("GPXFile", comment: "a gpx file"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 let actpro = GPXFileActivityProvider(location: self.spottedLocation!)
-                let share = self.toolbarItems![1] as UIBarButtonItem
+                let share = self.toolbarItems![1] as! UIBarButtonItem
                 let activity = OpenInActivity(url: actpro.fileURL, barItem: share)
 
                 let sheet = UIActivityViewController(activityItems: [actpro], applicationActivities: [activity])
@@ -142,7 +142,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // Share VCard action
             let shareVCardAction = UIAlertAction(title: NSLocalizedString("VCard", comment: "a v card with contact information"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 // Generate VCard with location as home
-                let rootPlacemark = placemarks[0] as CLPlacemark
+                let rootPlacemark = placemarks[0] as! CLPlacemark
                 let evolvedPlacemark = MKPlacemark(placemark: rootPlacemark)
 
                 let persona: ABRecord = ABPersonCreate().takeUnretainedValue()
@@ -155,7 +155,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     ABRecordSetValue(persona, kABPersonAddressProperty, multiHome, nil)
                     let vcards = ABPersonCreateVCardRepresentationWithPeople([persona]).takeUnretainedValue()
                     let vcardString = NSString(data: vcards, encoding: NSASCIIStringEncoding)
-                    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+                    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! NSString
                     var error: NSError?
                     let filePath = documentsDirectory.stringByAppendingPathComponent("pin.loc.vcf")
                     vcardString?.writeToFile(filePath, atomically: true, encoding: NSUTF8StringEncoding, error: &error)
@@ -189,7 +189,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     override func viewWillAppear(animated: Bool) {
         if spottedLocation == nil {
-            fatalError("Showing map view without a location.")
+            let alert = UIAlertController(title:  NSLocalizedString("Error", comment: "failed"), message: NSLocalizedString("FailedMapLocation", comment: "error, no location on map"), preferredStyle: UIAlertControllerStyle.Alert)
+            self.presentViewController(alert, animated: true, completion: {
+                println("TODO: go back to camera view controller.")
+            })
         }
 
         locPin.setCoordinate(spottedLocation!.coordinate)

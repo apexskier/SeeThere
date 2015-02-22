@@ -11,8 +11,6 @@ import XCTest
 import CoreLocation
 import CoreMotion
 
-import SeeThere
-
 class SeeThereTests: XCTestCase {
 
     private let epsilon = 0.0000001

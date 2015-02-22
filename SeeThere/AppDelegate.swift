@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     let motionManager = CMMotionManager()
 
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        let mostRecentLocation = locations.last? as? CLLocation
+        let mostRecentLocation = locations.last as? CLLocation
         if mostRecentLocation == nil {
             return
         }
@@ -77,13 +77,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if CLLocationManager.headingAvailable() {
             locationManager.startUpdatingHeading()
         } else {
-            fatalError("Heading not available")
+            let alert = UIAlertController(title:  NSLocalizedString("Error", comment: "failed, heading not available"), message: NSLocalizedString("FailedHeading", comment: "failed, heading not available"), preferredStyle: UIAlertControllerStyle.Alert)
+            let navigationController = application.windows[0].rootViewController as! UINavigationController
+            let activeViewController = navigationController.visibleViewController
+            activeViewController.presentViewController(alert, animated: true, completion: nil)
         }
 
         // start getting motion
         motionManager.deviceMotionUpdateInterval = 0.02; // 50 Hz
         if motionManager.deviceMotionAvailable {
-            motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrameXArbitraryCorrectedZVertical, toQueue: NSOperationQueue.mainQueue(), withHandler: { (data: CMDeviceMotion!, error: NSError!) -> Void in
+            motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrame.XArbitraryCorrectedZVertical, toQueue: NSOperationQueue.mainQueue(), withHandler: { (data: CMDeviceMotion!, error: NSError!) -> Void in
                 let q = data.attitude.quaternion
 
                 self.currentPitch = { () -> Double in
