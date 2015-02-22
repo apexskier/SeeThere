@@ -294,19 +294,19 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     }()
 
     func getPitch(pointY: Double) -> Double {
-        let h = (height / Double(effectiveScale)) / 2
+        let h = height / 2
         let a = h / tan(fovVertical / 2)
-        let offset = 2 - pointY
-        let offsetAngle = atan2(offset, a)
+        let offset = h - pointY
+        let offsetAngle = atan2(offset, a) / Double(effectiveScale)
 
         return appDelegate.currentPitch! + offsetAngle
     }
 
     func getDirection(pointX: Double) -> CLLocationDirection {
-        let w = (width / Double(effectiveScale)) / 2
+        let w = width / 2
         let a = w / tan(fovHorizontal / 2)
         let offset = pointX - w
-        let offsetAngle = atan2(offset, a)
+        let offsetAngle = atan2(offset, a) / Double(effectiveScale)
 
         return appDelegate.currentDirection! + offsetAngle
     }
