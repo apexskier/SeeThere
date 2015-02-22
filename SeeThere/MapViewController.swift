@@ -193,13 +193,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             self.presentViewController(alert, animated: true, completion: {
                 println("TODO: go back to camera view controller.")
             })
+        } else {
+            locPin.setCoordinate(spottedLocation!.coordinate)
+            locPin.title = spottedLocation!.description
+
+            mapView.mapType = MKMapType.Hybrid
+            setMapRegion(false)
         }
-
-        locPin.setCoordinate(spottedLocation!.coordinate)
-        locPin.title = spottedLocation!.description
-
-        mapView.mapType = MKMapType.Hybrid
-        setMapRegion(false)
     }
 
     override func viewDidAppear(animated: Bool) {

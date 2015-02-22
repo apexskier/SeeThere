@@ -103,18 +103,11 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         v.frame = self.mainView.bounds
         return v
     }()
-    private lazy var imgPreview: CALayer = {
-        let l = CALayer()
-        l.frame = self.mainView.bounds
-        l.hidden = true
-        return l
-    }()
     private lazy var cameraPreview: AVCaptureVideoPreviewLayer = {
         var layer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as! AVCaptureVideoPreviewLayer
         layer.frame = self.mainView.bounds
         self.mainView.layer.insertSublayer(layer, atIndex: 0)
         self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
-        self.mainView.layer.insertSublayer(self.imgPreview, atIndex: 2)
         return layer
     }()
     private var imgOutput = AVCaptureStillImageOutput()
@@ -207,12 +200,23 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 
+    var baseScale: CGFloat = 1
+    var effectiveScale: CGFloat = 1
     @IBAction func pinchGestureAction(gesture: UIPinchGestureRecognizer) {
-        // TODO: Add zoom simulation
-        if gesture.state == UIGestureRecognizerState.Changed {
+        // Pinch to zoom.
+        if gesture.state == UIGestureRecognizerState.Began {
+            baseScale = effectiveScale
+        } else if gesture.state == UIGestureRecognizerState.Changed {
+            effectiveScale = min(max(1, baseScale * gesture.scale), 8)
+
+            let affineTransform = CGAffineTransformMakeScale(effectiveScale, effectiveScale)
+            cameraPreview.setAffineTransform(affineTransform)
+
+            /* The following should work if hardware zoom is supported.
+            
             let lowerBound = max(1.0, gesture.scale * cameraPreview.connection.videoScaleAndCropFactor)
             let upperBound = min(lowerBound, cameraPreview.connection.videoMaxScaleAndCropFactor)
-            cameraPreview.connection.videoScaleAndCropFactor = upperBound
+            cameraPreview.connection.videoScaleAndCropFactor = upperBound*/
         }
     }
 
@@ -290,18 +294,18 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     }()
 
     func getPitch(pointY: Double) -> Double {
-        let a = (height / 2) / tan(fovVertical / 2)
-
-        let offset = height/2 - pointY
+        let h = (height / Double(effectiveScale)) / 2
+        let a = h / tan(fovVertical / 2)
+        let offset = 2 - pointY
         let offsetAngle = atan2(offset, a)
 
         return appDelegate.currentPitch! + offsetAngle
     }
 
     func getDirection(pointX: Double) -> CLLocationDirection {
-        let a = (width / 2) / tan(fovHorizontal / 2)
-
-        let offset = pointX - width/2
+        let w = (width / Double(effectiveScale)) / 2
+        let a = w / tan(fovHorizontal / 2)
+        let offset = pointX - w
         let offsetAngle = atan2(offset, a)
 
         return appDelegate.currentDirection! + offsetAngle
