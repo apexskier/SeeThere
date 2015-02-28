@@ -109,7 +109,7 @@
 		C5FCB75C1A7C750C00B6607A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C5FCB75B1A7C750C00B6607A /* SeeThere.app */,
+				C5FCB75B1A7C750C00B6607A /* See There.app */,
 				C5FCB7701A7C750C00B6607A /* SeeThereTests.xctest */,
 			);
 			name = Products;
@@ -177,7 +177,7 @@
 			);
 			name = SeeThere;
 			productName = SeeThere;
-			productReference = C5FCB75B1A7C750C00B6607A /* SeeThere.app */;
+			productReference = C5FCB75B1A7C750C00B6607A /* See There.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C5FCB76F1A7C750C00B6607A /* SeeThereTests */ = {
