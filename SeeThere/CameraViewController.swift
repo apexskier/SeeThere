@@ -52,7 +52,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         self.activityIndicator.startAnimating()
     }
 
-    var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
 
     private var locationReady = false
     private var headingReady = false
@@ -104,7 +104,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         return v
     }()
     private lazy var cameraPreview: AVCaptureVideoPreviewLayer = {
-        var layer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as! AVCaptureVideoPreviewLayer
+        var layer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as AVCaptureVideoPreviewLayer
         layer.frame = self.mainView.bounds
         self.mainView.layer.insertSublayer(layer, atIndex: 0)
         self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
@@ -138,7 +138,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("headingUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
             self.headingReady = self.appDelegate.currentDirection != nil
             if self.headingReady {
-                self.headingText.text = NSString(format: "Heading: %.02f", self.appDelegate.currentDirection!) as! String
+                self.headingText.text = NSString(format: "Heading: %.02f", self.appDelegate.currentDirection!) as String
             } else {
                 self.headingText.text = ""
             }
@@ -147,19 +147,19 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("pitchUpdated", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) in
             self.pitchReady = self.appDelegate.currentPitch != nil
             if self.pitchReady {
-                self.pitchText.text = NSString(format: "Pitch: %.02f", self.appDelegate.currentPitch!) as! String
+                self.pitchText.text = NSString(format: "Pitch: %.02f", self.appDelegate.currentPitch!) as String
             } else {
                 self.pitchText.text = ""
             }
 
             if self.appDelegate.currentYaw != nil {
-                self.yawText.text = NSString(format: "Yaw: %.02f", self.appDelegate.currentYaw!) as! String
+                self.yawText.text = NSString(format: "Yaw: %.02f", self.appDelegate.currentYaw!) as String
             } else {
                 self.yawText.text = ""
             }
 
             if self.appDelegate.currentRoll != nil {
-                self.rollText.text = NSString(format: "Roll: %.02f", self.appDelegate.currentRoll!) as! String
+                self.rollText.text = NSString(format: "Roll: %.02f", self.appDelegate.currentRoll!) as String
             } else {
                 self.rollText.text = ""
             }
@@ -180,7 +180,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     lazy var mapViewController: MapViewController = {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let m = storyboard.instantiateViewControllerWithIdentifier("mapViewControllerID") as! MapViewController
+        let m = storyboard.instantiateViewControllerWithIdentifier("mapViewControllerID") as MapViewController
         let done = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "closeMap")
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: m, action: "actionLocation")
         let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
