@@ -156,6 +156,8 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
             let diff = estimate - actual
             let slopeAngle = tan((actual - lastElev) / DISTANCE_STEP)
 
+            NSNotificationCenter.defaultCenter().postNotificationName("progressEvent", object: pointDist / MAX_DISTANCE)
+
             println(" distance: \(loc.distanceFromLocation(start))")
             println("  estimate: \(estimate), actual: \(actual), diff: \(diff)")
             println("  slope: \(slopeAngle)")

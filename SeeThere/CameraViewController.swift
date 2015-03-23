@@ -20,6 +20,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var textField: UILabel!
     @IBOutlet weak var initialInstructions: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var progressBar: UIProgressView!
     @IBOutlet weak var pitchText: UITextField!
     @IBOutlet weak var yawText: UITextField!
     @IBOutlet weak var rollText: UITextField!
@@ -122,6 +123,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         cameraReady = true
         cancelButton.hidden = true
 
+        progressBar.hidden = true
+        progressBar.progress = 0
+
         setUpObservers()
         sayReady()
     }
@@ -165,6 +169,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             }
 
             self.sayReady()
+        }))
+        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("progressEvent", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) -> Void in
+            self.progressBar.progress = notification.object as Float
         }))
     }
 
@@ -232,6 +239,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         self.cameraSession.startRunning()
         self.setUpObservers()
         self.sayReady()
+        self.progressBar.hidden = true
     }
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
@@ -241,7 +249,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
             var tapLocation = sender.locationInView(self.view)
             self.textField.text = NSLocalizedString("Looking", comment: "looking for location")
-            self.activityIndicator.startAnimating()
+            //self.activityIndicator.startAnimating()
+            self.progressBar.progress = 0
+            self.progressBar.hidden = false
             self.working = true
             self.cancelButton.hidden = false
             self.work = NSBlockOperation()

@@ -40,7 +40,7 @@
 			containerPortal = C5FCB7531A7C750C00B6607A /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C5FCB75A1A7C750C00B6607A;
-			remoteInfo = SeeThere;
+			remoteInfo = "See There";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -54,7 +54,7 @@
 		C5D7CB181A817A9200F5823F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		C5D7CB1D1A817E9B00F5823F /* open-in-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "open-in-icon@2x.png"; sourceTree = "<group>"; };
 		C5F2740D1A7EA19700D4CB5D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-		C5FCB75B1A7C750C00B6607A /* SeeThere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeeThere.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C5FCB75B1A7C750C00B6607A /* See There.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "See There.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5FCB75F1A7C750C00B6607A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5FCB7601A7C750C00B6607A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C5FCB7621A7C750C00B6607A /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
@@ -163,9 +163,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C5FCB75A1A7C750C00B6607A /* SeeThere */ = {
+		C5FCB75A1A7C750C00B6607A /* See There */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C5FCB77A1A7C750C00B6607A /* Build configuration list for PBXNativeTarget "SeeThere" */;
+			buildConfigurationList = C5FCB77A1A7C750C00B6607A /* Build configuration list for PBXNativeTarget "See There" */;
 			buildPhases = (
 				C5FCB7571A7C750C00B6607A /* Sources */,
 				C5FCB7581A7C750C00B6607A /* Frameworks */,
@@ -175,8 +175,8 @@
 			);
 			dependencies = (
 			);
-			name = SeeThere;
-			productName = SeeThere;
+			name = "See There";
+			productName = "See There";
 			productReference = C5FCB75B1A7C750C00B6607A /* See There.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -212,7 +212,7 @@
 						DevelopmentTeam = 6D9DLTQJSN;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -235,7 +235,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C5FCB75A1A7C750C00B6607A /* SeeThere */,
+				C5FCB75A1A7C750C00B6607A /* See There */,
 				C5FCB76F1A7C750C00B6607A /* SeeThereTests */,
 			);
 		};
@@ -302,7 +302,7 @@
 /* Begin PBXTargetDependency section */
 		C5FCB7721A7C750C00B6607A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C5FCB75A1A7C750C00B6607A /* SeeThere */;
+			target = C5FCB75A1A7C750C00B6607A /* See There */;
 			targetProxy = C5FCB7711A7C750C00B6607A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -451,7 +451,7 @@
 				INFOPLIST_FILE = SeeThereTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = SeeThereTests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SeeThere.app/SeeThere";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/See There.app/See There";
 			};
 			name = Debug;
 		};
@@ -466,7 +466,7 @@
 				INFOPLIST_FILE = SeeThereTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = SeeThereTests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SeeThere.app/SeeThere";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/See There.app/See There";
 			};
 			name = Release;
 		};
@@ -482,7 +482,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C5FCB77A1A7C750C00B6607A /* Build configuration list for PBXNativeTarget "SeeThere" */ = {
+		C5FCB77A1A7C750C00B6607A /* Build configuration list for PBXNativeTarget "See There" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C5FCB77B1A7C750C00B6607A /* Debug */,
