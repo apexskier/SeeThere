@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Cameron Little. All rights reserved.
 //
 
-import UIKit
 import XCTest
 import CoreLocation
 import CoreMotion
