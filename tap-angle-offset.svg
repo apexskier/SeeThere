@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="292px" height="137px" viewBox="0 0 292 137" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
+    <title>tap-angle-offset</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="199" height="135"></rect>
+        <rect id="path-3" x="0" y="0" width="24" height="6"></rect>
+        <rect id="path-5" x="0" y="0" width="20" height="27"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="tap-angle-offset" sketch:type="MSArtboardGroup">
+            <g sketch:type="MSLayerGroup" transform="translate(1.000000, 1.000000)">
+                <g id="Group">
+                    <rect id="Rectangle-1" stroke="#979797" fill="#D8D8D8" sketch:type="MSShapeGroup" x="0" y="0" width="71" height="135" rx="8"></rect>
+                    <rect id="Rectangle-2" stroke="#979797" fill="#FFFFFF" sketch:type="MSShapeGroup" x="4" y="15" width="64" height="105"></rect>
+                    <path d="M5.27803881,62.1506691 C11.8737402,61.2130764 13.9200267,53.4455224 19.3974702,51.254545 C21.5167635,50.4068277 24.338541,52.2522354 26.9745708,52.2522354 C46.3651646,52.2522354 39.4795957,51.8886763 49.9947455,63.4553411 C51.4746403,65.0832254 56.1526722,63.5416645 58.128897,64.5297769 C61.5051776,66.2179172 63.5250876,69.3183602 66.9528949,69.9778389" id="Path-1" stroke="#979797" sketch:type="MSShapeGroup"></path>
+                    <path d="M43.951691,55.3427477 C55.7682116,51.0459155 55.5268816,44.9816438 67.960933,46.1522685" id="Path-2" stroke="#979797" sketch:type="MSShapeGroup"></path>
+                    <path d="M31.5,67.5 L39.5,67.5" id="Line" stroke="#979797" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+                    <path d="M35.5,71.5 L35.5,63.5" id="Line-2" stroke="#979797" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+                    <circle id="Oval-1" stroke="#00CBFF" fill-opacity="0.200000003" fill="#00CBFF" sketch:type="MSShapeGroup" cx="20" cy="79" r="5"></circle>
+                    <g id="Line-+-Line-2" transform="translate(31.000000, 63.000000)"></g>
+                </g>
+                <g id="Rectangle-6-+-Group" transform="translate(93.000000, 0.000000)">
+                    <mask id="mask-2" sketch:name="Rectangle 6" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Rectangle-6" sketch:type="MSShapeGroup" xlink:href="#path-1"></use>
+                    <g id="Group" mask="url(#mask-2)">
+                        <g transform="translate(6.000000, -38.000000)">
+                            <rect id="Rectangle-3" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="evenodd" sketch:type="MSShapeGroup" x="155" y="38" width="8" height="135"></rect>
+                            <path d="M23.5,105.5 L188.527267,105.5" id="Line" stroke="#C2C2C2" stroke-width="1" stroke-linecap="square" fill="#FFFFFF" fill-rule="evenodd" sketch:type="MSShapeGroup"></path>
+                            <path id="Line-decoration-1" d="M188.5,105.5 C184.72,104.45 181.48,103.55 177.7,102.5 C177.7,104.6 177.7,106.4 177.7,108.5 C181.48,107.45 184.72,106.55 188.5,105.5 C188.5,105.5 188.5,105.5 188.5,105.5 Z" stroke="#C2C2C2" stroke-width="1" stroke-linecap="square" fill="#FFFFFF" fill-rule="evenodd"></path>
+                            <path d="M23.5,105.5 C23.5,105.5 124.902866,114.236247 175.6043,118.60437 C179.069533,118.902914 186,119.5 186,119.5" id="Line-5" stroke="#979797" stroke-width="1" stroke-linecap="square" fill="#FFFFFF" fill-rule="evenodd" sketch:type="MSShapeGroup"></path>
+                            <path id="Line-5-decoration-1" d="M185.900824,119.491456 C182.2171,118.120199 179.071691,116.945876 175.396209,115.57533 C175.215954,117.667579 175.06145,119.460936 174.881194,121.553185 C178.736931,120.831482 182.036845,120.212449 185.900824,119.491456 C185.900824,119.491456 185.900824,119.491456 185.900824,119.491456 Z" stroke="#979797" stroke-width="1" stroke-linecap="square" fill="#FFFFFF" fill-rule="evenodd"></path>
+                            <path d="M23.5,106 L289.5,1" id="Line-3" stroke="#979797" stroke-width="1" stroke-linecap="square" stroke-dasharray="2,6" fill="none" sketch:type="MSShapeGroup"></path>
+                            <path d="M23.5,210 L289.5,105" id="Line-4" stroke="#979797" stroke-width="1" stroke-linecap="square" stroke-dasharray="2,6" fill="none" sketch:type="MSShapeGroup" transform="translate(156.500000, 157.500000) scale(1, -1) translate(-156.500000, -157.500000) "></path>
+                            <path d="M155.5,112.5 L155.5,121.5" id="Line" stroke="#00CAFF" stroke-width="3" fill="none" sketch:type="MSShapeGroup"></path>
+                            <text id="eye" stroke="none" fill="none" sketch:type="MSTextLayer" font-family="Helvetica" font-size="12" font-weight="normal">
+                                <tspan x="0" y="109" fill="#000000">eye</tspan>
+                            </text>
+                            <g id="Group" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSLayerGroup" transform="translate(23.000000, 68.000000)">
+                                <text id="°-offset" sketch:type="MSTextLayer" font-family="Lucida Grande" font-size="8" font-weight="normal" fill="#000000">
+                                    <tspan x="88" y="24">°</tspan>
+                                    <tspan x="91.46875" y="24" font-family="Helvetica"> offset</tspan>
+                                </text>
+                                <path d="M89.5,25.5 L71.5,40.5" id="Line" stroke="#000000" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+                                <g id="Rectangle-5-+-Oval-3" transform="translate(64.000000, 38.000000)">
+                                    <mask id="mask-4" sketch:name="Rectangle 5" fill="white">
+                                        <use xlink:href="#path-3"></use>
+                                    </mask>
+                                    <use id="Rectangle-5" sketch:type="MSShapeGroup" xlink:href="#path-3"></use>
+                                    <ellipse id="Oval-3" stroke="#979797" sketch:type="MSShapeGroup" mask="url(#mask-4)" cx="-63" cy="0" rx="67" ry="57.4285714"></ellipse>
+                                </g>
+                                <text id="°-field-of-view" sketch:type="MSTextLayer" font-family="Lucida Grande" font-size="8" font-weight="normal" fill="#000000">
+                                    <tspan x="0" y="8">°</tspan>
+                                    <tspan x="3.46875" y="8" font-family="Helvetica"> field of view</tspan>
+                                </text>
+                                <path d="M25.5,11.5 L33.5,20.5" id="Line" stroke="#000000" stroke-linecap="square" fill="#D8D8D8" sketch:type="MSShapeGroup"></path>
+                                <g id="Rectangle-4-+-Oval-2" transform="translate(38.000000, 24.000000)">
+                                    <mask id="mask-6" sketch:name="Rectangle 4" fill="white">
+                                        <use xlink:href="#path-5"></use>
+                                    </mask>
+                                    <use id="Rectangle-4" sketch:type="MSShapeGroup" transform="translate(10.000000, 13.500000) scale(-1, 1) translate(-10.000000, -13.500000) " xlink:href="#path-5"></use>
+                                    <circle id="Oval-2" stroke="#979797" sketch:type="MSShapeGroup" mask="url(#mask-6)" cx="-37" cy="14" r="40"></circle>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

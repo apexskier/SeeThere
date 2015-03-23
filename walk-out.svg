@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="377px" height="175px" viewBox="0 0 377 175" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
+    <title>walk-out</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="walk-out" sketch:type="MSArtboardGroup">
+            <g sketch:type="MSLayerGroup" transform="translate(1.000000, -62.000000)">
+                <g id="bg" transform="translate(9.000000, 0.000000)" stroke="#D3D3D3" stroke-linecap="square" opacity="0.15" sketch:type="MSShapeGroup">
+                    <path d="M1.5,48.92 L1.5,323.302195" id="Line"></path>
+                    <path d="M11.5,48.92 L11.5,323.302195" id="Line-3"></path>
+                    <path d="M21.5,48.92 L21.5,323.302195" id="Line-5"></path>
+                    <path d="M31.5,48.92 L31.5,323.302195" id="Line-4"></path>
+                    <path d="M41.5,48.92 L41.5,323.302195" id="Line-9"></path>
+                    <path d="M51.5,48.92 L51.5,323.302195" id="Line-6"></path>
+                    <path d="M61.5,48.92 L61.5,323.302195" id="Line-7"></path>
+                    <path d="M71.5,48.92 L71.5,323.302195" id="Line-8"></path>
+                    <path d="M81.5,48.92 L81.5,323.302195" id="Line-17"></path>
+                    <path d="M91.5,48.92 L91.5,323.302195" id="Line-10"></path>
+                    <path d="M101.5,48.92 L101.5,323.302195" id="Line-11"></path>
+                    <path d="M111.5,48.92 L111.5,323.302195" id="Line-12"></path>
+                    <path d="M121.5,48.92 L121.5,323.302195" id="Line-13"></path>
+                    <path d="M131.5,48.92 L131.5,323.302195" id="Line-14"></path>
+                    <path d="M141.5,48.92 L141.5,323.302195" id="Line-15"></path>
+                    <path d="M151.5,48.92 L151.5,323.302195" id="Line-16"></path>
+                    <path d="M161.5,48.92 L161.5,323.302195" id="Line-33"></path>
+                    <path d="M171.5,48.92 L171.5,323.302195" id="Line-18"></path>
+                    <path d="M181.5,48.92 L181.5,323.302195" id="Line-19"></path>
+                    <path d="M191.5,48.92 L191.5,323.302195" id="Line-20"></path>
+                    <path d="M201.5,48.92 L201.5,323.302195" id="Line-21"></path>
+                    <path d="M211.5,48.92 L211.5,323.302195" id="Line-22"></path>
+                    <path d="M221.5,48.92 L221.5,323.302195" id="Line-23"></path>
+                    <path d="M231.5,0.92 L231.5,275.302195" id="Line-36"></path>
+                    <path d="M241.5,0.92 L241.5,275.302195" id="Line-24"></path>
+                    <path d="M251.5,0.92 L251.5,275.302195" id="Line-25"></path>
+                    <path d="M261.5,0.92 L261.5,275.302195" id="Line-26"></path>
+                    <path d="M271.5,0.92 L271.5,275.302195" id="Line-27"></path>
+                    <path d="M281.5,0.92 L281.5,275.302195" id="Line-34"></path>
+                    <path d="M291.5,0.92 L291.5,275.302195" id="Line-28"></path>
+                    <path d="M301.5,0.92 L301.5,275.302195" id="Line-29"></path>
+                    <path d="M311.5,0.92 L311.5,275.302195" id="Line-30"></path>
+                    <path d="M321.5,0.92 L321.5,275.302195" id="Line-31"></path>
+                    <path d="M331.5,0.92 L331.5,275.302195" id="Line-32"></path>
+                    <path d="M341.5,0.92 L341.5,275.302195" id="Line-35"></path>
+                    <path d="M351.5,0.92 L351.5,275.302195" id="Line-41"></path>
+                    <path d="M361.5,0.92 L361.5,275.302195" id="Line-37"></path>
+                </g>
+                <g id="Line-+-Path-13-+-Line-+-Line-2" transform="translate(2.000000, 96.000000)">
+                    <path d="M0.5,37.5 L397.5,70.5" id="Line" stroke="#979797" stroke-linecap="square" stroke-dasharray="5,4" fill="#FFFFFF" sketch:type="MSShapeGroup"></path>
+                    <path id="Line-decoration-1" d="M397.132093,70.4694183 C393.452065,69.1099005 390.297754,67.9445995 386.617726,66.5850817 C386.443766,68.6778641 386.294658,70.4716775 386.120699,72.5644599 C389.974687,71.8311954 393.278105,71.2026829 397.132093,70.4694183 C397.132093,70.4694183 397.132093,70.4694183 397.132093,70.4694183 Z" stroke="#979797" stroke-linecap="square" stroke-dasharray="5,4" fill="#FFFFFF"></path>
+                    <path d="M0.7195541,53.9631579 C5.34967265,54.1395786 11.1915771,56.2847351 14.3220284,60.4586702 C16.8804057,63.8698399 17.5543298,68.4927579 20.210654,72.0328654 C36.2165927,93.3641258 57.8362056,81.791136 81.1183448,86.4475638 C95.8907398,89.4020428 105.400386,96.4100562 121.316599,93.1461322 C126.971055,91.9865779 140.296457,99.2633912 144.590474,95.5828049 C148.551518,92.1876241 149.433508,82.7342128 155.350163,80.7619943 C160.886696,78.9164834 168.500539,76.0199311 172.404591,70.814529 C183.547208,55.9577063 195.162525,32.8105632 215.598492,35.0812262 C261.466013,40.1776173 254.114971,64.5592217 266.125228,75.0513279 C269.291101,77.8170211 274.891349,78.2387473 278.283494,79.5185611 C284.092858,81.710361 291.757192,84.3882724 299.346567,83.1233765 C315.794727,80.3820165 332.839993,56.5530662 343.199626,53.9631578 C351.877768,51.7936223 354.425792,24.7756115 381.405772,20.5039531 C389.475022,19.2263733 413.995753,-7.43348929 416.163768,3.47364295 C416.329819,4.30903175 401.249963,96.4611552 401.342309,96.6254635 L515.408103,101.35303 L430.117154,158.185683" id="Path-13" stroke="#979797" sketch:type="MSShapeGroup"></path>
+                    <g id="Line-+-Line-2" transform="translate(174.000000, 43.000000)" stroke="#E94F36" stroke-width="3" stroke-linecap="round" sketch:type="MSShapeGroup">
+                        <path d="M6.5,5.5 L14.9852814,13.9852814" id="Line"></path>
+                        <path d="M6.5,13.8137085 L14.9852814,5.32842712" id="Line-2"></path>
+                    </g>
+                </g>
+                <rect id="Rectangle-3" stroke="#979797" fill="#D8D8D8" sketch:type="MSShapeGroup" x="0" y="116" width="4" height="37"></rect>
+                <text id="sightline" sketch:type="MSTextLayer" transform="translate(30.000000, 129.000000) rotate(4.000000) translate(-30.000000, -129.000000) " font-family="Lucida Grande" font-size="8" font-weight="normal" fill="#000000">
+                    <tspan x="13" y="132">sightline</tspan>
+                </text>
+                <text id="ground" sketch:type="MSTextLayer" font-family="Lucida Grande" font-size="8" font-weight="normal" fill="#000000">
+                    <tspan x="36" y="192">ground</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

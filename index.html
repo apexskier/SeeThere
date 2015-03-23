@@ -1,0 +1,130 @@
+<!doctype html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>The Math of See There</title>
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+        img {
+            margin-top: 12px;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <header>
+                    <a href="https://itunes.apple.com/us/app/see-there-reverse-waypoint/id964698587?mt=8"
+                        target="_blank"><img class="pull-right"
+                        src="./icon.svg" height="76px"></a>
+                    <h1>See There</h1>
+                    <p class="lead">A reverse waypoint finding app.</p>
+                </header>
+                <article>
+                    <p>While hiking, I've had the idea several times for a sort of reverse waypoint
+                        finder, an app I can use to find the actual location of a landmark using
+                        the camera. I've seen examples of the opposite, where the latitude and
+                        longitude of a point are specified and a lived marker is displayed over the
+                        camera.</p>
+                    <p>A few weekends ago I decided to use this as an opportunity to dive into iOS
+                        development. I wrote the initial version using swift and the <a
+                            href="https://developers.google.com/maps/documentation/elevation/"
+                            target="_blank">Google elevation api</a>.</p>
+                    <p>This is how it works.</p>
+                    <h3>Overview</h3>
+                    <p>The initial data I need:</p>
+                    <ul>
+                        <li>My current location: latitude, longitude, and elevation</li>
+                        <li>The direction towards the landmark: heading (compass direction), and pitch
+                            (up/down direction)</li>
+                    </ul>
+                    <p>The final data I need:</p>
+                    <ul>
+                        <li>The latitude, longitude, and elevation of the landmark</li>
+                    </ul>
+                    <p>At the high level, the app does the following:</p>
+                    <ol>
+                        <li>Compute a three dimensional vector representing the direction from the
+                            phone to the point of interest.</li>
+                        <li>Walk out along that vector in steps, guessing the elevation at each
+                            point.</li>
+                        <li>Check whether the step intersects with the ground. When it has I'm
+                            done.</li>
+                    </ol>
+                    <h3>Getting the data</h3>
+                    <p>The iOS sdks contain several apis that provide the exact data I need. <a
+                            href="https://developer.apple.com/library/ios/documentation/CoreLocation/Reference/CoreLocation_Framework/"
+                            target="_blank">CoreLocation</a> provides the latitude, longitude,
+                        elevation, and heading of the phone. <a
+                            href="https://developer.apple.com/library/ios/documentation/CoreMotion/Reference/CoreMotion_Reference/"
+                            target="_blank">CoreMotion</a> gives me the pitch of the phone with
+                        respect to a dynamically corrected frame of reference. The z-axis is
+                        equivalent to gravity and the x-axis runs left and right across the phone's
+                        screen.</p>
+                    <h3>Adjustments</h3>
+                    <p>The simple approach here is center the camera on the target, and use those
+                        readings. However, I wanted to be slightly more intelligent by allowing the
+                        user to tap on the exact location they're interested in. I need to
+                        calculate some angular offsets from the "default" direction and adjust.</p>
+                    <p>These offsets can be calculated using trigonometry, given the field of view
+                        and position of the tap. iOS provides the camera's field of view for the
+                        main axis which is adjusted based on the current zoom. The fov for the
+                        other axis can be computed from the device's aspect ratio. One axis' offset
+                        is applied to the pitch, as shown in the diagram, and the other adjusts the
+                        heading.</p>
+                    <p><img class="img-responsive center-block" src="./tap-angle-offset.svg" style="height: 300px"></p>
+                    <h3>Looking</h3>
+                    <p>From the starting position, I need to walk out in the direction I've
+                        found.</p>
+                    <p>In increments of 10 meters we compute a new location and calculate the
+                        actual elevation and elevation along the line of sight. Once the difference
+                        is negative the target location has been found.</p>
+                    <p><img class="img-responsive center-block" src="./walk-out.svg" style="height: 300px"></p>
+                    <p>In each step a custom function calculates a new location from a starting
+                        location, direction, and distance. A simple linear function, <code>starting
+                            altitude + distance * pitch angle</code>, calculates the sightline
+                        elevation. A call to the Google elevation api estimates the actual
+                        elevation of the ground. To maximize network efficiency, the walk out is
+                        chunked, with 512 estimates per api request.</p>
+                    <h3>Fallback</h3>
+                    <p>However, the camera might be pointing above the horizon, or the target is so
+                        far that time becomes an issue. This leads to no intersections, so some
+                        maximum distance must be set as a stopping point.</p>
+                    <p>To return some useful information, the highest peak in view is found during
+                        a second pass. At each step's location the angle from the phone to the
+                        ground is calculated. The highest angle is guaranteed to be the highest
+                        point, as shown in the following diagram.</p>
+                    <p><img class="img-responsive center-block" src="./walk-out-rays.svg" style="height: 300px"></p>
+                    <p>Through the process, I had several ideas that didn't work. One was to use
+                        the maximum elevation encountered in the first pass. This doesn't work when
+                        the phone is angled down. Think about rotating the diagram so the first
+                        peak is above the second.</p>
+                    <h3>Wrap Up</h3>
+                    <p>This was a great exploration of the powerful data that's accessible through
+                        smartphones. It was also a fun and useful way to really dive into iOS
+                        development.</p>
+                    <p>I've had the chance to try this out around my neighborhood and during a few
+                        runs in a nearby state park and it works fairly well. With the current
+                        state of location and accelerometer accuracy, the margin of error is too
+                        high for greatly accurate navigation, but it's a great proof of concept and
+                        does a good job of giving an idea of where a landmark might be.</p>
+                    <footer>
+                        <p>You can view the <a href="https://github.com/apexskier/SeeThere"
+                                target="_blank">source code on GitHub</a>.</p>
+                        <p>Download and try out <a
+                                href="https://itunes.apple.com/us/app/see-there-reverse-waypoint/id964698587?mt=8"
+                                target="_blank">the app</a>.</p>
+                        <p>You should follow me on <a href="https://twitter.com/apexskier" target="_blank">Twitter</a>.</p>
+                    </footer>
+                </article>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
