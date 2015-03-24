@@ -56,7 +56,7 @@ func getElevationAt(coordinate: CLLocationCoordinate2D) -> CLLocationDistance? {
  * Returned locations will be DISTANCE_STEP apart.
  *
  */
-func getElevationPath(start: CLLocation, end: CLLocation) -> ([CLLocation], NSError?) {
+func getElevationPath(start: CLLocation, end: CLLocation, recursionDelay: Int) -> ([CLLocation], NSError?) {
     var ret: [CLLocation] = []
     
     let dist = start.distanceFromLocation(end)
@@ -73,6 +73,9 @@ func getElevationPath(start: CLLocation, end: CLLocation) -> ([CLLocation], NSEr
     var response: NSURLResponse?
     var data = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
     if error != nil {
+        if let description = error?.userInfo?["NSLocalizedDescription"] as? NSString {
+            return (ret, NSError(domain: description, code: 1, userInfo: nil))
+        }
         return (ret, error)
     }
     
@@ -92,8 +95,12 @@ func getElevationPath(start: CLLocation, end: CLLocation) -> ([CLLocation], NSEr
                 }
             }
         } else if responseData?.objectForKey("status") as String == "OVER_QUERY_LIMIT" {
-            // TODO: look into sleeping for 200ms or so
-            return getElevationPath(start, end)
+            // TODO:
+            // wait recursionDelay time (exponential backoff
+            if recursionDelay > 1600 {
+                return (ret, NSError(domain: "Google API Overload", code: 1, userInfo: nil))
+            }
+            return getElevationPath(start, end, recursionDelay * 2)
         } else {
             return (ret, NSError(domain: responseData?.objectForKey("status") as String, code: 1, userInfo: nil))
         }
@@ -142,7 +149,7 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
         // fetch a set of points
         let to = newLocation(start, distance, direction)
         
-        let (pathLocs, error) = getElevationPath(from, to)
+        let (pathLocs, error) = getElevationPath(from, to, 50)
         if error != nil {
             let errMsg = NSLocalizedString("FailedGoogleElev", comment: "couldn't get data from google api")
             return (nil, NSError(domain: "\(errMsg): \(error!.domain)", code: 2, userInfo: nil))
