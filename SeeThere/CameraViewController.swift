@@ -53,7 +53,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         self.activityIndicator.startAnimating()
     }
 
-    var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+    var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 
     private var locationReady = false
     private var headingReady = false
@@ -105,7 +105,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         return v
     }()
     private lazy var cameraPreview: AVCaptureVideoPreviewLayer = {
-        var layer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as AVCaptureVideoPreviewLayer
+        var layer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as! AVCaptureVideoPreviewLayer
         layer.frame = self.mainView.bounds
         self.mainView.layer.insertSublayer(layer, atIndex: 0)
         self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
@@ -171,7 +171,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             self.sayReady()
         }))
         observers.append(NSNotificationCenter.defaultCenter().addObserverForName("progressEvent", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) -> Void in
-            self.progressBar.progress = notification.object as Float
+            self.progressBar.progress = notification.object as! Float
         }))
     }
 
@@ -187,7 +187,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     lazy var mapViewController: MapViewController = {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let m = storyboard.instantiateViewControllerWithIdentifier("mapViewControllerID") as MapViewController
+        let m = storyboard.instantiateViewControllerWithIdentifier("mapViewControllerID") as! MapViewController
         let done = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "closeMap")
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: m, action: "actionLocation")
         let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)

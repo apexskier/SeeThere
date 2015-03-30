@@ -78,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             locationManager.startUpdatingHeading()
         } else {
             let alert = UIAlertController(title:  NSLocalizedString("Error", comment: "failed, heading not available"), message: NSLocalizedString("FailedHeading", comment: "failed, heading not available"), preferredStyle: UIAlertControllerStyle.Alert)
-            let navigationController = application.windows[0].rootViewController as UINavigationController
+            let navigationController = application.windows[0].rootViewController as! UINavigationController
             let activeViewController = navigationController.visibleViewController
             activeViewController.presentViewController(alert, animated: true, completion: nil)
         }
@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // start getting motion
         motionManager.deviceMotionUpdateInterval = 0.02; // 50 Hz
         if motionManager.deviceMotionAvailable {
-            motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrameXArbitraryCorrectedZVertical, toQueue: NSOperationQueue.mainQueue(), withHandler: { (data: CMDeviceMotion!, error: NSError!) -> Void in
+            motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrame.XArbitraryCorrectedZVertical, toQueue: NSOperationQueue.mainQueue(), withHandler: { (data: CMDeviceMotion!, error: NSError!) -> Void in
                 let q = data.attitude.quaternion
 
                 self.currentPitch = { () -> Double in

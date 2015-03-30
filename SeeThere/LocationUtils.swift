@@ -40,11 +40,11 @@ func getElevationAt(coordinate: CLLocationCoordinate2D) -> CLLocationDistance? {
     if (data!.length > 0) {
         var responseData: AnyObject? = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions(0), error: &error)
         
-        if responseData?.objectForKey("status") as String == "OK" {
+        if responseData?.objectForKey("status") as! String == "OK" {
             var results = responseData?.objectForKey("results") as? [AnyObject]
-            var elevation = results?[0].objectForKey("elevation") as Double
+            var elevation = results?[0].objectForKey("elevation") as! Double
             return elevation
-        } else if responseData?.objectForKey("status") as String == "OVER_QUERY_LIMIT" {
+        } else if responseData?.objectForKey("status") as! String == "OVER_QUERY_LIMIT" {
             return getElevationAt(coordinate)
         }
     }
@@ -74,27 +74,27 @@ func getElevationPath(start: CLLocation, end: CLLocation, recursionDelay: Int) -
     var data = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
     if error != nil {
         if let description = error?.userInfo?["NSLocalizedDescription"] as? NSString {
-            return (ret, NSError(domain: description, code: 1, userInfo: nil))
+            return (ret, NSError(domain: description as! String, code: 1, userInfo: nil))
         }
         return (ret, error)
     }
     
     if (data!.length > 0) {
         var responseData: AnyObject? = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions(0), error: &error)
-        if responseData?.objectForKey("status") as String == "OK" {
+        if responseData?.objectForKey("status") as! String == "OK" {
             let now = NSDate()
-            var results = responseData?.objectForKey("results") as [AnyObject]
+            var results = responseData?.objectForKey("results") as! [AnyObject]
             for loc in results {
                 if let rawLocation: AnyObject = loc.objectForKey("location") {
-                    let coord = CLLocationCoordinate2D(latitude: rawLocation.objectForKey("lat") as Double, longitude: rawLocation.objectForKey("lng") as Double)
-                    let elev = loc.objectForKey("elevation") as Double
+                    let coord = CLLocationCoordinate2D(latitude: rawLocation.objectForKey("lat") as! Double, longitude: rawLocation.objectForKey("lng") as! Double)
+                    let elev = loc.objectForKey("elevation") as! Double
                     let location = CLLocation(coordinate: coord, altitude: elev, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: now)
                     ret.append(location)
                 } else {
                     return (ret, NSError(domain: "missing location in results", code: 1, userInfo: nil))
                 }
             }
-        } else if responseData?.objectForKey("status") as String == "OVER_QUERY_LIMIT" {
+        } else if responseData?.objectForKey("status") as! String == "OVER_QUERY_LIMIT" {
             // TODO:
             // wait recursionDelay time (exponential backoff
             if recursionDelay > 1600 {
@@ -102,12 +102,67 @@ func getElevationPath(start: CLLocation, end: CLLocation, recursionDelay: Int) -
             }
             return getElevationPath(start, end, recursionDelay * 2)
         } else {
-            return (ret, NSError(domain: responseData?.objectForKey("status") as String, code: 1, userInfo: nil))
+            return (ret, NSError(domain: responseData?.objectForKey("status") as! String, code: 1, userInfo: nil))
         }
     } else {
         return (ret, NSError(domain: "no data received", code: 1, userInfo: nil))
     }
     
+    return (ret, nil)
+}
+
+func getElevationPath_ArcGIS(start: CLLocation, end: CLLocation, recursionDelay: Int) -> ([CLLocation], NSError?) {
+    var ret: [CLLocation] = []
+
+    let dist = start.distanceFromLocation(end)
+    let samples = Int(dist / DISTANCE_STEP)
+    if samples > 512 {
+        return ([], NSError(domain: "getElevationPath start and end too far apart: \(dist)", code: 4, userInfo: nil))
+    }
+
+    let reqURLString = "https://maps.googleapis.com/maps/api/elevation/json?key=\(googleAPIKey)&path=\(start.coordinate.latitude),\(start.coordinate.longitude)%7C\(end.coordinate.latitude),\(end.coordinate.longitude)&samples=\(samples)"
+    let reqURL = NSURL(string: reqURLString)
+    let request = NSURLRequest(URL: reqURL!)
+
+    var error: NSError?
+    var response: NSURLResponse?
+    var data = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
+    if error != nil {
+        if let description = error?.userInfo?["NSLocalizedDescription"] as? NSString {
+            return (ret, NSError(domain: description as! String, code: 1, userInfo: nil))
+        }
+        return (ret, error)
+    }
+
+    if (data!.length > 0) {
+        var responseData: AnyObject? = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions(0), error: &error)
+        if responseData?.objectForKey("status") as! String == "OK" {
+            let now = NSDate()
+            var results = responseData?.objectForKey("results") as! [AnyObject]
+            for loc in results {
+                if let rawLocation: AnyObject = loc.objectForKey("location") {
+                    let coord = CLLocationCoordinate2D(latitude: rawLocation.objectForKey("lat") as! Double, longitude: rawLocation.objectForKey("lng") as! Double)
+                    let elev = loc.objectForKey("elevation") as! Double
+                    let location = CLLocation(coordinate: coord, altitude: elev, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: now)
+                    ret.append(location)
+                } else {
+                    return (ret, NSError(domain: "missing location in results", code: 1, userInfo: nil))
+                }
+            }
+        } else if responseData?.objectForKey("status") as! String == "OVER_QUERY_LIMIT" {
+            // TODO:
+            // wait recursionDelay time (exponential backoff
+            if recursionDelay > 1600 {
+                return (ret, NSError(domain: "Google API Overload", code: 1, userInfo: nil))
+            }
+            return getElevationPath_ArcGIS(start, end, recursionDelay * 2)
+        } else {
+            return (ret, NSError(domain: responseData?.objectForKey("status") as! String, code: 1, userInfo: nil))
+        }
+    } else {
+        return (ret, NSError(domain: "no data received", code: 1, userInfo: nil))
+    }
+
     return (ret, nil)
 }
 
