@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import CoreData
 import CoreLocation
 import CoreMotion
 import Social
@@ -27,6 +28,13 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var headingText: UITextField!
 
     private var spottedLocation: CLLocation?
+
+    private var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    private var managedObjectContext: NSManagedObjectContext {
+        get {
+            return appDelegate.managedObjectContext
+        }
+    }
 
     func sayReady() {
         if ready {
@@ -52,8 +60,6 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         self.blurView.hidden = false
         self.activityIndicator.startAnimating()
     }
-
-    var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 
     private var locationReady = false
     private var headingReady = false
@@ -170,7 +176,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
             self.sayReady()
         }))
-        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("progressEvent", object: nil, queue: nil, usingBlock: { (notification: NSNotification!) -> Void in
+        observers.append(NSNotificationCenter.defaultCenter().addObserverForName("progressEvent", object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: { (notification: NSNotification!) -> Void in
             self.progressBar.progress = notification.object as! Float
         }))
     }
@@ -247,7 +253,12 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             cancelObservers()
             cameraSession.stopRunning()
 
-            var tapLocation = sender.locationInView(self.view)
+            let tapLocation = sender.locationInView(self.view)
+
+            let location = self.appDelegate.currentLocation!
+            let pitch = self.getPitch(Double(tapLocation.y))
+            let direction = self.getDirection(Double(tapLocation.x))
+
             self.textField.text = NSLocalizedString("Looking", comment: "looking for location")
             //self.activityIndicator.startAnimating()
             self.progressBar.progress = 0
@@ -256,9 +267,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             self.cancelButton.hidden = false
             self.work = NSBlockOperation()
             self.work!.addExecutionBlock({
-                let (loc, error) = walkOutFrom(self.appDelegate.currentLocation!,
-                    self.getDirection(Double(tapLocation.x)),
-                    self.getPitch(Double(tapLocation.y)), self.work!)
+                let (loc, error) = walkOutFrom(location, pitch, direction, self.work!)
 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.working = false
@@ -276,9 +285,11 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                             self.workDone()
                         } else {
                             self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
-                            let alert = UIAlertController(title:  NSLocalizedString("Failed", comment: "failed"), message: error?.domain, preferredStyle: UIAlertControllerStyle.Alert)
-                            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: nil))
-                            self.presentViewController(alert, animated: true, completion: self.workDone)
+                            if let m = error?.domain {
+                                self.askToSave(m, location: location, pitch: pitch, heading: direction, completion: self.workDone)
+                            } else {
+                                self.askToSave("", location: location, pitch: pitch, heading: direction, completion: self.workDone)
+                            }
                         }
                     }
                 })
@@ -310,6 +321,31 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         let offsetAngle = atan2(offset, a) / Double(effectiveScale)
 
         return appDelegate.currentPitch! + offsetAngle
+    }
+
+    func askToSave(message: String, location: CLLocation, pitch: Double, heading: Double, completion: (() -> Void)) {
+        var mes: String
+        if message == "" {
+            mes = NSLocalizedString("SaveQMessage", comment: "asking for save") + message
+        } else {
+            mes = NSLocalizedString("SaveQMessageFailed", comment: "asking for save after failure") + message
+        }
+        let alert = UIAlertController(title: NSLocalizedString("SaveQTitle", comment: "ask to save"), message: mes, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: "okay"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+            //TODO: Save the data I need
+            let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
+            new.location = location
+            new.heading = heading
+            new.pitch = pitch
+
+            var error: NSError?
+            if !self.managedObjectContext.save(&error) {
+                //DEBUG
+                fatalError("Error saving: \(error)")
+            }
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: "no"), style: UIAlertActionStyle.Destructive, handler: nil))
+        self.presentViewController(alert, animated: true) {}
     }
 
     func getDirection(pointX: Double) -> CLLocationDirection {

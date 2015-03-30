@@ -7,9 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C506E2861ACA061D005CC002 /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2851ACA061D005CC002 /* PageController.swift */; };
+		C506E28F1ACA0F4F005CC002 /* FoundLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */; };
+		C506E2911ACA0F50005CC002 /* LocationInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2901ACA0F50005CC002 /* LocationInformation.swift */; };
+		C506E2931ACA0FC9005CC002 /* FoundLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */; };
+		C506E2941ACA0FCC005CC002 /* LocationInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2901ACA0F50005CC002 /* LocationInformation.swift */; };
+		C506E2971ACA11D3005CC002 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2961ACA11D3005CC002 /* CoreDataManager.swift */; };
+		C506E2981ACA1219005CC002 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2961ACA11D3005CC002 /* CoreDataManager.swift */; };
 		C51C94161A7F1B2700F5B49D /* locationspotter.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C51C94151A7F1B2700F5B49D /* locationspotter.gpx */; };
 		C51C94181A80002800F5B49D /* Private.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51C94171A80002800F5B49D /* Private.swift */; };
 		C51C94191A80002800F5B49D /* Private.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51C94171A80002800F5B49D /* Private.swift */; };
+		C5672DBC1AC9EC2D0013E2D4 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C5672DBA1AC9EC2D0013E2D4 /* Model.xcdatamodeld */; };
 		C57B50AD1A81A93600D477E1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C57B50AC1A81A93600D477E1 /* Localizable.strings */; };
 		C5D7CB121A81707C00F5823F /* GPX.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7CB111A81707C00F5823F /* GPX.swift */; };
 		C5D7CB131A8171D100F5823F /* GPX.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7CB111A81707C00F5823F /* GPX.swift */; };
@@ -45,8 +53,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C506E2851ACA061D005CC002 /* PageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageController.swift; sourceTree = "<group>"; };
+		C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundLocation.swift; sourceTree = "<group>"; };
+		C506E2901ACA0F50005CC002 /* LocationInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationInformation.swift; sourceTree = "<group>"; };
+		C506E2961ACA11D3005CC002 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		C51C94151A7F1B2700F5B49D /* locationspotter.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = locationspotter.gpx; sourceTree = "<group>"; };
 		C51C94171A80002800F5B49D /* Private.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Private.swift; sourceTree = "<group>"; };
+		C5672DBB1AC9EC2D0013E2D4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		C57B50AC1A81A93600D477E1 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		C5D7CB111A81707C00F5823F /* GPX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPX.swift; sourceTree = "<group>"; };
 		C5D7CB141A81766E00F5823F /* OpenInActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInActivity.swift; sourceTree = "<group>"; };
@@ -118,9 +131,14 @@
 		C5FCB75D1A7C750C00B6607A /* SeeThere */ = {
 			isa = PBXGroup;
 			children = (
+				C506E2901ACA0F50005CC002 /* LocationInformation.swift */,
+				C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */,
+				C5672DBA1AC9EC2D0013E2D4 /* Model.xcdatamodeld */,
 				C5FCB7621A7C750C00B6607A /* CameraViewController.swift */,
 				C5F2740D1A7EA19700D4CB5D /* MapViewController.swift */,
 				C5FCB7601A7C750C00B6607A /* AppDelegate.swift */,
+				C506E2961ACA11D3005CC002 /* CoreDataManager.swift */,
+				C506E2851ACA061D005CC002 /* PageController.swift */,
 				C5D7CB111A81707C00F5823F /* GPX.swift */,
 				C5D7CB141A81766E00F5823F /* OpenInActivity.swift */,
 				C5FCB7811A7D45B200B6607A /* LocationUtils.swift */,
@@ -274,7 +292,12 @@
 			files = (
 				C5FCB7821A7D45B200B6607A /* LocationUtils.swift in Sources */,
 				C5FCB7631A7C750C00B6607A /* CameraViewController.swift in Sources */,
+				C506E2861ACA061D005CC002 /* PageController.swift in Sources */,
+				C506E2911ACA0F50005CC002 /* LocationInformation.swift in Sources */,
+				C506E28F1ACA0F4F005CC002 /* FoundLocation.swift in Sources */,
 				C5FCB7611A7C750C00B6607A /* AppDelegate.swift in Sources */,
+				C506E2971ACA11D3005CC002 /* CoreDataManager.swift in Sources */,
+				C5672DBC1AC9EC2D0013E2D4 /* Model.xcdatamodeld in Sources */,
 				C5D7CB151A81766E00F5823F /* OpenInActivity.swift in Sources */,
 				C5F2740E1A7EA19700D4CB5D /* MapViewController.swift in Sources */,
 				C51C94181A80002800F5B49D /* Private.swift in Sources */,
@@ -287,13 +310,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5F2740F1A7EA5C300D4CB5D /* AppDelegate.swift in Sources */,
+				C506E2941ACA0FCC005CC002 /* LocationInformation.swift in Sources */,
 				C5FCB7831A7D45B800B6607A /* LocationUtils.swift in Sources */,
 				C5FCB7801A7D44E100B6607A /* CameraViewController.swift in Sources */,
 				C5D7CB131A8171D100F5823F /* GPX.swift in Sources */,
 				C5F274101A7EA5EA00D4CB5D /* MapViewController.swift in Sources */,
 				C5D7CB1A1A817C4600F5823F /* OpenInActivity.swift in Sources */,
+				C506E2931ACA0FC9005CC002 /* FoundLocation.swift in Sources */,
 				C5FCB7771A7C750C00B6607A /* SeeThereTests.swift in Sources */,
 				C51C94191A80002800F5B49D /* Private.swift in Sources */,
+				C506E2981ACA1219005CC002 /* CoreDataManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +436,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = SeeThere/Info.plist;
@@ -417,6 +444,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "See There";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -425,6 +453,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = SeeThere/Info.plist;
@@ -501,6 +530,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C5672DBA1AC9EC2D0013E2D4 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C5672DBB1AC9EC2D0013E2D4 /* Model.xcdatamodel */,
+			);
+			currentVersion = C5672DBB1AC9EC2D0013E2D4 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C5FCB7531A7C750C00B6607A /* Project object */;
 }

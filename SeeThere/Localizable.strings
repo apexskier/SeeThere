@@ -15,6 +15,8 @@
 "Error" = "Error";
 "OK" = "OK";
 "Cancel" = "Cancel";
+"Yes" = "Yes";
+"No" = "No";
 
 // Messages
 "FailedLocationMessage" = "Failed to find a location.";
@@ -25,6 +27,9 @@
 "FailedCamera" = "Couldn't set up the camera.";
 "FailedMapLocation" = "Map view missing a location.";
 "Instructions" = "Tap somewhere to find a location.";
+"SaveQTitle" = "Save for later?";
+"SaveQMessage" = "Would you like to save this to try later?";
+"SaveQMessageFailed" = "Something went wrong. Would you like to save this to try later?\nDetails: ";
 
 // Actions
 "OpenMaps" = "Open in Maps";

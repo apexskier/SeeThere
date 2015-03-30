@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7517.1" systemVersion="14D105g" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="FoundLocation" representedClassName="FoundLocation" syncable="YES">
+        <attribute name="elevation" attributeType="Double" syncable="YES"/>
+        <attribute name="latitude" attributeType="Double" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" syncable="YES"/>
+        <relationship name="information" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocationInformation" inverseName="foundLocation" inverseEntity="LocationInformation" syncable="YES"/>
+    </entity>
+    <entity name="LocationInformation" representedClassName="LocationInformation" syncable="YES">
+        <attribute name="elevation" attributeType="Double" syncable="YES"/>
+        <attribute name="heading" attributeType="Double" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="latitude" attributeType="Double" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" syncable="YES"/>
+        <attribute name="pitch" attributeType="Double" syncable="YES"/>
+        <relationship name="foundLocation" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="FoundLocation" inverseName="information" inverseEntity="FoundLocation" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="FoundLocation" positionX="-45" positionY="36" width="128" height="105"/>
+        <element name="LocationInformation" positionX="-63" positionY="-18" width="128" height="150"/>
+    </elements>
+</model>

@@ -9,6 +9,7 @@
 import UIKit
 import CoreLocation
 import CoreMotion
+import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
@@ -23,6 +24,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     let locationManager = CLLocationManager()
     let motionManager = CMMotionManager()
+
+    /// Managed object context for the view controller (which is bound to the persistent store coordinator for the application).
+    lazy var managedObjectContext: NSManagedObjectContext = {
+        let moc = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        moc.persistentStoreCoordinator = CoreDataManager.sharedManager.persistentStoreCoordinator
+        return moc
+    }()
 
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
         let mostRecentLocation = locations.last as? CLLocation
