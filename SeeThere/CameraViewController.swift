@@ -276,7 +276,30 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                     if error == nil || error?.code == 0 && !self.work!.cancelled {
                         self.spottedLocation = loc
                         self.mapViewController.spottedLocation = loc
+                        self.mapViewController.information.location = location
+                        self.mapViewController.information.pitch = pitch
+                        self.mapViewController.information.direction = direction
                         self.textField.text = NSLocalizedString("Found", comment: "found a location")
+
+                        //TODO: Save the data I need
+                        let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
+                        new.location = location
+                        new.heading = direction
+                        new.pitch = pitch
+                        new.dateTime = NSDate()
+
+                        if loc != nil {
+                            let found = NSEntityDescription.insertNewObjectForEntityForName("FoundLocation", inManagedObjectContext: self.managedObjectContext) as! FoundLocation
+                            found.location = loc!
+                            new.foundLocation = found
+                        }
+
+                        var error: NSError?
+                        if !self.managedObjectContext.save(&error) {
+                            //DEBUG
+                            fatalError("Error saving: \(error)")
+                        }
+
                         self.presentViewController(self.mapViewNavController, animated: true, completion: {
                             self.workDone()
                         })
@@ -337,7 +360,8 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             new.location = location
             new.heading = heading
             new.pitch = pitch
-
+            new.dateTime = NSDate()
+            
             var error: NSError?
             if !self.managedObjectContext.save(&error) {
                 //DEBUG

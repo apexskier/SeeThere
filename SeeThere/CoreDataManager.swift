@@ -30,10 +30,10 @@ class CoreDataManager {
     /// The managed object model for the application.
     lazy var managedObjectModel: NSManagedObjectModel = {
         // This property is not optional. It is a fatal error for the application not to be able to find and load its model.
-        let modelURL = NSBundle.mainBundle().URLForResource("DataStore", withExtension: "momd")!
+        let modelURL = NSBundle.mainBundle().URLForResource("Model", withExtension: "momd")!
 
         return NSManagedObjectModel(contentsOfURL: modelURL)!
-        }()
+    }()
 
     /// Primary persistent store coordinator for the application.
     lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator? = {

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Cameron Little. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import CoreData
 import CoreLocation
 
@@ -18,7 +18,8 @@ class LocationInformation: NSManagedObject {
     @NSManaged var latitude: Double
     @NSManaged var longitude: Double
     @NSManaged var pitch: Double
-    @NSManaged var foundLocation: FoundLocation
+    @NSManaged var foundLocation: FoundLocation?
+    @NSManaged var dateTime: NSDate
 
     var location: CLLocation {
         get {

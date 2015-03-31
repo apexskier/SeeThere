@@ -7,6 +7,7 @@
         <relationship name="information" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocationInformation" inverseName="foundLocation" inverseEntity="LocationInformation" syncable="YES"/>
     </entity>
     <entity name="LocationInformation" representedClassName="LocationInformation" syncable="YES">
+        <attribute name="dateTime" attributeType="Date" syncable="YES"/>
         <attribute name="elevation" attributeType="Double" syncable="YES"/>
         <attribute name="heading" attributeType="Double" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
@@ -17,6 +18,6 @@
     </entity>
     <elements>
         <element name="FoundLocation" positionX="-45" positionY="36" width="128" height="105"/>
-        <element name="LocationInformation" positionX="-63" positionY="-18" width="128" height="150"/>
+        <element name="LocationInformation" positionX="-63" positionY="-18" width="128" height="165"/>
     </elements>
 </model>

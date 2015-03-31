@@ -14,6 +14,7 @@
 		C506E2941ACA0FCC005CC002 /* LocationInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2901ACA0F50005CC002 /* LocationInformation.swift */; };
 		C506E2971ACA11D3005CC002 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2961ACA11D3005CC002 /* CoreDataManager.swift */; };
 		C506E2981ACA1219005CC002 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2961ACA11D3005CC002 /* CoreDataManager.swift */; };
+		C506E29A1ACA1661005CC002 /* SavedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2991ACA1661005CC002 /* SavedViewController.swift */; };
 		C51C94161A7F1B2700F5B49D /* locationspotter.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C51C94151A7F1B2700F5B49D /* locationspotter.gpx */; };
 		C51C94181A80002800F5B49D /* Private.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51C94171A80002800F5B49D /* Private.swift */; };
 		C51C94191A80002800F5B49D /* Private.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51C94171A80002800F5B49D /* Private.swift */; };
@@ -57,6 +58,7 @@
 		C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundLocation.swift; sourceTree = "<group>"; };
 		C506E2901ACA0F50005CC002 /* LocationInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationInformation.swift; sourceTree = "<group>"; };
 		C506E2961ACA11D3005CC002 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		C506E2991ACA1661005CC002 /* SavedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedViewController.swift; sourceTree = "<group>"; };
 		C51C94151A7F1B2700F5B49D /* locationspotter.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = locationspotter.gpx; sourceTree = "<group>"; };
 		C51C94171A80002800F5B49D /* Private.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Private.swift; sourceTree = "<group>"; };
 		C5672DBB1AC9EC2D0013E2D4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
@@ -134,11 +136,12 @@
 				C506E2901ACA0F50005CC002 /* LocationInformation.swift */,
 				C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */,
 				C5672DBA1AC9EC2D0013E2D4 /* Model.xcdatamodeld */,
+				C506E2851ACA061D005CC002 /* PageController.swift */,
 				C5FCB7621A7C750C00B6607A /* CameraViewController.swift */,
 				C5F2740D1A7EA19700D4CB5D /* MapViewController.swift */,
+				C506E2991ACA1661005CC002 /* SavedViewController.swift */,
 				C5FCB7601A7C750C00B6607A /* AppDelegate.swift */,
 				C506E2961ACA11D3005CC002 /* CoreDataManager.swift */,
-				C506E2851ACA061D005CC002 /* PageController.swift */,
 				C5D7CB111A81707C00F5823F /* GPX.swift */,
 				C5D7CB141A81766E00F5823F /* OpenInActivity.swift */,
 				C5FCB7811A7D45B200B6607A /* LocationUtils.swift */,
@@ -300,6 +303,7 @@
 				C5672DBC1AC9EC2D0013E2D4 /* Model.xcdatamodeld in Sources */,
 				C5D7CB151A81766E00F5823F /* OpenInActivity.swift in Sources */,
 				C5F2740E1A7EA19700D4CB5D /* MapViewController.swift in Sources */,
+				C506E29A1ACA1661005CC002 /* SavedViewController.swift in Sources */,
 				C51C94181A80002800F5B49D /* Private.swift in Sources */,
 				C5D7CB121A81707C00F5823F /* GPX.swift in Sources */,
 			);

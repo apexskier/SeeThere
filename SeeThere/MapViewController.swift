@@ -11,6 +11,12 @@ import CoreLocation
 import MapKit
 import AddressBookUI
 
+struct Information {
+    var location: CLLocation
+    var pitch: Double
+    var direction: Double
+}
+
 class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet var mapView: MKMapView!
@@ -26,6 +32,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         mapView.addAnnotation(locPin)
     }
+
+    var information: Information = Information(location: CLLocation(), pitch: 0, direction: 0)
 
     func switchMapStyle(animated: Bool) {
         if mapView.mapType == MKMapType.Standard {
