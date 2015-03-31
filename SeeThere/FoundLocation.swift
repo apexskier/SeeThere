@@ -10,6 +10,7 @@ import Foundation
 import CoreData
 import CoreLocation
 
+@objc(FoundLocation)
 class FoundLocation: NSManagedObject {
 
     @NSManaged var elevation: Double

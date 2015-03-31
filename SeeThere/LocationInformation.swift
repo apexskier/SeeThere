@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import CoreLocation
 
+@objc(LocationInformation)
 class LocationInformation: NSManagedObject {
 
     @NSManaged var elevation: Double

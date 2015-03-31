@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C50146031ACB091500C078E1 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C5672DBA1AC9EC2D0013E2D4 /* Model.xcdatamodeld */; };
 		C506E2861ACA061D005CC002 /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2851ACA061D005CC002 /* PageController.swift */; };
 		C506E28F1ACA0F4F005CC002 /* FoundLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */; };
 		C506E2911ACA0F50005CC002 /* LocationInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2901ACA0F50005CC002 /* LocationInformation.swift */; };
@@ -324,6 +325,7 @@
 				C5FCB7771A7C750C00B6607A /* SeeThereTests.swift in Sources */,
 				C51C94191A80002800F5B49D /* Private.swift in Sources */,
 				C506E2981ACA1219005CC002 /* CoreDataManager.swift in Sources */,
+				C50146031ACB091500C078E1 /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

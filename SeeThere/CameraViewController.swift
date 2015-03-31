@@ -281,7 +281,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                         self.mapViewController.information.direction = direction
                         self.textField.text = NSLocalizedString("Found", comment: "found a location")
 
-                        //TODO: Save the data I need
+                        // TODO: Save the data I need
                         let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
                         new.location = location
                         new.heading = direction
