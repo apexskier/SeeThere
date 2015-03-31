@@ -11,7 +11,7 @@ import CoreLocation
 
 class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIGestureRecognizerDelegate {
 
-    let pageIds: NSArray = ["CameraView", "SavedView"]
+    let pageIds: NSArray = ["CameraView", "SavedViewNav"]
     var index = 0
 
     var panDelegate: UIGestureRecognizerDelegate?
@@ -33,7 +33,7 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
         case 0:
             return self.storyboard?.instantiateViewControllerWithIdentifier("CameraView") as! UIViewController
         case 1:
-            return self.storyboard?.instantiateViewControllerWithIdentifier("SavedView") as! UIViewController
+            return self.storyboard?.instantiateViewControllerWithIdentifier("SavedViewNav") as! UIViewController
         default:
             return nil
         }
@@ -103,5 +103,11 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
     func closeMap() {
         self.dismissViewControllerAnimated(true, completion:
             nextCompletion)
+    }
+
+    func selectCamera() {
+        index = 0
+        let view = viewControllerAtIndex(index)
+        setViewControllers([view], direction: UIPageViewControllerNavigationDirection.Reverse, animated: true, completion: nil)
     }
 }

@@ -166,9 +166,11 @@ extension UIViewController {
             if !moc.save(&error) {
                 self.alertError("Error saving: \(error)") {}
             }
+            completion()
         }))
         alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: "no"), style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) -> Void in
             moc.reset()
+            completion()
         }))
 
         self.presentViewController(alert, animated: true) {}

@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class SavedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate {
+class SavedViewController: UITableViewController, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate {
 
     private var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     private var managedObjectContext: NSManagedObjectContext {
@@ -18,8 +18,11 @@ class SavedViewController: UIViewController, UITableViewDataSource, UITableViewD
         }
     }
 
-    @IBOutlet weak var table: UITableView!
-    @IBOutlet weak var bottomToolbar: UIToolbar!
+    lazy private var pageController: PageController = {
+        return self.navigationController!.parentViewController as! PageController
+    }()
+
+    @IBOutlet var table: UITableView!
 
     private var data: [LocationInformation] {
         var error: NSError?
@@ -37,22 +40,64 @@ class SavedViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
 
     override func viewDidLoad() {
-        self.table.dataSource = self
-        self.table.delegate = self
+        table.delegate = self
+        table.dataSource = self
 
-        let backButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Rewind, target: self, action: nil)
+        table.allowsMultipleSelectionDuringEditing = true
+        table.allowsSelectionDuringEditing = true
 
-        let buttons = [backButton]
+        navigationItem.title = "Saved Locations"
 
-        //topNavigation.items = buttons
-        //bottomToolbar.items = buttons
+        setControls()
     }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
+    func setControls() {
+        let backButton = UIBarButtonItem(title: "Camera", style: .Plain, target: pageController, action: "selectCamera")
+        navigationItem.leftBarButtonItem = backButton
+
+        let editButton = UIBarButtonItem(title: "Edit", style: .Plain, target: self, action: "edit")
+        navigationItem.rightBarButtonItem = editButton
+    }
+
+    private var oldDataSource: UIPageViewControllerDataSource?
+
+    func edit() {
+        oldDataSource = pageController.dataSource
+        pageController.dataSource = nil
+        let doneButton = UIBarButtonItem(title: "Done", style: .Done, target: self, action: "doneEditing")
+        navigationItem.rightBarButtonItem = doneButton
+
+        let deleteButton = UIBarButtonItem(title: "Delete", style: UIBarButtonItemStyle.Plain, target: self, action: "deleteMultiple")
+        navigationItem.leftBarButtonItem = deleteButton
+        table.setEditing(true, animated: true)
+    }
+    func doneEditing() {
+        pageController.dataSource = oldDataSource
+        setControls()
+        table.setEditing(false, animated: true)
+    }
+
+    func deleteMultiple() {
+        if let selected = self.table.indexPathsForSelectedRows() as? [NSIndexPath] {
+            var toDelete = [LocationInformation]()
+            for selection in selected {
+                toDelete.append(data[selection.item])
+            }
+            for item in toDelete {
+                managedObjectContext.deleteObject(item)
+            }
+            table.deleteRowsAtIndexPaths(selected, withRowAnimation: UITableViewRowAnimation.Automatic)
+
+            var error: NSError?
+            managedObjectContext.save(&error)
+        }
+    }
+
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.data.count
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let idx = indexPath.item
         let li = data[idx]
         let id = li.dateTime.description
@@ -81,11 +126,11 @@ class SavedViewController: UIViewController, UITableViewDataSource, UITableViewD
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     */
 
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
 
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
             managedObjectContext.deleteObject(data[indexPath.item])
 
@@ -99,12 +144,15 @@ class SavedViewController: UIViewController, UITableViewDataSource, UITableViewD
         }
     }
 
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         // TODO: display map view
+        if table.editing {
+            return
+        }
+
         let locationInformation = data[indexPath.item]
 
         if let location = locationInformation.foundLocation?.location {
-            let pageController = self.parentViewController as! PageController
             pageController.displayMap(location) {
                 tableView.deselectRowAtIndexPath(indexPath, animated: true)
             }
@@ -145,8 +193,7 @@ class SavedViewController: UIViewController, UITableViewDataSource, UITableViewD
                         self.table.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
                         tableView.deselectRowAtIndexPath(indexPath, animated: true)
 
-                        /*let pageController = self.parentViewController as! PageController
-                        pageController.displayMap(loc!) {
+                        /*pageController.displayMap(loc!) {
                             tableView.deselectRowAtIndexPath(indexPath, animated: true)
                         }*/
                     } else {
