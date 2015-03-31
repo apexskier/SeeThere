@@ -51,6 +51,11 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
         setControls()
     }
 
+    override func viewWillAppear(animated: Bool) {
+        managedObjectContext.reset()
+        table.reloadData()
+    }
+
     func setControls() {
         let backButton = UIBarButtonItem(title: "Camera", style: .Plain, target: pageController, action: "selectCamera")
         navigationItem.leftBarButtonItem = backButton
@@ -110,21 +115,12 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
         cell.textLabel?.text = li.name
         cell.detailTextLabel?.text = "\(li.latitude), \(li.longitude)"
         if li.foundLocation == nil {
-            cell.backgroundColor = appDelegate.window?.tintColor
+            cell.backgroundColor = UIColor(red: 0.9921568627, green: 0.8588235294, blue: 0.1254901961, alpha: 0.3)
         }
         let image = UIImage(data: li.image)
         cell.imageView?.image = image
         return cell
     }
-
-    /*
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-
-    // Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
-    // Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
-
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
-    */
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
@@ -157,14 +153,9 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
                 tableView.deselectRowAtIndexPath(indexPath, animated: true)
             }
         } else {
-
-
-
             let location = locationInformation.location
             let pitch = locationInformation.pitch
             let direction = locationInformation.heading
-
-
 
             let work = NSBlockOperation()
             work.addExecutionBlock({

@@ -312,6 +312,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                         })
                     } else {
                         if self.work!.cancelled {
+                            self.managedObjectContext.reset()
                             self.workDone()
                         } else {
                             self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
