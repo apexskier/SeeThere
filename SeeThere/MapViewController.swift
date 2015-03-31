@@ -197,11 +197,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     override func viewWillAppear(animated: Bool) {
         if spottedLocation == nil {
-            let alert = UIAlertController(title:  NSLocalizedString("Error", comment: "failed"), message: NSLocalizedString("FailedMapLocation", comment: "error, no location on map"), preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: nil))
-            self.presentViewController(alert, animated: true, completion: {
-                println("TODO: go back to camera view controller.")
-            })
+            alertError(NSLocalizedString("FailedMapLocation", comment: "error, no location on map")) {
+                //TODO: go back to camera view controller.
+            }
         } else {
             locPin.setCoordinate(spottedLocation!.coordinate)
             locPin.title = spottedLocation!.description
@@ -211,13 +209,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidDisappear(animated: Bool) {
+        spottedLocation = nil
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 }
 

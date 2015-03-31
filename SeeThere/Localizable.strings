@@ -27,8 +27,8 @@
 "FailedCamera" = "Couldn't set up the camera.";
 "FailedMapLocation" = "Map view missing a location.";
 "Instructions" = "Tap somewhere to find a location.";
-"SaveQTitle" = "Save for later?";
-"SaveQMessage" = "Would you like to save this to try later?";
+"SaveQTitle" = "Save?";
+"SaveQMessage" = "Save this location?";
 "SaveQMessageFailed" = "Something went wrong. Would you like to save this to try later?\nDetails: ";
 
 // Actions

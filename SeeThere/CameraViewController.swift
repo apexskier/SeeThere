@@ -14,6 +14,36 @@ import CoreMotion
 import Social
 import MapKit
 
+/*func imageFromSampleBuffer(sampleBuffer: CMSampleBufferRef) -> UIImage {
+    let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+    CVPixelBufferLockBaseAddress(imageBuffer, 0)
+
+    // Get the number of bytes per row for the pixel buffer
+    let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
+
+    // Get the number of bytes per row for the pixel buffer
+    let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+    // Get the pixel buffer width and height
+    let width = CVPixelBufferGetWidth(imageBuffer)
+    let height = CVPixelBufferGetHeight(imageBuffer)
+
+    // Create a device-dependent RGB color space
+    let colorSpace = CGColorSpaceCreateDeviceRGB()
+
+    // Create a bitmap graphics context with the sample buffer data
+    let context = CGBitmapContextCreate(baseAddress, width, height, 8,
+        bytesPerRow, colorSpace, CGBitmapInfo.ByteOrder32Little/* | CGImageAlphaInfo.PremultipliedFirst*/)
+    // Create a Quartz image from the pixel data in the bitmap graphics context
+    let quartzImage = CGBitmapContextCreateImage(context)
+    // Unlock the pixel buffer
+    CVPixelBufferUnlockBaseAddress(imageBuffer, 0)
+
+    // Create an image object from the Quartz image
+    let image = UIImage(CGImage: quartzImage)!
+
+    return image
+}*/
+
 class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet var mainView: UIView!
@@ -26,8 +56,6 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var yawText: UITextField!
     @IBOutlet weak var rollText: UITextField!
     @IBOutlet weak var headingText: UITextField!
-
-    private var spottedLocation: CLLocation?
 
     private var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     private var managedObjectContext: NSManagedObjectContext {
@@ -78,7 +106,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     private lazy var camera: AVCaptureDevice = {
         let c = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
         if c == nil {
-            fatalError(NSLocalizedString("FailedCamera", comment: "failed, camera error"))
+            self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) {}
         }
         var error: NSError?
         c.lockForConfiguration(&error)
@@ -191,24 +219,6 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         return ready
     }
 
-    lazy var mapViewController: MapViewController = {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let m = storyboard.instantiateViewControllerWithIdentifier("mapViewControllerID") as! MapViewController
-        let done = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "closeMap")
-        let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: m, action: "actionLocation")
-        let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let switchMap = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.PageCurl, target: m, action: "switchMapStyle")
-
-        m.navigationItem.leftBarButtonItem = done
-        m.toolbarItems = [flex, share, flex, switchMap]
-        return m
-    }()
-    lazy var mapViewNavController: UINavigationController = {
-        let n = UINavigationController(rootViewController: self.mapViewController)
-        n.toolbarHidden = false
-        return n
-    }()
-
     func closeMap() {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -249,6 +259,12 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
+            UIGraphicsBeginImageContext(cameraPreview.frame.size)
+            cameraPreview.renderInContext(UIGraphicsGetCurrentContext())
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            let imageData = UIImageJPEGRepresentation(image, 80)
+
             initialInstructions.hidden = true
             cancelObservers()
             cameraSession.stopRunning()
@@ -270,23 +286,19 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                 let (loc, error) = walkOutFrom(location, pitch, direction, self.work!)
 
                 dispatch_async(dispatch_get_main_queue(), {
+                    let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
+                    new.location = location
+                    new.heading = direction
+                    new.pitch = pitch
+                    new.dateTime = NSDate()
+                    new.image = imageData
+                    new.name = new.dateTime.description
+
                     self.working = false
                     self.cancelButton.hidden = true
 
                     if error == nil || error?.code == 0 && !self.work!.cancelled {
-                        self.spottedLocation = loc
-                        self.mapViewController.spottedLocation = loc
-                        self.mapViewController.information.location = location
-                        self.mapViewController.information.pitch = pitch
-                        self.mapViewController.information.direction = direction
                         self.textField.text = NSLocalizedString("Found", comment: "found a location")
-
-                        // TODO: Save the data I need
-                        let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
-                        new.location = location
-                        new.heading = direction
-                        new.pitch = pitch
-                        new.dateTime = NSDate()
 
                         if loc != nil {
                             let found = NSEntityDescription.insertNewObjectForEntityForName("FoundLocation", inManagedObjectContext: self.managedObjectContext) as! FoundLocation
@@ -294,14 +306,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                             new.foundLocation = found
                         }
 
-                        var error: NSError?
-                        if !self.managedObjectContext.save(&error) {
-                            //DEBUG
-                            fatalError("Error saving: \(error)")
-                        }
-
-                        self.presentViewController(self.mapViewNavController, animated: true, completion: {
-                            self.workDone()
+                        let pageController = self.parentViewController as! PageController
+                        pageController.displayMap(loc!, completion: {
+                            self.askToSave(self.managedObjectContext, message: "", object: new, completion: self.workDone)
                         })
                     } else {
                         if self.work!.cancelled {
@@ -309,9 +316,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                         } else {
                             self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
                             if let m = error?.domain {
-                                self.askToSave(m, location: location, pitch: pitch, heading: direction, completion: self.workDone)
+                                self.askToSave(self.managedObjectContext, message: m, object: new, completion: self.workDone)
                             } else {
-                                self.askToSave("", location: location, pitch: pitch, heading: direction, completion: self.workDone)
+                                self.askToSave(self.managedObjectContext, message: "Something went wrong.", object: new, completion: self.workDone)
                             }
                         }
                     }
@@ -346,32 +353,6 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         return appDelegate.currentPitch! + offsetAngle
     }
 
-    func askToSave(message: String, location: CLLocation, pitch: Double, heading: Double, completion: (() -> Void)) {
-        var mes: String
-        if message == "" {
-            mes = NSLocalizedString("SaveQMessage", comment: "asking for save") + message
-        } else {
-            mes = NSLocalizedString("SaveQMessageFailed", comment: "asking for save after failure") + message
-        }
-        let alert = UIAlertController(title: NSLocalizedString("SaveQTitle", comment: "ask to save"), message: mes, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: "okay"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-            //TODO: Save the data I need
-            let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
-            new.location = location
-            new.heading = heading
-            new.pitch = pitch
-            new.dateTime = NSDate()
-            
-            var error: NSError?
-            if !self.managedObjectContext.save(&error) {
-                //DEBUG
-                fatalError("Error saving: \(error)")
-            }
-        }))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: "no"), style: UIAlertActionStyle.Destructive, handler: nil))
-        self.presentViewController(alert, animated: true) {}
-    }
-
     func getDirection(pointX: Double) -> CLLocationDirection {
         let w = width / 2
         let a = w / tan(fovHorizontal / 2)
@@ -385,5 +366,5 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
 }

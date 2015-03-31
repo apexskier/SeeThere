@@ -13,11 +13,12 @@
         <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="latitude" attributeType="Double" syncable="YES"/>
         <attribute name="longitude" attributeType="Double" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pitch" attributeType="Double" syncable="YES"/>
         <relationship name="foundLocation" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="FoundLocation" inverseName="information" inverseEntity="FoundLocation" syncable="YES"/>
     </entity>
     <elements>
         <element name="FoundLocation" positionX="-45" positionY="36" width="128" height="105"/>
-        <element name="LocationInformation" positionX="-63" positionY="-18" width="128" height="163"/>
+        <element name="LocationInformation" positionX="-63" positionY="-18" width="128" height="180"/>
     </elements>
 </model>

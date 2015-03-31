@@ -6,13 +6,15 @@
 //  Copyright (c) 2015 Cameron Little. All rights reserved.
 //
 
-import Foundation
 import UIKit
+import CoreLocation
 
-class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIGestureRecognizerDelegate {
 
     let pageIds: NSArray = ["CameraView", "SavedView"]
     var index = 0
+
+    var panDelegate: UIGestureRecognizerDelegate?
 
     override func viewDidLoad() {
         self.dataSource = self
@@ -22,6 +24,9 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
         let viewControllers: NSArray = [startingViewController]
         self.setViewControllers(viewControllers as! [AnyObject], direction: UIPageViewControllerNavigationDirection.Forward, animated: false, completion: nil)
     }
+
+    /*override func gestureRecognizer(gestureRecognizer: UIPanGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+    }*/
 
     func viewControllerAtIndex(index: Int) -> UIViewController! {
         switch index {
@@ -44,7 +49,7 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
             }
 
             // get next
-            self.index = self.index + 1
+            self.index++
             return self.viewControllerAtIndex(self.index)
         }
         return nil
@@ -60,17 +65,43 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
             }
 
             // get previous
-            self.index = self.index - 1
+            self.index--
             return self.viewControllerAtIndex(self.index)
         }
         return nil
     }
 
-    func presentationCountForPageViewController(pageViewController: UIPageViewController) -> Int {
-        return self.pageIds.count
+    private var nextCompletion: (() -> Void) = {}
+    func displayMap(location: CLLocation, completion: (() -> Void)) {
+        // fetch the mapviewcontroller
+        self.nextCompletion = completion
+        if let map = self.storyboard?.instantiateViewControllerWithIdentifier("MapView") as? MapViewController {
+            // define actionbuttons
+            let done = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "closeMap")
+            let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: map, action: "actionLocation")
+            let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            let switchMap = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.PageCurl, target: map, action: "switchMapStyle")
+
+            // add action buttons
+            map.navigationItem.leftBarButtonItem = done
+            map.toolbarItems = [flex, share, flex, switchMap]
+
+            // set up a navigation controller
+            let mapNav = UINavigationController(rootViewController: map)
+            mapNav.toolbarHidden = false
+
+            // tell it where the location is
+            map.spottedLocation = location
+
+            // show map view
+            self.presentViewController(mapNav, animated: true, completion: nil)
+        } else {
+            alertError("Failed to open map.") {}
+        }
     }
 
-    func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int {
-        return 0
+    func closeMap() {
+        self.dismissViewControllerAnimated(true, completion:
+            nextCompletion)
     }
 }

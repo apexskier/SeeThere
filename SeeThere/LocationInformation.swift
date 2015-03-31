@@ -21,6 +21,7 @@ class LocationInformation: NSManagedObject {
     @NSManaged var pitch: Double
     @NSManaged var foundLocation: FoundLocation?
     @NSManaged var dateTime: NSDate
+    @NSManaged var name: String
 
     var location: CLLocation {
         get {
