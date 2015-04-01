@@ -168,7 +168,7 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
 
             let work = NSBlockOperation()
             work.addExecutionBlock({
-                let (loc, error) = walkOutFrom(location, pitch, direction, work)
+                let (loc, error) = walkOutFrom(location, pitch, direction, work, nil)
 
                 dispatch_async(dispatch_get_main_queue(), {
                     if error == nil || error?.code == 0 && !work.cancelled {

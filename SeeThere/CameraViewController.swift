@@ -283,7 +283,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             self.cancelButton.hidden = false
             self.work = NSBlockOperation()
             self.work!.addExecutionBlock({
-                let (loc, error) = walkOutFrom(location, pitch, direction, self.work!)
+                let (loc, error) = walkOutFrom(location, pitch, direction, self.work!, self)
 
                 dispatch_async(dispatch_get_main_queue(), {
                     let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
@@ -329,6 +329,11 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.work!.start()
             })
         }
+    }
+
+    internal func updateProgress(object: AnyObject?) {
+        let val: Float = object as! Float
+        progressBar.progress = val
     }
     
     private var screenRect = UIScreen.mainScreen().bounds

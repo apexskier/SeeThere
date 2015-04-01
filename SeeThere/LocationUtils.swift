@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Cameron Little. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import CoreLocation
 
 private let HEIGHT_TOLERANCE: Double = -10
@@ -189,7 +189,7 @@ func newLocation(start: CLLocation, distance: CLLocationDistance, direction: CLL
     return CLLocation(latitude: degrees(finLat), longitude: degrees(finLng))
 }
 
-func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double, operation: NSOperation) -> (CLLocation?, NSError?) {
+func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Double, operation: NSOperation, target:UIViewController?) -> (CLLocation?, NSError?) {
     var distance = DISTANCE_STEP * 510
     var from = newLocation(start, MIN_DISTANCE, direction)
     println("starting at elevation: \(start.altitude), pitch: \(pitch)")
@@ -221,7 +221,9 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
             let diff = estimate - actual
             let slopeAngle = tan((actual - lastElev) / DISTANCE_STEP)
 
-            NSNotificationCenter.defaultCenter().postNotificationName("progressEvent", object: pointDist / MAX_DISTANCE)
+            if target != nil {
+                NSThread.detachNewThreadSelector("updateProgress:", toTarget: target!, withObject: pointDist / MAX_DISTANCE)
+            }
 
             println(" distance: \(loc.distanceFromLocation(start))")
             println("  estimate: \(estimate), actual: \(actual), diff: \(diff)")
