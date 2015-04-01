@@ -14,35 +14,39 @@ import CoreMotion
 import Social
 import MapKit
 
-/*func imageFromSampleBuffer(sampleBuffer: CMSampleBufferRef) -> UIImage {
-    let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-    CVPixelBufferLockBaseAddress(imageBuffer, 0)
+func imageFromSampleBuffer(sampleBuffer: CMSampleBufferRef) -> UIImage? {
+    if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+        CVPixelBufferLockBaseAddress(imageBuffer, 0)
 
-    // Get the number of bytes per row for the pixel buffer
-    let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
+        // Get the number of bytes per row for the pixel buffer
+        let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
 
-    // Get the number of bytes per row for the pixel buffer
-    let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
-    // Get the pixel buffer width and height
-    let width = CVPixelBufferGetWidth(imageBuffer)
-    let height = CVPixelBufferGetHeight(imageBuffer)
+        // Get the number of bytes per row for the pixel buffer
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+        // Get the pixel buffer width and height
+        let width = CVPixelBufferGetWidth(imageBuffer)
+        let height = CVPixelBufferGetHeight(imageBuffer)
 
-    // Create a device-dependent RGB color space
-    let colorSpace = CGColorSpaceCreateDeviceRGB()
+        // Create a device-dependent RGB color space
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
 
-    // Create a bitmap graphics context with the sample buffer data
-    let context = CGBitmapContextCreate(baseAddress, width, height, 8,
-        bytesPerRow, colorSpace, CGBitmapInfo.ByteOrder32Little/* | CGImageAlphaInfo.PremultipliedFirst*/)
-    // Create a Quartz image from the pixel data in the bitmap graphics context
-    let quartzImage = CGBitmapContextCreateImage(context)
-    // Unlock the pixel buffer
-    CVPixelBufferUnlockBaseAddress(imageBuffer, 0)
+        // Create a bitmap graphics context with the sample buffer data
+        let bitmapInfo = CGBitmapInfo(CGImageAlphaInfo.PremultipliedLast.rawValue)
+        if let context = CGBitmapContextCreate(baseAddress, width, height, 8,
+            bytesPerRow, colorSpace, bitmapInfo) {
+            // Create a Quartz image from the pixel data in the bitmap graphics context
+            let quartzImage = CGBitmapContextCreateImage(context)
+            // Unlock the pixel buffer
+            CVPixelBufferUnlockBaseAddress(imageBuffer, 0)
 
-    // Create an image object from the Quartz image
-    let image = UIImage(CGImage: quartzImage)!
-
-    return image
-}*/
+            // Create an image object from the Quartz image
+            let image = UIImage(CGImage: quartzImage)!
+            
+            return image
+        }
+    }
+    return nil
+}
 
 class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
@@ -145,7 +149,15 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
         return layer
     }()
-    private var imgOutput = AVCaptureStillImageOutput()
+    private lazy var imageOutput: AVCaptureStillImageOutput = {
+        let imageOutput = AVCaptureStillImageOutput()
+        let pixelFormats = imageOutput.availableImageDataCVPixelFormatTypes
+        imageOutput.outputSettings[AVVideoCodecKey] = imageOutput.availableImageDataCodecTypes[0]
+        imageOutput.outputSettings[kCVPixelBufferPixelFormatTypeKey] = pixelFormats[pixelFormats.count - 1]
+        self.cameraSession.addOutput(imageOutput)
+        return imageOutput
+    }()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -259,15 +271,8 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
-            UIGraphicsBeginImageContext(cameraPreview.frame.size)
-            cameraPreview.renderInContext(UIGraphicsGetCurrentContext())
-            let image = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            let imageData = UIImageJPEGRepresentation(image, 80)
-
             initialInstructions.hidden = true
             cancelObservers()
-            cameraSession.stopRunning()
 
             let tapLocation = sender.locationInView(self.view)
 
@@ -281,52 +286,67 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             self.progressBar.hidden = false
             self.working = true
             self.cancelButton.hidden = false
-            self.work = NSBlockOperation()
-            self.work!.addExecutionBlock({
-                let (loc, error) = walkOutFrom(location, pitch, direction, self.work!, self)
 
-                dispatch_async(dispatch_get_main_queue(), {
-                    let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
-                    new.location = location
-                    new.heading = direction
-                    new.pitch = pitch
-                    new.dateTime = NSDate()
-                    new.image = imageData
-                    new.name = new.dateTime.description
+            imageOutput.captureStillImageAsynchronouslyFromConnection(imageOutput.connections[0] as! AVCaptureConnection, completionHandler: { (sampleBuffer: CMSampleBuffer!, error: NSError!) -> Void in
+                self.cameraSession.stopRunning()
 
-                    self.working = false
-                    self.cancelButton.hidden = true
+                if error != nil {
+                    self.alertError("Something went wrong: \(error?.domain)") {}
+                } else {
+                    if let image = imageFromSampleBuffer(sampleBuffer) {
+                        let imageData = UIImageJPEGRepresentation(image, 80)
 
-                    if error == nil || error?.code == 0 && !self.work!.cancelled {
-                        self.textField.text = NSLocalizedString("Found", comment: "found a location")
+                        self.work = NSBlockOperation()
+                        self.work!.addExecutionBlock({
+                            let (loc, error) = walkOutFrom(location, pitch, direction, self.work!, self)
 
-                        if loc != nil {
-                            let found = NSEntityDescription.insertNewObjectForEntityForName("FoundLocation", inManagedObjectContext: self.managedObjectContext) as! FoundLocation
-                            found.location = loc!
-                            new.foundLocation = found
-                        }
+                            dispatch_async(dispatch_get_main_queue(), {
+                                let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
+                                new.location = location
+                                new.heading = direction
+                                new.pitch = pitch
+                                new.dateTime = NSDate()
+                                new.image = imageData
+                                new.name = new.dateTime.description
 
-                        let pageController = self.parentViewController as! PageController
-                        pageController.displayMap(new, completion: {
-                            self.askToSave(self.managedObjectContext, message: "", object: new, completion: self.workDone)
+                                self.working = false
+                                self.cancelButton.hidden = true
+
+                                if error == nil || error?.code == 0 && !self.work!.cancelled {
+                                    self.textField.text = NSLocalizedString("Found", comment: "found a location")
+
+                                    if loc != nil {
+                                        let found = NSEntityDescription.insertNewObjectForEntityForName("FoundLocation", inManagedObjectContext: self.managedObjectContext) as! FoundLocation
+                                        found.location = loc!
+                                        new.foundLocation = found
+                                    }
+
+                                    let pageController = self.parentViewController as! PageController
+                                    pageController.displayMap(new, completion: {
+                                        self.askToSave(self.managedObjectContext, message: "", object: new, completion: self.workDone)
+                                    })
+                                } else {
+                                    if self.work!.cancelled {
+                                        self.managedObjectContext.reset()
+                                        self.workDone()
+                                    } else {
+                                        self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
+                                        if let m = error?.domain {
+                                            self.askToSave(self.managedObjectContext, message: m, object: new, completion: self.workDone)
+                                        } else {
+                                            self.askToSave(self.managedObjectContext, message: "Something went wrong.", object: new, completion: self.workDone)
+                                        }
+                                    }
+                                }
+                            })
+                        })
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                            self.work!.start()
                         })
                     } else {
-                        if self.work!.cancelled {
-                            self.managedObjectContext.reset()
-                            self.workDone()
-                        } else {
-                            self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
-                            if let m = error?.domain {
-                                self.askToSave(self.managedObjectContext, message: m, object: new, completion: self.workDone)
-                            } else {
-                                self.askToSave(self.managedObjectContext, message: "Something went wrong.", object: new, completion: self.workDone)
-                            }
-                        }
+                        self.alertError("Faile to get image") {}
                     }
-                })
-            })
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                self.work!.start()
+                }
             })
         }
     }

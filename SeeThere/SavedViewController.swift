@@ -117,8 +117,20 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
         if li.foundLocation == nil {
             cell.backgroundColor = UIColor(red: 0.9921568627, green: 0.8588235294, blue: 0.1254901961, alpha: 0.3)
         }
-        let image = UIImage(data: li.image)
-        cell.imageView?.image = image
+        if let image = UIImage(data: li.image) {
+            // crop image to square
+            let size: CGFloat = CGFloat(min(image.size.width, image.size.height))
+            let x = (image.size.width - size) / 2.0
+            let y = (image.size.height - size) / 2.0
+
+            let cropRect = CGRectMake(x, y, size, size)
+            let imageRef = CGImageCreateWithImageInRect(image.CGImage, cropRect)
+
+            let cropped = UIImage(CGImage: imageRef)
+
+            cell.imageView?.image = cropped
+            cell.imageView?.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
+        }
         return cell
     }
 
