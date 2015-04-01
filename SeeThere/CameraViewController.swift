@@ -307,7 +307,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                         }
 
                         let pageController = self.parentViewController as! PageController
-                        pageController.displayMap(loc!, completion: {
+                        pageController.displayMap(new, completion: {
                             self.askToSave(self.managedObjectContext, message: "", object: new, completion: self.workDone)
                         })
                     } else {

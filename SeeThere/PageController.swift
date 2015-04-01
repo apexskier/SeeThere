@@ -72,7 +72,7 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
     }
 
     private var nextCompletion: (() -> Void) = {}
-    func displayMap(location: CLLocation, completion: (() -> Void)) {
+    func displayMap(locationInformation: LocationInformation, completion: (() -> Void)) {
         // fetch the mapviewcontroller
         self.nextCompletion = completion
         if let map = self.storyboard?.instantiateViewControllerWithIdentifier("MapView") as? MapViewController {
@@ -91,7 +91,7 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
             mapNav.toolbarHidden = false
 
             // tell it where the location is
-            map.spottedLocation = location
+            map.locationInformation = locationInformation
 
             // show map view
             self.presentViewController(mapNav, animated: true, completion: nil)

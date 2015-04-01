@@ -22,18 +22,21 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet var mapView: MKMapView!
 
     var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    var spottedLocation: CLLocation?
+    var locationInformation: LocationInformation?
+    var foundLocation: CLLocation {
+        return locationInformation!.foundLocation!.location
+    }
 
     var locPin = MKPointAnnotation()
+    var youPin = MKPointAnnotation()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         mapView.delegate = self
         mapView.addAnnotation(locPin)
+        mapView.addAnnotation(youPin)
     }
-
-    var information: Information = Information(location: CLLocation(), pitch: 0, direction: 0)
 
     func switchMapStyle(animated: Bool) {
         if mapView.mapType == MKMapType.Standard {
@@ -51,9 +54,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func setMapStandard(animated: Bool) {
         mapView.mapType = MKMapType.Standard
         if mapView.pitchEnabled {
-            var eye: CLLocationCoordinate2D = appDelegate.currentLocation!.coordinate
-            var alt: CLLocationDistance = appDelegate.currentLocation!.altitude
-            var camera = MKMapCamera(lookingAtCenterCoordinate: spottedLocation!.coordinate, fromEyeCoordinate: eye, eyeAltitude: 1)
+            var eye: CLLocationCoordinate2D = locationInformation!.location.coordinate
+            var alt: CLLocationDistance = locationInformation!.location.altitude
+            var camera = MKMapCamera(lookingAtCenterCoordinate: foundLocation.coordinate, fromEyeCoordinate: eye, eyeAltitude: 1)
             mapView.camera = camera
         } else {
             setMapRegion(animated)
@@ -61,8 +64,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
 
     func setMapRegion(animated: Bool) {
-        let aLoc = appDelegate.currentLocation!.coordinate
-        let bLoc = spottedLocation!.coordinate
+        let aLoc = locationInformation!.location.coordinate
+        let bLoc = foundLocation.coordinate
 
         let sw = CLLocation(latitude: min(aLoc.latitude, bLoc.latitude), longitude: min(aLoc.longitude, bLoc.longitude))
         let ne = CLLocation(latitude: max(aLoc.latitude, bLoc.latitude), longitude: max(aLoc.longitude, bLoc.longitude))
@@ -75,14 +78,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     func actionLocation() {
         let geoCoder = CLGeocoder()
-        geoCoder.reverseGeocodeLocation(spottedLocation, completionHandler: { (placemarks: [AnyObject]!, error: NSError!) in
+        geoCoder.reverseGeocodeLocation(foundLocation, completionHandler: { (placemarks: [AnyObject]!, error: NSError!) in
+            let coord = self.foundLocation.coordinate
+            let lat = self.foundLocation.coordinate.latitude
+            let lng = self.foundLocation.coordinate.longitude
+            let elv = self.foundLocation.altitude
+
             let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
 
             // Apple Maps Action
             let appleMapsAction = UIAlertAction(title: NSLocalizedString("OpenMaps", comment: "open in apple maps app"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                let placemark = MKPlacemark(coordinate: self.spottedLocation!.coordinate, addressDictionary: nil)
+                let placemark = MKPlacemark(coordinate: coord, addressDictionary: nil)
                 let mapItem = MKMapItem(placemark: placemark)
-                mapItem.name = "Location Spotted \(self.spottedLocation!.timestamp)"
+                mapItem.name = "Location Spotted \(self.foundLocation.timestamp)"
                 mapItem.openInMapsWithLaunchOptions(nil)
             })
             actionSheet.addAction(appleMapsAction)
@@ -90,7 +98,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // Google Maps action
             if UIApplication.sharedApplication().canOpenURL(NSURL(string: "comgooglemaps://")!) {
                 let action = UIAlertAction(title: NSLocalizedString("OpenGoogleMaps", comment: "open in google maps app"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                    let str = "comgooglemaps://?q=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)&center=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)"
+                    let str = "comgooglemaps://?q=\(lat),\(lng)&center=\(lat),\(lng)"
                     UIApplication.sharedApplication().openURL(NSURL(string: str)!)
                 })
                 actionSheet.addAction(action)
@@ -98,7 +106,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
             // Share url action
             let shareLinkAction = UIAlertAction(title: NSLocalizedString("ShareLink", comment: "open in google maps app"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                let locURL = NSURL(string: "http://maps.apple.com/?ll=\(self.spottedLocation!.coordinate.latitude),\(self.spottedLocation!.coordinate.longitude)")!
+                let locURL = NSURL(string: "http://maps.apple.com/?ll=\(lat),\(lng)")!
                 let sheet = UIActivityViewController(activityItems: [locURL], applicationActivities: nil)
                 sheet.excludedActivityTypes =
                     [UIActivityTypePostToWeibo,
@@ -114,7 +122,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
             // Share text action
             let shareTextAction = UIAlertAction(title: NSLocalizedString("ShareLatLng", comment: "share latitude and longitude"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                let locString = "\(self.spottedLocation!.coordinate.latitude), \(self.spottedLocation!.coordinate.longitude)"
+                let locString = "\(lat), \(lng)"
                 let sheet = UIActivityViewController(activityItems: [locString], applicationActivities: nil)
                 sheet.excludedActivityTypes =
                     [UIActivityTypePostToWeibo,
@@ -130,7 +138,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
             // Share GPX action
             let shareGPXAction = UIAlertAction(title: NSLocalizedString("GPXFile", comment: "a gpx file"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
-                let actpro = GPXFileActivityProvider(location: self.spottedLocation!)
+                let actpro = GPXFileActivityProvider(location: self.foundLocation)
                 let share = self.toolbarItems![1] as! UIBarButtonItem
                 let activity = OpenInActivity(url: actpro.fileURL, barItem: share)
 
@@ -196,13 +204,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
 
     override func viewWillAppear(animated: Bool) {
-        if spottedLocation == nil {
+        if locationInformation?.foundLocation == nil {
             alertError(NSLocalizedString("FailedMapLocation", comment: "error, no location on map")) {
                 //TODO: go back to camera view controller.
             }
         } else {
-            locPin.setCoordinate(spottedLocation!.coordinate)
-            locPin.title = spottedLocation!.description
+            locPin.setCoordinate(foundLocation.coordinate)
+            locPin.title = locationInformation!.name
+
+            youPin.setCoordinate(locationInformation!.location.coordinate)
+            youPin.title = "Your position"
 
             mapView.mapType = MKMapType.Hybrid
             setMapRegion(false)
@@ -210,7 +221,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
 
     override func viewDidDisappear(animated: Bool) {
-        spottedLocation = nil
+        locationInformation = nil
     }
 
     override func didReceiveMemoryWarning() {

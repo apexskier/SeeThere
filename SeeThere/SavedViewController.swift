@@ -148,8 +148,8 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
 
         let locationInformation = data[indexPath.item]
 
-        if let location = locationInformation.foundLocation?.location {
-            pageController.displayMap(location) {
+        if locationInformation.foundLocation != nil {
+            pageController.displayMap(locationInformation) {
                 tableView.deselectRowAtIndexPath(indexPath, animated: true)
             }
         } else {
@@ -157,18 +157,20 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
             let pitch = locationInformation.pitch
             let direction = locationInformation.heading
 
+            let cell = table.cellForRowAtIndexPath(indexPath)!
+            let loadingView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
+            loadingView.activityIndicatorViewStyle = .Gray
+            loadingView.hidden = false
+            loadingView.startAnimating()
+            cell.accessoryView = loadingView
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            //table.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+
             let work = NSBlockOperation()
             work.addExecutionBlock({
                 let (loc, error) = walkOutFrom(location, pitch, direction, work)
 
                 dispatch_async(dispatch_get_main_queue(), {
-                    let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
-                    new.location = location
-                    new.heading = direction
-                    new.pitch = pitch
-                    new.dateTime = NSDate()
-                    new.name = new.dateTime.description
-                    
                     if error == nil || error?.code == 0 && !work.cancelled {
                         if loc != nil {
                             let found = NSEntityDescription.insertNewObjectForEntityForName("FoundLocation", inManagedObjectContext: self.managedObjectContext) as! FoundLocation
@@ -182,26 +184,16 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
                         }
 
                         self.table.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-                        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-
-                        /*pageController.displayMap(loc!) {
-                            tableView.deselectRowAtIndexPath(indexPath, animated: true)
-                        }*/
                     } else {
-                        if work.cancelled {
-                            tableView.deselectRowAtIndexPath(indexPath, animated: true)
-                        } else {
+                        if !work.cancelled {
                             if let m = error?.domain {
-                                self.askToSave(self.managedObjectContext, message: m, object: new) {
-                                    tableView.deselectRowAtIndexPath(indexPath, animated: true)
-                                }
+                                self.alertError(m) {}
                             } else {
-                                self.askToSave(self.managedObjectContext, message: "", object: new) {
-                                    tableView.deselectRowAtIndexPath(indexPath, animated: true)
-                                }
+                                self.alertError("Something went wrong") {}
                             }
                         }
                     }
+                    cell.accessoryView = nil
                 })
             })
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
