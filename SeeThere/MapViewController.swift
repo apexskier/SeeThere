@@ -20,6 +20,9 @@ struct Information {
 class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet var mapView: MKMapView!
+    @IBOutlet weak var nameText: UITextView!
+    @IBOutlet weak var descText: UITextView!
+    @IBOutlet weak var imageView: UIImageView!
 
     var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var locationInformation: LocationInformation?
