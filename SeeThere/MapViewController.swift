@@ -17,12 +17,35 @@ struct Information {
     var direction: Double
 }
 
+enum LatLngFormat: UInt8 {
+    case SmallDecimal = 0
+    case Decimal = 1
+    case Standard = 2
+}
+let MaxLatLngFormat: UInt8 = 3
+
+enum ElevationFormat: UInt8 {
+    case Meters = 0
+    case Feet = 1
+}
+let MaxElevationFormat: UInt8 = 2
+
+enum DistanceFormat: UInt8 {
+    case Meters = 0
+    case Kilometers = 1
+    case Feet = 2
+    case Miles = 3
+}
+let MaxDistanceFormat: UInt8 = 4
+
 class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet var mapView: MKMapView!
     @IBOutlet weak var nameText: UITextView!
-    @IBOutlet weak var descText: UITextView!
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var latlngText: UITextView!
+    @IBOutlet weak var elevationText: UITextView!
+    @IBOutlet weak var distanceText: UITextView!
 
     var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var locationInformation: LocationInformation?
@@ -39,6 +62,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         mapView.addAnnotation(locPin)
         mapView.addAnnotation(youPin)
+
+        latlngText.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "latLngTap"))
+        elevationText.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "elevationTap"))
+        distanceText.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "distanceTap"))
+
+        imageView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
     }
 
     func switchMapStyle(animated: Bool) {
@@ -220,7 +249,93 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
             mapView.mapType = MKMapType.Hybrid
             setMapRegion(false)
+
+            nameText.text = locationInformation!.name
+
+            toggleLatLng(true)
+            toggleElevation(true)
+            toggleDistance(true)
+
+            if let image = UIImage(data: locationInformation!.image) {
+                imageView.image = image
+            }
         }
+    }
+
+    var curLatLngFormat: LatLngFormat = LatLngFormat(rawValue: 0)!
+    func toggleLatLng(default_: Bool) {
+        if default_ {
+            curLatLngFormat = LatLngFormat(rawValue: 0)!
+        } else {
+            let num: UInt8 = curLatLngFormat.rawValue + UInt8(1)
+            curLatLngFormat = LatLngFormat(rawValue: num % MaxLatLngFormat)!
+        }
+
+        let lat = locationInformation!.foundLocation!.latitude
+        let lng = locationInformation!.foundLocation!.longitude
+        switch curLatLngFormat {
+        case .SmallDecimal:
+            latlngText.text = String(format: "%.8f,%.8f", lat, lng)
+        case .Decimal:
+            latlngText.text = "\(lat),\(lng)"
+        case .Standard:
+            let format = "%d° %d' %d\""
+            var (latDeg, latMin, latSec) = convertToDegrees(lat)
+            let lat_ = String(format: format, latDeg, latMin, latSec)
+            var (lngDeg, lngMin, lngSec) = convertToDegrees(lng)
+            let lng_ = String(format: format, lngDeg, lngMin, lngSec)
+            latlngText.text = "\(lat_), \(lng_)"
+        }
+    }
+    func latLngTap() {
+        toggleLatLng(false)
+    }
+
+    var curElevationFormat: ElevationFormat = ElevationFormat(rawValue: 0)!
+    func toggleElevation(default_: Bool) {
+        if default_ {
+            curElevationFormat = ElevationFormat(rawValue: 0)!
+        } else {
+            let num: UInt8 = curElevationFormat.rawValue + UInt8(1)
+            curElevationFormat = ElevationFormat(rawValue: num % MaxElevationFormat)!
+        }
+
+        let elevation = locationInformation!.foundLocation!.elevation
+        switch curElevationFormat {
+        case .Meters:
+            elevationText.text = String(format: "Elevation: %.2f meters", elevation)
+        case .Feet:
+            elevationText.text = String(format: "Elevation: %.2f ft", elevation * 3.28084)
+        }
+    }
+    func elevationTap() {
+        toggleElevation(false)
+    }
+
+    var curDistanceFormat: DistanceFormat = DistanceFormat(rawValue: 0)!
+    func toggleDistance(default_: Bool) {
+        if default_ {
+            curDistanceFormat = DistanceFormat(rawValue: 0)!
+        } else {
+            let num: UInt8 = curDistanceFormat.rawValue + UInt8(1)
+            curDistanceFormat = DistanceFormat(rawValue: num % MaxDistanceFormat)!
+        }
+
+        let distance = Double(locationInformation!.location.distanceFromLocation(locationInformation!.foundLocation!.location))
+        let format = "Spotted from %.2f %@ away."
+        switch curDistanceFormat {
+        case .Meters:
+            distanceText.text = String(format: format, distance, "meters")
+        case .Feet:
+            distanceText.text = String(format: format, distance * 3.28084, "ft")
+        case .Kilometers:
+            distanceText.text = String(format: format, distance / 1000, "km")
+        case .Miles:
+            distanceText.text = String(format: format, distance * 0.000621371, "miles")
+        }
+    }
+    func distanceTap() {
+        toggleDistance(false)
     }
 
     override func viewDidDisappear(animated: Bool) {
@@ -233,3 +348,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
 }
 
+func convertToDegrees(val: Double) -> (Int, Int, Int) {
+    let deg = floor(val)
+    let min_ = (val - deg) * 60
+    let min = floor(min_)
+    let sec = floor((min_ - min) * 60)
+    return (Int(deg), Int(min), Int(sec))
+}
+
+func convertToDecimal(deg: Int, min: Int, sec: Int) -> Double {
+    return Double(deg) + Double(min)/60 + Double(sec)/3600
+}
