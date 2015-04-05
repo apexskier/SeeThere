@@ -30,6 +30,7 @@
 "SaveQTitle" = "Save?";
 "SaveQMessage" = "Save this location?";
 "SaveQMessageFailed" = "Something went wrong. Would you like to save this to try later?\nDetails: ";
+"NameQuestion" = "Name this location.";
 
 // Actions
 "OpenMaps" = "Open in Maps";

@@ -360,20 +360,44 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                                     }
 
                                     let pageController = self.parentViewController as! PageController
-                                    pageController.displayMap(new, completion: {
-                                        self.askToSave(self.managedObjectContext, message: "", object: new, completion: self.workDone)
-                                    })
+                                    pageController.displayMap(new) {
+                                        self.workDone()
+                                    }
                                 } else {
                                     if self.work!.cancelled {
                                         self.managedObjectContext.reset()
                                         self.workDone()
                                     } else {
                                         self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
+
+                                        var message: String
                                         if let m = error?.domain {
-                                            self.askToSave(self.managedObjectContext, message: m, object: new, completion: self.workDone)
+                                            message = m
                                         } else {
-                                            self.askToSave(self.managedObjectContext, message: "Something went wrong.", object: new, completion: self.workDone)
+                                            message = "Something went wrong."
                                         }
+                                        message = NSLocalizedString("SaveQMessageFailed", comment: "asking for save after failure") + message
+
+                                        let alert = UIAlertController(title: NSLocalizedString("SaveQTitle", comment: "ask to save"), message: message, preferredStyle: .Alert)
+                                        alert.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
+                                            textField.placeholder = "Name this location"
+                                        }
+                                        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: "okay"), style: .Default, handler: { (action: UIAlertAction!) -> Void in
+                                            let textField = alert.textFields![0] as! UITextField
+
+                                            new.name = textField.text
+                                            var error: NSError?
+                                            if !self.managedObjectContext.save(&error) {
+                                                self.alertError("Error saving: \(error)") {}
+                                            }
+                                            self.workDone()
+                                        }))
+                                        alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: "no"), style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) -> Void in
+                                            self.managedObjectContext.reset()
+                                            self.workDone()
+                                        }))
+                                        
+                                        self.presentViewController(alert, animated: true) {}
                                     }
                                 }
                             })

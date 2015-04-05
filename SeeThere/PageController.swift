@@ -8,11 +8,19 @@
 
 import UIKit
 import CoreLocation
+import CoreData
 
 class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIGestureRecognizerDelegate {
 
     let pageIds: NSArray = ["CameraView", "SavedViewNav"]
     var index = 0
+
+    private var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    private var managedObjectContext: NSManagedObjectContext {
+        get {
+            return appDelegate.managedObjectContext
+        }
+    }
 
     var panDelegate: UIGestureRecognizerDelegate?
 
@@ -24,9 +32,6 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
         let viewControllers: NSArray = [startingViewController]
         self.setViewControllers(viewControllers as! [AnyObject], direction: UIPageViewControllerNavigationDirection.Forward, animated: false, completion: nil)
     }
-
-    /*override func gestureRecognizer(gestureRecognizer: UIPanGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-    }*/
 
     func viewControllerAtIndex(index: Int) -> UIViewController! {
         switch index {
@@ -71,20 +76,27 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
         return nil
     }
 
-    private var nextCompletion: (() -> Void) = {}
     func displayMap(locationInformation: LocationInformation, completion: (() -> Void)) {
         // fetch the mapviewcontroller
-        self.nextCompletion = completion
         if let map = self.storyboard?.instantiateViewControllerWithIdentifier("MapView") as? MapViewController {
             // define actionbuttons
-            let done = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "closeMap")
-            let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: map, action: "actionLocation")
-            let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-            let switchMap = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.PageCurl, target: map, action: "switchMapStyle")
+            if locationInformation.objectID.temporaryID {
+                let save = UIBarButtonItem(barButtonSystemItem: .Save, target: map, action: "closeMapSave")
+                let delete = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "closeMapReset")
+                map.navigationItem.leftBarButtonItem = save
+                map.navigationItem.rightBarButtonItem = delete
+            } else {
+                let done = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "closeMap")
+                let delete = UIBarButtonItem(barButtonSystemItem: .Trash, target: map, action: "deleteItem")
+                map.navigationItem.leftBarButtonItem = done
+                map.navigationItem.rightBarButtonItem = delete
+            }
 
             // add action buttons
-            map.navigationItem.leftBarButtonItem = done
-            map.toolbarItems = [flex, share, flex, switchMap]
+            let share = UIBarButtonItem(barButtonSystemItem: .Action, target: map, action: "actionLocation")
+            let flex = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+            let switchMap = UIBarButtonItem(title: "Map Type", style: .Plain, target: map, action: "switchMapStyle")
+            map.toolbarItems = [share, flex, switchMap]
 
             // set up a navigation controller
             let mapNav = UINavigationController(rootViewController: map)
@@ -94,15 +106,23 @@ class PageController: UIPageViewController, UIPageViewControllerDataSource, UIPa
             map.locationInformation = locationInformation
 
             // show map view
-            self.presentViewController(mapNav, animated: true, completion: nil)
+            self.presentViewController(mapNav, animated: true, completion: completion)
         } else {
             alertError("Failed to open map.") {}
         }
     }
 
     func closeMap() {
-        self.dismissViewControllerAnimated(true, completion:
-            nextCompletion)
+        var error: NSError?
+        managedObjectContext.save(&error)
+        if error != nil {
+            alertError("Error saving") {}
+        }
+        dismissViewControllerAnimated(true) {}
+    }
+    func closeMapReset() {
+        managedObjectContext.reset()
+        dismissViewControllerAnimated(true) {}
     }
 
     func selectCamera() {

@@ -172,9 +172,8 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
         let locationInformation = data[indexPath.item]
 
         if locationInformation.foundLocation != nil {
-            pageController.displayMap(locationInformation) {
-                tableView.deselectRowAtIndexPath(indexPath, animated: true)
-            }
+            pageController.displayMap(locationInformation) {}
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
         } else {
             let location = locationInformation.location
             let pitch = locationInformation.pitch

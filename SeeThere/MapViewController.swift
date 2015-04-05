@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import CoreData
 import MapKit
 import AddressBookUI
 
@@ -39,7 +40,6 @@ enum DistanceFormat: UInt8 {
 let MaxDistanceFormat: UInt8 = 4
 
 class MapViewController: UIViewController, MKMapViewDelegate {
-
     @IBOutlet var mapView: MKMapView!
     @IBOutlet weak var nameText: UITextView!
     @IBOutlet weak var imageView: UIImageView!
@@ -48,6 +48,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var distanceText: UITextView!
 
     var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    private var managedObjectContext: NSManagedObjectContext {
+        get {
+            return appDelegate.managedObjectContext
+        }
+    }
+
     var locationInformation: LocationInformation?
     var foundLocation: CLLocation {
         return locationInformation!.foundLocation!.location
@@ -68,11 +74,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         distanceText.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "distanceTap"))
     }
 
-    func switchMapStyle(animated: Bool) {
+    func switchMapStyle() {
         if mapView.mapType == MKMapType.Standard {
-            setMapSat(animated)
+            setMapSat(true)
         } else {
-            setMapStandard(animated)
+            setMapStandard(true)
         }
     }
 
@@ -341,6 +347,39 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     func distanceTap() {
         toggleDistance(false)
+    }
+
+    func deleteItem() {
+        managedObjectContext.deleteObject(locationInformation!)
+        var error: NSError?
+        managedObjectContext.save(&error)
+        if error != nil {
+            alertError("Error saving") {}
+        }
+        parentViewController?.dismissViewControllerAnimated(true) {}
+    }
+
+    func closeMapSave() {
+        var mes = NSLocalizedString("NameQuestion", comment: "asking for save")
+        let alert = UIAlertController(title: NSLocalizedString("SaveQTitle", comment: "ask to save"), message: mes, preferredStyle: .Alert)
+        alert.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
+            textField.placeholder = "Name this location"
+        }
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: "okay"), style: .Default, handler: { (action: UIAlertAction!) -> Void in
+            let textField = alert.textFields![0] as! UITextField
+            self.locationInformation!.name = textField.text
+            var error: NSError?
+            if !self.managedObjectContext.save(&error) {
+                self.alertError("Error saving: \(error)") {}
+            }
+            self.parentViewController?.dismissViewControllerAnimated(true) {}
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: "no"), style: .Cancel, handler: { (action: UIAlertAction!) -> Void in
+            self.managedObjectContext.reset()
+            self.parentViewController?.dismissViewControllerAnimated(true) {}
+        }))
+
+        presentViewController(alert, animated: true) {}
     }
 
     override func viewDidDisappear(animated: Bool) {
