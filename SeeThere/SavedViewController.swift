@@ -129,7 +129,6 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
             let cropped = UIImage(CGImage: imageRef)
 
             cell.imageView?.image = cropped
-            cell.imageView?.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
         }
         return cell
     }

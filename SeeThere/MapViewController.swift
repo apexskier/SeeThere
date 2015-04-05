@@ -66,8 +66,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         latlngText.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "latLngTap"))
         elevationText.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "elevationTap"))
         distanceText.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "distanceTap"))
-
-        imageView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
     }
 
     func switchMapStyle(animated: Bool) {
