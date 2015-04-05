@@ -235,9 +235,9 @@
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kJR-LW-vPE">
-                                        <rect key="frame" x="12" y="452" width="336" height="597"/>
+                                        <rect key="frame" x="12" y="476" width="336" height="597"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="kJR-LW-vPE" secondAttribute="height" multiplier="9:16" id="MmJ-7Q-eMv"/>
+                                            <constraint firstAttribute="height" constant="597" id="lEc-ww-MQh"/>
                                         </constraints>
                                     </imageView>
                                 </subviews>
@@ -245,17 +245,17 @@
                                     <constraint firstAttribute="trailing" secondItem="wiH-At-o0q" secondAttribute="trailing" constant="36" id="2cn-RZ-Gf4"/>
                                     <constraint firstItem="lMX-0J-ayV" firstAttribute="top" secondItem="s2s-JD-znn" secondAttribute="top" id="2xb-ub-psa"/>
                                     <constraint firstItem="Y5w-w4-428" firstAttribute="leading" secondItem="s2s-JD-znn" secondAttribute="leading" constant="36" id="3oC-t8-Ccg"/>
-                                    <constraint firstAttribute="bottomMargin" secondItem="kJR-LW-vPE" secondAttribute="bottomMargin" id="9Za-R4-p4a"/>
+                                    <constraint firstAttribute="bottomMargin" secondItem="kJR-LW-vPE" secondAttribute="bottomMargin" constant="-44" id="9Za-R4-p4a"/>
                                     <constraint firstItem="kJR-LW-vPE" firstAttribute="leading" secondItem="s2s-JD-znn" secondAttribute="leading" constant="12" id="D2w-61-Sgi"/>
                                     <constraint firstItem="JLe-Qi-khF" firstAttribute="leading" secondItem="s2s-JD-znn" secondAttribute="leading" constant="36" id="DPk-v1-kL0"/>
                                     <constraint firstAttribute="trailing" secondItem="RJP-de-C4f" secondAttribute="trailing" constant="36" id="Kk4-EU-1Xx"/>
                                     <constraint firstItem="lMX-0J-ayV" firstAttribute="leadingMargin" secondItem="s2s-JD-znn" secondAttribute="leadingMargin" constant="12" id="LK3-wj-GHu"/>
+                                    <constraint firstItem="kJR-LW-vPE" firstAttribute="top" secondItem="RJP-de-C4f" secondAttribute="bottom" constant="16" id="NDL-nQ-9ak"/>
                                     <constraint firstAttribute="trailing" secondItem="JLe-Qi-khF" secondAttribute="trailing" constant="36" id="XZ8-T3-88P"/>
                                     <constraint firstItem="Y5w-w4-428" firstAttribute="top" secondItem="JLe-Qi-khF" secondAttribute="bottom" id="dAd-M3-ioo"/>
                                     <constraint firstAttribute="trailing" secondItem="kJR-LW-vPE" secondAttribute="trailing" constant="12" id="dLJ-Wk-qHI"/>
                                     <constraint firstItem="RJP-de-C4f" firstAttribute="leading" secondItem="s2s-JD-znn" secondAttribute="leading" constant="36" id="fNK-Wr-P6i"/>
                                     <constraint firstItem="wiH-At-o0q" firstAttribute="leading" secondItem="s2s-JD-znn" secondAttribute="leading" constant="36" id="hSY-rz-p8j"/>
-                                    <constraint firstItem="kJR-LW-vPE" firstAttribute="topMargin" secondItem="RJP-de-C4f" secondAttribute="bottom" id="mDE-RR-x8n"/>
                                     <constraint firstAttribute="trailing" secondItem="Y5w-w4-428" secondAttribute="trailing" constant="36" id="nKt-Z6-GAT"/>
                                     <constraint firstAttribute="centerX" secondItem="kJR-LW-vPE" secondAttribute="centerX" id="orb-cn-5kG"/>
                                     <constraint firstItem="RJP-de-C4f" firstAttribute="top" secondItem="Y5w-w4-428" secondAttribute="bottom" id="px5-cH-fwK"/>

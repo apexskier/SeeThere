@@ -237,6 +237,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if locationInformation?.foundLocation == nil {
             alertError(NSLocalizedString("FailedMapLocation", comment: "error, no location on map")) {
                 //TODO: go back to camera view controller.
+                self.parentViewController?.dismissViewControllerAnimated(true) {}
             }
         } else {
             locPin.setCoordinate(foundLocation.coordinate)
@@ -256,6 +257,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
             if let image = UIImage(data: locationInformation!.image) {
                 imageView.image = image
+                imageView.hidden = false
+                var newFrame = imageView.frame
+                newFrame.size.height = (image.size.width / image.size.height) * imageView.frame.size.height
+                imageView.frame = newFrame
+            } else {
+                imageView.hidden = true
             }
         }
     }

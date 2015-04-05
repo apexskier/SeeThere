@@ -21,6 +21,8 @@
 		C51C94191A80002800F5B49D /* Private.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51C94171A80002800F5B49D /* Private.swift */; };
 		C550B7B01ACB19720016442E /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2851ACA061D005CC002 /* PageController.swift */; };
 		C5672DBC1AC9EC2D0013E2D4 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C5672DBA1AC9EC2D0013E2D4 /* Model.xcdatamodeld */; };
+		C57298531AD1F6E400C224C5 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57298521AD1F6E400C224C5 /* ViewExtensions.swift */; };
+		C57298541AD1F73E00C224C5 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57298521AD1F6E400C224C5 /* ViewExtensions.swift */; };
 		C57B50AD1A81A93600D477E1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C57B50AC1A81A93600D477E1 /* Localizable.strings */; };
 		C5D7CB121A81707C00F5823F /* GPX.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7CB111A81707C00F5823F /* GPX.swift */; };
 		C5D7CB131A8171D100F5823F /* GPX.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7CB111A81707C00F5823F /* GPX.swift */; };
@@ -56,32 +58,33 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C506E2851ACA061D005CC002 /* PageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageController.swift; sourceTree = "<group>"; };
-		C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundLocation.swift; sourceTree = "<group>"; };
-		C506E2901ACA0F50005CC002 /* LocationInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationInformation.swift; sourceTree = "<group>"; };
-		C506E2961ACA11D3005CC002 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
-		C506E2991ACA1661005CC002 /* SavedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedViewController.swift; sourceTree = "<group>"; };
+		C506E2851ACA061D005CC002 /* PageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PageController.swift; path = SeeThere/PageController.swift; sourceTree = "<group>"; };
+		C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoundLocation.swift; path = SeeThere/FoundLocation.swift; sourceTree = "<group>"; };
+		C506E2901ACA0F50005CC002 /* LocationInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationInformation.swift; path = SeeThere/LocationInformation.swift; sourceTree = "<group>"; };
+		C506E2961ACA11D3005CC002 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataManager.swift; path = SeeThere/CoreDataManager.swift; sourceTree = "<group>"; };
+		C506E2991ACA1661005CC002 /* SavedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SavedViewController.swift; path = SeeThere/SavedViewController.swift; sourceTree = "<group>"; };
 		C51C94151A7F1B2700F5B49D /* locationspotter.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = locationspotter.gpx; sourceTree = "<group>"; };
 		C51C94171A80002800F5B49D /* Private.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Private.swift; sourceTree = "<group>"; };
 		C5672DBB1AC9EC2D0013E2D4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		C57298521AD1F6E400C224C5 /* ViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		C57B50AC1A81A93600D477E1 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		C5D7CB111A81707C00F5823F /* GPX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPX.swift; sourceTree = "<group>"; };
-		C5D7CB141A81766E00F5823F /* OpenInActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInActivity.swift; sourceTree = "<group>"; };
+		C5D7CB111A81707C00F5823F /* GPX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GPX.swift; path = SeeThere/GPX.swift; sourceTree = "<group>"; };
+		C5D7CB141A81766E00F5823F /* OpenInActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OpenInActivity.swift; path = SeeThere/OpenInActivity.swift; sourceTree = "<group>"; };
 		C5D7CB161A817A7400F5823F /* open-in-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "open-in-icon.png"; sourceTree = "<group>"; };
 		C5D7CB181A817A9200F5823F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		C5D7CB1D1A817E9B00F5823F /* open-in-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "open-in-icon@2x.png"; sourceTree = "<group>"; };
-		C5F2740D1A7EA19700D4CB5D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		C5F2740D1A7EA19700D4CB5D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = SeeThere/MapViewController.swift; sourceTree = "<group>"; };
 		C5FCB75B1A7C750C00B6607A /* See There.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "See There.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5FCB75F1A7C750C00B6607A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5FCB7601A7C750C00B6607A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C5FCB7621A7C750C00B6607A /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		C5FCB7621A7C750C00B6607A /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = SeeThere/CameraViewController.swift; sourceTree = "<group>"; };
 		C5FCB7651A7C750C00B6607A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C5FCB7671A7C750C00B6607A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C5FCB76A1A7C750C00B6607A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		C5FCB7701A7C750C00B6607A /* SeeThereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SeeThereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5FCB7751A7C750C00B6607A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5FCB7761A7C750C00B6607A /* SeeThereTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeeThereTests.swift; sourceTree = "<group>"; };
-		C5FCB7811A7D45B200B6607A /* LocationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationUtils.swift; sourceTree = "<group>"; };
+		C5FCB7811A7D45B200B6607A /* LocationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationUtils.swift; path = SeeThere/LocationUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +106,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C572984F1AD1F67100C224C5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C506E2851ACA061D005CC002 /* PageController.swift */,
+				C5FCB7621A7C750C00B6607A /* CameraViewController.swift */,
+				C5F2740D1A7EA19700D4CB5D /* MapViewController.swift */,
+				C506E2991ACA1661005CC002 /* SavedViewController.swift */,
+				C57298521AD1F6E400C224C5 /* ViewExtensions.swift */,
+			);
+			name = Views;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		C57298501AD1F68D00C224C5 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				C506E2901ACA0F50005CC002 /* LocationInformation.swift */,
+				C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */,
+				C5672DBA1AC9EC2D0013E2D4 /* Model.xcdatamodeld */,
+				C506E2961ACA11D3005CC002 /* CoreDataManager.swift */,
+			);
+			name = Data;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		C57298511AD1F6B500C224C5 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				C5FCB7811A7D45B200B6607A /* LocationUtils.swift */,
+				C5D7CB141A81766E00F5823F /* OpenInActivity.swift */,
+				C5D7CB111A81707C00F5823F /* GPX.swift */,
+			);
+			name = Utilities;
+			path = ..;
+			sourceTree = "<group>";
+		};
 		C57B50AB1A8190A200D477E1 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
@@ -135,18 +174,10 @@
 		C5FCB75D1A7C750C00B6607A /* SeeThere */ = {
 			isa = PBXGroup;
 			children = (
-				C506E2901ACA0F50005CC002 /* LocationInformation.swift */,
-				C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */,
-				C5672DBA1AC9EC2D0013E2D4 /* Model.xcdatamodeld */,
-				C506E2851ACA061D005CC002 /* PageController.swift */,
-				C5FCB7621A7C750C00B6607A /* CameraViewController.swift */,
-				C5F2740D1A7EA19700D4CB5D /* MapViewController.swift */,
-				C506E2991ACA1661005CC002 /* SavedViewController.swift */,
+				C57298501AD1F68D00C224C5 /* Data */,
+				C572984F1AD1F67100C224C5 /* Views */,
 				C5FCB7601A7C750C00B6607A /* AppDelegate.swift */,
-				C506E2961ACA11D3005CC002 /* CoreDataManager.swift */,
-				C5D7CB111A81707C00F5823F /* GPX.swift */,
-				C5D7CB141A81766E00F5823F /* OpenInActivity.swift */,
-				C5FCB7811A7D45B200B6607A /* LocationUtils.swift */,
+				C57298511AD1F6B500C224C5 /* Utilities */,
 				C51C94171A80002800F5B49D /* Private.swift */,
 				C5FCB7641A7C750C00B6607A /* Main.storyboard */,
 				C57B50AC1A81A93600D477E1 /* Localizable.strings */,
@@ -303,6 +334,7 @@
 				C5FCB7611A7C750C00B6607A /* AppDelegate.swift in Sources */,
 				C506E2971ACA11D3005CC002 /* CoreDataManager.swift in Sources */,
 				C5672DBC1AC9EC2D0013E2D4 /* Model.xcdatamodeld in Sources */,
+				C57298531AD1F6E400C224C5 /* ViewExtensions.swift in Sources */,
 				C5D7CB151A81766E00F5823F /* OpenInActivity.swift in Sources */,
 				C5F2740E1A7EA19700D4CB5D /* MapViewController.swift in Sources */,
 				C506E29A1ACA1661005CC002 /* SavedViewController.swift in Sources */,
@@ -323,6 +355,7 @@
 				C550B7B01ACB19720016442E /* PageController.swift in Sources */,
 				C5F274101A7EA5EA00D4CB5D /* MapViewController.swift in Sources */,
 				C5D7CB1A1A817C4600F5823F /* OpenInActivity.swift in Sources */,
+				C57298541AD1F73E00C224C5 /* ViewExtensions.swift in Sources */,
 				C506E2931ACA0FC9005CC002 /* FoundLocation.swift in Sources */,
 				C5FCB7771A7C750C00B6607A /* SeeThereTests.swift in Sources */,
 				C51C94191A80002800F5B49D /* Private.swift in Sources */,
@@ -546,7 +579,8 @@
 				C5672DBB1AC9EC2D0013E2D4 /* Model.xcdatamodel */,
 			);
 			currentVersion = C5672DBB1AC9EC2D0013E2D4 /* Model.xcdatamodel */;
-			path = Model.xcdatamodeld;
+			name = Model.xcdatamodeld;
+			path = SeeThere/Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

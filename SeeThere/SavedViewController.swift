@@ -71,15 +71,19 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
         pageController.dataSource = nil
         let doneButton = UIBarButtonItem(title: "Done", style: .Done, target: self, action: "doneEditing")
         navigationItem.rightBarButtonItem = doneButton
+        navigationItem.leftBarButtonItem = nil
 
-        let deleteButton = UIBarButtonItem(title: "Delete", style: UIBarButtonItemStyle.Plain, target: self, action: "deleteMultiple")
-        navigationItem.leftBarButtonItem = deleteButton
+        let deleteButton = UIBarButtonItem(title: "Delete", style: .Plain, target: self, action: "deleteMultiple")
+        toolbarItems = [deleteButton]
+        navigationController?.setToolbarHidden(false, animated: true)
+
         table.setEditing(true, animated: true)
     }
     func doneEditing() {
         pageController.dataSource = oldDataSource
         setControls()
         table.setEditing(false, animated: true)
+        navigationController?.setToolbarHidden(true, animated: true)
     }
 
     func deleteMultiple() {
@@ -123,12 +127,20 @@ class SavedViewController: UITableViewController, UITableViewDataSource, UITable
             let x = (image.size.width - size) / 2.0
             let y = (image.size.height - size) / 2.0
 
-            let cropRect = CGRectMake(x, y, size, size)
+            var cropRect: CGRect
+            // respect image orientation metadata
+            if (image.imageOrientation == .Left || image.imageOrientation == .Right) {
+                cropRect = CGRectMake(y, x, size, size)
+            } else {
+                cropRect = CGRectMake(x, y, size, size)
+            }
+
             let imageRef = CGImageCreateWithImageInRect(image.CGImage, cropRect)
 
             let cropped = UIImage(CGImage: imageRef)
 
             cell.imageView?.image = cropped
+            cell.imageView?.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
         }
         return cell
     }

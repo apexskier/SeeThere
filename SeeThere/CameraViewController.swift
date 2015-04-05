@@ -185,130 +185,15 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             // set visual camera preview up
             cameraPreviewLayer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as? AVCaptureVideoPreviewLayer
             cameraPreviewLayer!.frame = self.mainView.bounds
+            cameraPreviewLayer!.connection.videoScaleAndCropFactor = 1
             self.mainView.layer.insertSublayer(cameraPreviewLayer!, atIndex: 0)
             self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
 
             // get connection to capture pictures from
             imageOutput = AVCaptureStillImageOutput()
-            /*let connection = imageOutput.connectionWithMediaType(AVMediatype)
-            connection.videoOrientation = AVCaptureVideoOrientation.Portrait*/
-            let pixelFormats = imageOutput!.availableImageDataCVPixelFormatTypes!
-            let codecFormats = imageOutput!.availableImageDataCodecTypes!
-
-            // DEBUG
-            for format in pixelFormats {
-                switch format as! Int {
-                    case kCVPixelFormatType_1Monochrome:
-                        println("kCVPixelFormatType_1Monochrome")
-                    case kCVPixelFormatType_2Indexed:
-                        println("kCVPixelFormatType_2Indexed")
-                    case kCVPixelFormatType_4Indexed:
-                        println("kCVPixelFormatType_4Indexed")
-                    case kCVPixelFormatType_8Indexed:
-                        println("kCVPixelFormatType_8Indexed")
-                    case kCVPixelFormatType_1IndexedGray_WhiteIsZero:
-                        println("kCVPixelFormatType_1IndexedGray_WhiteIsZero")
-                    case kCVPixelFormatType_2IndexedGray_WhiteIsZero:
-                        println("kCVPixelFormatType_2IndexedGray_WhiteIsZero")
-                    case kCVPixelFormatType_4IndexedGray_WhiteIsZero:
-                        println("kCVPixelFormatType_4IndexedGray_WhiteIsZero")
-                    case kCVPixelFormatType_8IndexedGray_WhiteIsZero:
-                        println("kCVPixelFormatType_8IndexedGray_WhiteIsZero")
-                    case kCVPixelFormatType_16BE555:
-                        println("kCVPixelFormatType_16BE555")
-                    case kCVPixelFormatType_16LE555:
-                        println("kCVPixelFormatType_16LE555")
-                    case kCVPixelFormatType_16LE5551:
-                        println("kCVPixelFormatType_16LE5551")
-                    case kCVPixelFormatType_16BE565:
-                        println("kCVPixelFormatType_16BE565")
-                    case kCVPixelFormatType_16LE565:
-                        println("kCVPixelFormatType_16LE565")
-                    case kCVPixelFormatType_24RGB:
-                        println("kCVPixelFormatType_24RGB")
-                    case kCVPixelFormatType_24BGR:
-                        println("kCVPixelFormatType_24BGR")
-                    case kCVPixelFormatType_32ARGB:
-                        println("kCVPixelFormatType_32ARGB")
-                    case kCVPixelFormatType_32BGRA:
-                        println("kCVPixelFormatType_32BGRA")
-                    case kCVPixelFormatType_32ABGR:
-                        println("kCVPixelFormatType_32ABGR")
-                    case kCVPixelFormatType_32RGBA:
-                        println("kCVPixelFormatType_32RGBA")
-                    case kCVPixelFormatType_64ARGB:
-                        println("kCVPixelFormatType_64ARGB")
-                    case kCVPixelFormatType_48RGB:
-                        println("kCVPixelFormatType_48RGB")
-                    case kCVPixelFormatType_32AlphaGray:
-                        println("kCVPixelFormatType_32AlphaGray")
-                    case kCVPixelFormatType_16Gray:
-                        println("kCVPixelFormatType_16Gray")
-                    case kCVPixelFormatType_30RGB:
-                        println("kCVPixelFormatType_30RGB")
-                    case kCVPixelFormatType_422YpCbCr8:
-                        println("kCVPixelFormatType_422YpCbCr8")
-                    case kCVPixelFormatType_4444YpCbCrA8:
-                        println("kCVPixelFormatType_4444YpCbCrA8")
-                    case kCVPixelFormatType_4444YpCbCrA8R:
-                        println("kCVPixelFormatType_4444YpCbCrA8R")
-                    case kCVPixelFormatType_4444AYpCbCr8:
-                        println("kCVPixelFormatType_4444AYpCbCr8")
-                    case kCVPixelFormatType_4444AYpCbCr16:
-                        println("kCVPixelFormatType_4444AYpCbCr16")
-                    case kCVPixelFormatType_444YpCbCr8:
-                        println("kCVPixelFormatType_444YpCbCr8")
-                    case kCVPixelFormatType_422YpCbCr16:
-                        println("kCVPixelFormatType_422YpCbCr16")
-                    case kCVPixelFormatType_422YpCbCr10:
-                        println("kCVPixelFormatType_422YpCbCr10")
-                    case kCVPixelFormatType_444YpCbCr10:
-                        println("kCVPixelFormatType_444YpCbCr10")
-                    case kCVPixelFormatType_420YpCbCr8Planar:
-                        println("kCVPixelFormatType_420YpCbCr8Planar")
-                    case kCVPixelFormatType_420YpCbCr8PlanarFullRange:
-                        println("kCVPixelFormatType_420YpCbCr8PlanarFullRange")
-                    case kCVPixelFormatType_422YpCbCr_4A_8BiPlanar:
-                        println("kCVPixelFormatType_422YpCbCr_4A_8BiPlanar")
-                    case kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange:
-                        println("kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange")
-                    case kCVPixelFormatType_420YpCbCr8BiPlanarFullRange:
-                        println("kCVPixelFormatType_420YpCbCr8BiPlanarFullRange")
-                    case kCVPixelFormatType_422YpCbCr8_yuvs:
-                        println("kCVPixelFormatType_422YpCbCr8_yuvs")
-                    case kCVPixelFormatType_422YpCbCr8FullRange:
-                        println("kCVPixelFormatType_422YpCbCr8FullRange")
-                    case kCVPixelFormatType_OneComponent8:
-                        println("kCVPixelFormatType_OneComponent8")
-                    case kCVPixelFormatType_TwoComponent8:
-                        println("kCVPixelFormatType_TwoComponent8")
-                    case kCVPixelFormatType_OneComponent16Half:
-                        println("kCVPixelFormatType_OneComponent16Half")
-                    case kCVPixelFormatType_OneComponent32Float:
-                        println("kCVPixelFormatType_OneComponent32Float")
-                    case kCVPixelFormatType_TwoComponent16Half:
-                        println("kCVPixelFormatType_TwoComponent16Half")
-                    case kCVPixelFormatType_TwoComponent32Float:
-                        println("kCVPixelFormatType_TwoComponent32Float")
-                    case kCVPixelFormatType_64RGBAHalf:
-                        println("kCVPixelFormatType_64RGBAHalf")
-                    case kCVPixelFormatType_128RGBAFloat:
-                        println("kCVPixelFormatType_128RGBAFloat")
-                    default:
-                        println("?????")
-                }
-            }
-            println()
-            for format in codecFormats {
-                println(format)
-            }
-
-            /*imageOutput!.outputSettings[AVVideoCodecKey] = codecFormats[0]
-            imageOutput!.outputSettings[kCVPixelBufferPixelFormatTypeKey] = pixelFormats[pixelFormats.count - 1]
-            */
             cameraSession!.addOutput(imageOutput)
 
-            cameraPreviewLayer!.connection.videoScaleAndCropFactor = 1
+            // start the preview up
             cameraSession!.startRunning()
         }
 
