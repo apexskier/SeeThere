@@ -12,7 +12,7 @@ import CoreLocation
 private let HEIGHT_TOLERANCE: Double = -10
 private let MAX_DISTANCE: Double = 100000
 private let MIN_DISTANCE: Double = 20
-private let DISTANCE_STEP: Double = 10
+private let DISTANCE_STEP: Double = 20
 private let SLOPE_FACTOR: Double = 0.02
 
 func radians(degrees: Double) -> Double {
@@ -225,6 +225,7 @@ func walkOutFrom(start: CLLocation, direction: CLLocationDirection, pitch: Doubl
                 NSThread.detachNewThreadSelector("updateProgress:", toTarget: target!, withObject: pointDist / MAX_DISTANCE)
             }
 
+            //println("[\(loc.coordinate.longitude),\(loc.coordinate.latitude)],")
             println(" distance: \(loc.distanceFromLocation(start))")
             println("  estimate: \(estimate), actual: \(actual), diff: \(diff)")
             println("  slope: \(slopeAngle)")

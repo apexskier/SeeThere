@@ -246,10 +246,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 self.parentViewController?.dismissViewControllerAnimated(true) {}
             }
         } else {
-            locPin.setCoordinate(foundLocation.coordinate)
+            locPin.coordinate = foundLocation.coordinate
             locPin.title = locationInformation!.name
 
-            youPin.setCoordinate(locationInformation!.location.coordinate)
+            youPin.coordinate = locationInformation!.location.coordinate
             youPin.title = "Your position"
 
             mapView.mapType = MKMapType.Hybrid
