@@ -116,8 +116,11 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     private var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
     private var imageOutput: AVCaptureStillImageOutput?
 
-    func die() {
-        fatalError("died")
+    func die(error: NSError?) {
+        var message = "A fatal error happened.\n\(error?.usefulDescription)"
+        appDelegate.window?.rootViewController?.alertError(message) {
+            fatalError(message)
+        }
     }
 
     private var fovVertical: Double = 0
@@ -148,7 +151,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             if granted {
             self.setupCamera()
             } else {
-            UIApplication.sharedApplication().keyWindow?.rootViewController?.alertError("You must enable the camera to use this app.") { self.die() }
+            UIApplication.sharedApplication().keyWindow?.rootViewController?.alertError("You must enable the camera to use this app.") { self.die(nil) }
             }
             })*/
         case .Denied, .Restricted:
@@ -181,29 +184,31 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         // input device
         let camera = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
         if camera == nil {
-            self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
+            self.die(nil)
         }
 
         // set camera configuration
         var error: NSError?
         camera.lockForConfiguration(&error)
         if error != nil {
-            println(error!.domain)
-            self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
+            self.die(error)
         }
         camera.focusMode = AVCaptureFocusMode.Locked
         camera.unlockForConfiguration()
 
         // get camera input stream
         let possibleCameraInput: AnyObject? = AVCaptureDeviceInput.deviceInputWithDevice(camera, error: &error)
+        if error != nil {
+            self.die(error)
+        }
         if let cameraInput = possibleCameraInput as? AVCaptureDeviceInput {
             if self.cameraSession!.canAddInput(cameraInput) {
                 self.cameraSession!.addInput(cameraInput)
             } else {
-                self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
+                self.die(nil)
             }
         } else {
-            self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
+            self.die(nil)
         }
 
         // set visual camera preview up
@@ -329,107 +334,107 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var tapGestureRecognizer: UITapGestureRecognizer!
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
-                initialInstructions.hidden = true
-                cancelObservers()
+            initialInstructions.hidden = true
+            cancelObservers()
 
-                let tapLocation = sender.locationInView(self.view)
+            let tapLocation = sender.locationInView(self.view)
 
-                let location = self.appDelegate.currentLocation!
-                let pitch = self.getPitch(Double(tapLocation.y))
-                let direction = self.getDirection(Double(tapLocation.x))
+            let location = self.appDelegate.currentLocation!
+            let pitch = self.getPitch(Double(tapLocation.y))
+            let direction = self.getDirection(Double(tapLocation.x))
 
-                self.textField.text = NSLocalizedString("Looking", comment: "looking for location")
-                //self.activityIndicator.startAnimating()
-                self.progressBar.progress = 0
-                self.progressBar.hidden = false
-                self.working = true
-                self.cancelButton.hidden = false
+            self.textField.text = NSLocalizedString("Looking", comment: "looking for location")
+            //self.activityIndicator.startAnimating()
+            self.progressBar.progress = 0
+            self.progressBar.hidden = false
+            self.working = true
+            self.cancelButton.hidden = false
 
-                let connection = self.imageOutput!.connectionWithMediaType(AVMediaTypeVideo)
-                imageOutput!.captureStillImageAsynchronouslyFromConnection(connection, completionHandler: { (sampleBuffer: CMSampleBuffer!, error: NSError!) -> Void in
-                    self.cameraSession!.stopRunning()
-                    if error != nil {
-                        self.alertError("Something went wrong: \(error?.domain)") {}
-                    } else {
-                        let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
-                        if let image = UIImage(data: imageData) {
-                            self.work = NSBlockOperation()
-                            self.work!.addExecutionBlock({
-                                let (loc, error) = walkOutFrom(location, direction, pitch, self.work!, self)
+            let connection = self.imageOutput!.connectionWithMediaType(AVMediaTypeVideo)
+            imageOutput!.captureStillImageAsynchronouslyFromConnection(connection, completionHandler: { (sampleBuffer: CMSampleBuffer!, error: NSError!) -> Void in
+                self.cameraSession!.stopRunning()
+                if error != nil {
+                    self.alertError("Something went wrong: \(error?.domain)") {}
+                } else {
+                    let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
+                    if let image = UIImage(data: imageData) {
+                        self.work = NSBlockOperation()
+                        self.work!.addExecutionBlock({
+                            let (loc, error) = walkOutFrom(location, direction, pitch, self.work!, self)
 
-                                dispatch_async(dispatch_get_main_queue(), {
-                                    let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
-                                    new.location = location
-                                    new.heading = direction
-                                    new.pitch = pitch
-                                    new.dateTime = NSDate()
-                                    new.image = imageData
-                                    new.name = new.dateTime.description
+                            dispatch_async(dispatch_get_main_queue(), {
+                                let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
+                                new.location = location
+                                new.heading = direction
+                                new.pitch = pitch
+                                new.dateTime = NSDate()
+                                new.image = imageData
+                                new.name = new.dateTime.description
 
-                                    self.working = false
-                                    self.cancelButton.hidden = true
+                                self.working = false
+                                self.cancelButton.hidden = true
 
-                                    if error == nil || error?.code == 0 && !self.work!.cancelled {
-                                        self.textField.text = NSLocalizedString("Found", comment: "found a location")
+                                if error == nil || error?.code == 0 && !self.work!.cancelled {
+                                    self.textField.text = NSLocalizedString("Found", comment: "found a location")
 
-                                        if loc != nil {
-                                            let found = NSEntityDescription.insertNewObjectForEntityForName("FoundLocation", inManagedObjectContext: self.managedObjectContext) as! FoundLocation
-                                            found.location = loc!
-                                            new.foundLocation = found
-                                        }
+                                    if loc != nil {
+                                        let found = NSEntityDescription.insertNewObjectForEntityForName("FoundLocation", inManagedObjectContext: self.managedObjectContext) as! FoundLocation
+                                        found.location = loc!
+                                        new.foundLocation = found
+                                    }
 
-                                        let pageController = self.parentViewController as! PageController
-                                        pageController.displayMap(new) {
-                                            self.workDone()
-                                        }
+                                    let pageController = self.parentViewController as! PageController
+                                    pageController.displayMap(new) {
+                                        self.workDone()
+                                    }
+                                } else {
+                                    if self.work!.cancelled {
+                                        self.managedObjectContext.reset()
+                                        self.workDone()
                                     } else {
-                                        if self.work!.cancelled {
+                                        self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
+
+                                        var message: String
+                                        if let m = error?.domain {
+                                            message = m
+                                        } else {
+                                            message = "Something went wrong."
+                                        }
+                                        message = NSLocalizedString("SaveQMessageFailed", comment: "asking for save after failure") + message
+
+                                        let alert = UIAlertController(title: NSLocalizedString("SaveQTitle", comment: "ask to save"), message: message, preferredStyle: .Alert)
+                                        alert.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
+                                            textField.placeholder = "Name this location"
+                                        }
+                                        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: "okay"), style: .Default, handler: { (action: UIAlertAction!) -> Void in
+                                            let textField = alert.textFields![0] as! UITextField
+
+                                            new.name = textField.text
+                                            var error: NSError?
+                                            if !self.managedObjectContext.save(&error) {
+                                                self.alertError("Error saving: \(error)") {}
+                                            }
+                                            self.workDone()
+                                        }))
+                                        alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: "no"), style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) -> Void in
                                             self.managedObjectContext.reset()
                                             self.workDone()
-                                        } else {
-                                            self.textField.text = NSLocalizedString("Failed", comment: "failed to find a location")
-
-                                            var message: String
-                                            if let m = error?.domain {
-                                                message = m
-                                            } else {
-                                                message = "Something went wrong."
-                                            }
-                                            message = NSLocalizedString("SaveQMessageFailed", comment: "asking for save after failure") + message
-
-                                            let alert = UIAlertController(title: NSLocalizedString("SaveQTitle", comment: "ask to save"), message: message, preferredStyle: .Alert)
-                                            alert.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
-                                                textField.placeholder = "Name this location"
-                                            }
-                                            alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: "okay"), style: .Default, handler: { (action: UIAlertAction!) -> Void in
-                                                let textField = alert.textFields![0] as! UITextField
-
-                                                new.name = textField.text
-                                                var error: NSError?
-                                                if !self.managedObjectContext.save(&error) {
-                                                    self.alertError("Error saving: \(error)") {}
-                                                }
-                                                self.workDone()
-                                            }))
-                                            alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: "no"), style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) -> Void in
-                                                self.managedObjectContext.reset()
-                                                self.workDone()
-                                            }))
-                                            
-                                            self.presentViewController(alert, animated: true) {}
-                                        }
+                                        }))
+                                        
+                                        self.presentViewController(alert, animated: true) {}
                                     }
-                                })
+                                }
                             })
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                                self.work!.start()
-                            })
-                        } else {
-                            self.alertError("Faile to get image") {}
-                        }
+                        })
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                            self.work!.start()
+                        })
+                    } else {
+                        self.alertError("Faile to get image") {}
                     }
-                })
-            }
+                }
+            })
+        }
     }
     @IBOutlet var tripleTapGestureRecognizer: UITapGestureRecognizer!
     @IBAction func tripleTapGestureAction(sender: UITapGestureRecognizer) {

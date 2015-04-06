@@ -12,7 +12,9 @@ import CoreData
 extension UIViewController {
     func alertError(message: String, handler: (() -> Void)) {
         let alert = UIAlertController(title: NSLocalizedString("Error", comment: "error message"), message: message, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: .Cancel, handler: nil))
-        self.presentViewController(alert, animated: true, completion: handler)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: { (alert: UIAlertAction!) -> Void in
+            handler()
+        }))
+        self.presentViewController(alert, animated: true) {}
     }
 }
