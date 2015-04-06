@@ -51,7 +51,6 @@ func imageFromSampleBuffer(sampleBuffer: CMSampleBufferRef) -> UIImage? {
 class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet var mainView: UIView!
-    @IBOutlet var tapGestureRecognizer: UITapGestureRecognizer!
     @IBOutlet weak var textField: UILabel!
     @IBOutlet weak var initialInstructions: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -207,6 +206,8 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
         setUpObservers()
         sayReady()
+
+        tapGestureRecognizer.requireGestureRecognizerToFail(tripleTapGestureRecognizer)
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -309,6 +310,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         self.sayReady()
         self.progressBar.hidden = true
     }
+    @IBOutlet var tapGestureRecognizer: UITapGestureRecognizer!
     @IBAction func tapGestureAction(sender: UITapGestureRecognizer) {
         if ready {
                 initialInstructions.hidden = true
@@ -413,11 +415,12 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                 })
             }
     }
-    /*@IBAction func tripleTapGestureAction(sender: UITapGestureRecognizer) {
+    @IBOutlet var tripleTapGestureRecognizer: UITapGestureRecognizer!
+    @IBAction func tripleTapGestureAction(sender: UITapGestureRecognizer) {
         if headingText.hidden {
-            pitchText.hidden = true
+            pitchText.hidden = false
             yawText.hidden = false
-            rollText.hidden = true
+            rollText.hidden = false
             headingText.hidden = false
         } else {
             pitchText.hidden = true
@@ -425,7 +428,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
             rollText.hidden = true
             headingText.hidden = true
         }
-    }*/
+    }
 
     internal func updateProgress(object: AnyObject?) {
         let val: Float = object as! Float

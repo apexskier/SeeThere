@@ -54,25 +54,25 @@
                                 <rect key="frame" x="36" y="299" width="528" height="2"/>
                             </progressView>
                             <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Heading" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="rjZ-dM-6gL">
-                                <rect key="frame" x="16" y="20" width="51" height="15"/>
+                                <rect key="frame" x="16" y="28" width="51" height="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Pitch" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="kPt-on-F4P">
-                                <rect key="frame" x="16" y="43" width="33" height="15"/>
+                                <rect key="frame" x="16" y="51" width="33" height="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Yaw" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="gCe-ft-EZb">
-                                <rect key="frame" x="16" y="66" width="27" height="15"/>
+                                <rect key="frame" x="16" y="74" width="27" height="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Roll" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="sJN-kW-Tgs">
-                                <rect key="frame" x="16" y="89" width="26" height="15"/>
+                                <rect key="frame" x="16" y="97" width="26" height="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -84,6 +84,7 @@
                             <constraint firstItem="kPt-on-F4P" firstAttribute="top" secondItem="rjZ-dM-6gL" secondAttribute="bottom" constant="8" id="4fW-A2-Qdd"/>
                             <constraint firstItem="wSK-a0-BoB" firstAttribute="top" secondItem="eh5-z5-EeK" secondAttribute="bottom" constant="8" id="5fl-ly-khW"/>
                             <constraint firstItem="sJN-kW-Tgs" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="65P-Wv-yea"/>
+                            <constraint firstItem="rjZ-dM-6gL" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="8ey-2z-0Kf"/>
                             <constraint firstAttribute="centerX" secondItem="1o0-ln-oKW" secondAttribute="centerX" id="92H-J7-LWj"/>
                             <constraint firstItem="Fh5-Yn-V7T" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="94x-oZ-jw4"/>
                             <constraint firstItem="Q1Z-h7-qX3" firstAttribute="top" secondItem="Fh5-Yn-V7T" secondAttribute="bottom" constant="25" id="Bnd-kh-9D2"/>
@@ -98,7 +99,6 @@
                             <constraint firstItem="rjZ-dM-6gL" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="PrX-2m-EBY"/>
                             <constraint firstItem="sJN-kW-Tgs" firstAttribute="top" secondItem="gCe-ft-EZb" secondAttribute="bottom" constant="8" id="SLi-eP-LUF"/>
                             <constraint firstItem="Q1Z-h7-qX3" firstAttribute="top" secondItem="wSK-a0-BoB" secondAttribute="bottom" constant="8" id="Uf8-Qb-VLE"/>
-                            <constraint firstItem="rjZ-dM-6gL" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Y8B-wQ-8On"/>
                             <constraint firstAttribute="centerX" secondItem="wSK-a0-BoB" secondAttribute="centerX" id="bU2-dl-gxv"/>
                             <constraint firstItem="gCe-ft-EZb" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="hXx-EP-Ac5"/>
                             <constraint firstAttribute="centerX" secondItem="eh5-z5-EeK" secondAttribute="centerX" id="hvq-n2-dOj"/>
@@ -136,8 +136,9 @@
                         <outlet property="pitchText" destination="kPt-on-F4P" id="sjZ-XQ-Q6h"/>
                         <outlet property="progressBar" destination="Fh5-Yn-V7T" id="AoK-0W-qZC"/>
                         <outlet property="rollText" destination="sJN-kW-Tgs" id="W8R-hn-KcV"/>
-                        <outlet property="tapGestureRecognizer" destination="yee-C7-yCv" id="ONK-zP-gCh"/>
+                        <outlet property="tapGestureRecognizer" destination="yee-C7-yCv" id="0X2-Yy-7uI"/>
                         <outlet property="textField" destination="eh5-z5-EeK" id="uin-gS-RKn"/>
+                        <outlet property="tripleTapGestureRecognizer" destination="JQE-ng-Xdl" id="NUX-wq-z7X"/>
                         <outlet property="yawText" destination="gCe-ft-EZb" id="6An-0S-E6N"/>
                     </connections>
                 </viewController>
@@ -146,6 +147,11 @@
                     <connections>
                         <action selector="tapGestureAction:" destination="BYZ-38-t0r" id="TnD-KA-663"/>
                         <outlet property="delegate" destination="8bC-Xf-vdC" id="yny-oa-CdD"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer numberOfTouchesRequired="3" id="JQE-ng-Xdl">
+                    <connections>
+                        <action selector="tripleTapGestureAction:" destination="BYZ-38-t0r" id="iF0-76-sLn"/>
                     </connections>
                 </tapGestureRecognizer>
                 <pinchGestureRecognizer id="gkP-N6-Rcu">
