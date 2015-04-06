@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7528.3" systemVersion="14D130a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AKC-Wn-Ijz">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7518.3"/>
-        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -10,7 +9,7 @@
         <!--Page Controller-->
         <scene sceneID="I9H-wJ-eTN">
             <objects>
-                <pageViewController storyboardIdentifier="MainPageController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="AKC-Wn-Ijz" customClass="PageController" customModule="See_There" sceneMemberID="viewController"/>
+                <pageViewController storyboardIdentifier="MainPageController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="AKC-Wn-Ijz" customClass="PageController" customModule="Tap___Seek" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dyg-FV-Q1w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-606" y="-23"/>
@@ -18,7 +17,7 @@
         <!--Camera View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="CameraView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="CameraViewController" customModule="SeeThereTests" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CameraView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="CameraViewController" customModule="Tap___Seek" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -165,7 +164,7 @@
         <!--Saved View Controller-->
         <scene sceneID="W9t-kl-7Zz">
             <objects>
-                <tableViewController storyboardIdentifier="SavedView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="YKc-gc-nKZ" customClass="SavedViewController" customModule="See_There" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="SavedView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="YKc-gc-nKZ" customClass="SavedViewController" customModule="Tap___Seek" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="TYb-8D-Wib">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -195,7 +194,7 @@
         <!--Map View Controller-->
         <scene sceneID="2vP-73-faK">
             <objects>
-                <viewController storyboardIdentifier="MapView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="5m1-X9-2Zk" customClass="MapViewController" customModule="SeeThereTests" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="5m1-X9-2Zk" customClass="MapViewController" customModule="Tap___Seek" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MvB-eW-P07"/>
                         <viewControllerLayoutGuide type="bottom" id="a3j-y4-0py"/>

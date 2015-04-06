@@ -126,79 +126,9 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var canCamera = false
-
-        let authorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
-        switch authorizationStatus {
-        case .NotDetermined:
-            // permission dialog not yet presented, request authorization
-            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted:Bool) -> Void in
-                if granted {
-                    canCamera = true
-                }
-            })
-        case .Authorized:
-            canCamera = true
-        case .Denied, .Restricted:
-            canCamera = false
-        }
-
-        if !canCamera {
-            self.alertError("You either cannot or won't let the camera be used.") { self.die() }
-        } else {
-            // Camera capture session
-            cameraSession = AVCaptureSession()
-            cameraSession!.sessionPreset = AVCaptureSessionPresetHigh
-
-            // input device
-            let camera = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
-            if camera == nil {
-                self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
-            }
-
-            // set camera configuration
-            var error: NSError?
-            camera.lockForConfiguration(&error)
-            if error != nil {
-                println(error!.domain)
-                self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
-            }
-            camera.focusMode = AVCaptureFocusMode.Locked
-            camera.unlockForConfiguration()
-
-            // get camera input stream
-            let possibleCameraInput: AnyObject? = AVCaptureDeviceInput.deviceInputWithDevice(camera, error: &error)
-            if let cameraInput = possibleCameraInput as? AVCaptureDeviceInput {
-                if self.cameraSession!.canAddInput(cameraInput) {
-                    self.cameraSession!.addInput(cameraInput)
-                } else {
-                    self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
-                }
-            } else {
-                self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
-            }
-
-            // set visual camera preview up
-            cameraPreviewLayer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as? AVCaptureVideoPreviewLayer
-            cameraPreviewLayer!.frame = self.mainView.bounds
-            cameraPreviewLayer!.connection.videoScaleAndCropFactor = 1
-            self.mainView.layer.insertSublayer(cameraPreviewLayer!, atIndex: 0)
-            self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
-
-            // get connection to capture pictures from
-            imageOutput = AVCaptureStillImageOutput()
-            cameraSession!.addOutput(imageOutput)
-
-            // start the preview up
-            cameraSession!.startRunning()
-
-            fovVertical = radians(Double(camera.activeFormat.videoFieldOfView))
-            fovHorizontal = radians((width / height) * fovVertical)
-        }
+        setupCamera()
 
         initialInstructions.hidden = true
-
-        cameraReady = true
         cancelButton.hidden = true
 
         progressBar.hidden = true
@@ -208,6 +138,92 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         sayReady()
 
         tapGestureRecognizer.requireGestureRecognizerToFail(tripleTapGestureRecognizer)
+    }
+
+    /*override func viewDidAppear(animated: Bool) {
+        switch AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) {
+        case .NotDetermined, .Authorized:
+            /*// permission dialog not yet presented, request authorization
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted:Bool) -> Void in
+            if granted {
+            self.setupCamera()
+            } else {
+            UIApplication.sharedApplication().keyWindow?.rootViewController?.alertError("You must enable the camera to use this app.") { self.die() }
+            }
+            })*/
+        case .Denied, .Restricted:
+            var alertText: String
+            var alertButton: String
+            let canOpenSettings = UIApplicationOpenSettingsURLString != ""
+            if (canOpenSettings) {
+                alertText = "Your privacy settings are preventing access to your camera. You can fix this by doing the following:\n\n1. Touch the Go button below to open the Settings app.\n2. Turn the Camera on.\n3. Open this app and try again."
+                alertButton = "Go"
+            } else {
+                alertText = "Your privacy settings are preventing access to your camera. You can fix this by doing the following:\n\n1. Close this app.\n2. Open the Settings app.\n3. Scroll to the bottom and select Tap & Seek in the list.\n4. Turn the Camera on.\n5. Open this app and try again."
+                alertButton = NSLocalizedString("OK", comment: "okay")
+            }
+
+            let alert = UIAlertController(title: NSLocalizedString("Error", comment: "error message"), message: alertText, preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: alertButton, style: .Default, handler: { (action: UIAlertAction!) -> Void in
+                if canOpenSettings {
+                    UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+                }
+            }))
+            UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alert, animated: true) {}
+        }
+    }*/
+
+    func setupCamera() {
+        // Camera capture session
+        cameraSession = AVCaptureSession()
+        cameraSession!.sessionPreset = AVCaptureSessionPresetHigh
+
+        // input device
+        let camera = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+        if camera == nil {
+            self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
+        }
+
+        // set camera configuration
+        var error: NSError?
+        camera.lockForConfiguration(&error)
+        if error != nil {
+            println(error!.domain)
+            self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
+        }
+        camera.focusMode = AVCaptureFocusMode.Locked
+        camera.unlockForConfiguration()
+
+        // get camera input stream
+        let possibleCameraInput: AnyObject? = AVCaptureDeviceInput.deviceInputWithDevice(camera, error: &error)
+        if let cameraInput = possibleCameraInput as? AVCaptureDeviceInput {
+            if self.cameraSession!.canAddInput(cameraInput) {
+                self.cameraSession!.addInput(cameraInput)
+            } else {
+                self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
+            }
+        } else {
+            self.alertError(NSLocalizedString("FailedCamera", comment: "failed, camera error")) { self.die() }
+        }
+
+        // set visual camera preview up
+        cameraPreviewLayer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as? AVCaptureVideoPreviewLayer
+        cameraPreviewLayer!.frame = self.mainView.bounds
+        cameraPreviewLayer!.connection.videoScaleAndCropFactor = 1
+        self.mainView.layer.insertSublayer(cameraPreviewLayer!, atIndex: 0)
+        self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
+
+        // get connection to capture pictures from
+        imageOutput = AVCaptureStillImageOutput()
+        cameraSession!.addOutput(imageOutput)
+
+        // start the preview up
+        cameraSession!.startRunning()
+
+        fovVertical = radians(Double(camera.activeFormat.videoFieldOfView))
+        fovHorizontal = radians((width / height) * fovVertical)
+
+        cameraReady = true
     }
 
     override func viewWillAppear(animated: Bool) {
