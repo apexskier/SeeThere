@@ -137,15 +137,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-}
-
-extension NSError {
-    var usefulDescription: String {
-        if let m = self.localizedFailureReason {
-            return m
-        } else if self.localizedDescription != "" {
-            return self.localizedDescription
+    
+    /// Mark: WatchKit
+    func application(application: UIApplication, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]?, reply: (([NSObject : AnyObject]!) -> Void)!) {
+        if userInfo?["request"] == nil {
+            // assuming they want the initial data for app
+            var error: NSError?
+            let request = NSFetchRequest(entityName: "LocationInformation")
+            let fetched = self.managedObjectContext.executeFetchRequest(request, error: &error) as? [LocationInformation]
+            if error != nil {
+                //DEBUG
+                fatalError("major error in watchkit app")
+            }
+            var response = [String:[LocationInformation]]()
+            if let sources = fetched {
+                response = ["data": sources as [LocationInformation]]
+            }
+            reply(response)
         }
-        return self.domain
     }
 }

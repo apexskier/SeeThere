@@ -20,24 +20,24 @@
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>CFBundlePackageType</key>
-                <string>APPL</string>
+    <string>APPL</string>
             
 
-                <key>WKCompanionAppBundleIdentifier</key>
-                <string>com.camlittle.See-There</string>
-                <key>WKWatchKitApp</key>
-                <true/>
+    <key>WKCompanionAppBundleIdentifier</key>
+    <string>com.camlittle.See-There</string>
+    <key>WKWatchKitApp</key>
+    <true/>
             
     <key>CFBundleIdentifier</key>
     <string>com.camlittle.See-There.watchkitapp</string>
     <key>UISupportedInterfaceOrientations</key>
-                <array>
-                    <string>UIInterfaceOrientationPortrait</string>
-                    <string>UIInterfaceOrientationPortraitUpsideDown</string>
-                </array>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    </array>
             
     <key>CFBundleDisplayName</key>
-                <string>Tap &amp; Seek</string>
+    <string>Tap &amp; Seek</string>
             
 </dict>
 </plist>

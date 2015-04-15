@@ -185,50 +185,51 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
         let camera = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
         if camera == nil {
             self.die(nil)
-        }
+        } else {
 
-        // set camera configuration
-        var error: NSError?
-        camera.lockForConfiguration(&error)
-        if error != nil {
-            self.die(error)
-        }
-        camera.focusMode = AVCaptureFocusMode.Locked
-        camera.unlockForConfiguration()
+            // set camera configuration
+            var error: NSError?
+            camera.lockForConfiguration(&error)
+            if error != nil {
+                self.die(error)
+            }
+            camera.focusMode = AVCaptureFocusMode.Locked
+            camera.unlockForConfiguration()
 
-        // get camera input stream
-        let possibleCameraInput: AnyObject? = AVCaptureDeviceInput.deviceInputWithDevice(camera, error: &error)
-        if error != nil {
-            self.die(error)
-        }
-        if let cameraInput = possibleCameraInput as? AVCaptureDeviceInput {
-            if self.cameraSession!.canAddInput(cameraInput) {
-                self.cameraSession!.addInput(cameraInput)
+            // get camera input stream
+            let possibleCameraInput: AnyObject? = AVCaptureDeviceInput.deviceInputWithDevice(camera, error: &error)
+            if error != nil {
+                self.die(error)
+            }
+            if let cameraInput = possibleCameraInput as? AVCaptureDeviceInput {
+                if self.cameraSession!.canAddInput(cameraInput) {
+                    self.cameraSession!.addInput(cameraInput)
+                } else {
+                    self.die(nil)
+                }
             } else {
                 self.die(nil)
             }
-        } else {
-            self.die(nil)
+
+            // set visual camera preview up
+            cameraPreviewLayer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as? AVCaptureVideoPreviewLayer
+            cameraPreviewLayer!.frame = self.mainView.bounds
+            cameraPreviewLayer!.connection.videoScaleAndCropFactor = 1
+            self.mainView.layer.insertSublayer(cameraPreviewLayer!, atIndex: 0)
+            self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
+
+            // get connection to capture pictures from
+            imageOutput = AVCaptureStillImageOutput()
+            cameraSession!.addOutput(imageOutput)
+
+            // start the preview up
+            cameraSession!.startRunning()
+
+            fovVertical = radians(Double(camera.activeFormat.videoFieldOfView))
+            fovHorizontal = radians((width / height) * fovVertical)
+
+            cameraReady = true
         }
-
-        // set visual camera preview up
-        cameraPreviewLayer = AVCaptureVideoPreviewLayer.layerWithSession(self.cameraSession) as? AVCaptureVideoPreviewLayer
-        cameraPreviewLayer!.frame = self.mainView.bounds
-        cameraPreviewLayer!.connection.videoScaleAndCropFactor = 1
-        self.mainView.layer.insertSublayer(cameraPreviewLayer!, atIndex: 0)
-        self.mainView.layer.insertSublayer(self.blurView.layer, atIndex: 1)
-
-        // get connection to capture pictures from
-        imageOutput = AVCaptureStillImageOutput()
-        cameraSession!.addOutput(imageOutput)
-
-        // start the preview up
-        cameraSession!.startRunning()
-
-        fovVertical = radians(Double(camera.activeFormat.videoFieldOfView))
-        fovHorizontal = radians((width / height) * fovVertical)
-
-        cameraReady = true
     }
 
     override func viewWillAppear(animated: Bool) {
