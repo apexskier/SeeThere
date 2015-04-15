@@ -12,7 +12,7 @@
                     <items>
                         <table alignment="left" id="gKj-mD-m7J">
                             <items>
-                                <tableRow id="Rpk-QH-STI" customClass="RowController" customModule="Tap___Seek_WatchKit_Extension">
+                                <tableRow identifier="RowController" id="Rpk-QH-STI" customClass="RowController" customModule="Tap___Seek_WatchKit_Extension">
                                     <group key="rootItem" width="1" alignment="left" id="6gn-r7-FN8">
                                         <items>
                                             <label alignment="left" text="Label" id="goa-wQ-HZH"/>
@@ -26,8 +26,18 @@
                                 </tableRow>
                             </items>
                         </table>
+                        <group width="1" alignment="left" id="sjV-kk-AtI">
+                            <items>
+                                <label alignment="center" verticalAlignment="center" text="No Locations" id="So6-nv-GSQ">
+                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                </label>
+                            </items>
+                        </group>
+                        <label alignment="center" verticalAlignment="center" text="Go explore!" id="Y3G-5B-Y2U"/>
                     </items>
                     <connections>
+                        <outlet property="errorGroup" destination="sjV-kk-AtI" id="XF8-vq-D4N"/>
+                        <outlet property="errorText" destination="So6-nv-GSQ" id="uwm-HB-MJo"/>
                         <outlet property="table" destination="gKj-mD-m7J" id="Drg-g1-Nr0"/>
                     </connections>
                 </controller>
