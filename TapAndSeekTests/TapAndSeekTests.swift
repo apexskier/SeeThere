@@ -1,6 +1,6 @@
 //
-//  SeeThereTests.swift
-//  SeeThereTests
+//  TapAndSeekTests.swift
+//  TapAndSeekTests
 //
 //  Created by Cameron Little on 1/30/15.
 //  Copyright (c) 2015 Cameron Little. All rights reserved.
@@ -10,7 +10,7 @@ import XCTest
 import CoreLocation
 import CoreMotion
 
-class SeeThereTests: XCTestCase {
+class TapAndSeekTests: XCTestCase {
 
     private let epsilon = 0.0000001
     

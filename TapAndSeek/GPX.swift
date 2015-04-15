@@ -1,6 +1,6 @@
 //
 //  GPX.swift
-//  SeeThere
+//  TapAndSeek
 //
 //  Created by Cameron Little on 2/3/15.
 //  Copyright (c) 2015 Cameron Little. All rights reserved.

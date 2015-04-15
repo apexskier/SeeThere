@@ -1,6 +1,6 @@
 //
 //  MapViewController.swift
-//  SeeThere
+//  TapAndSeek
 //
 //  Created by Cameron Little on 2/1/15.
 //  Copyright (c) 2015 Cameron Little. All rights reserved.

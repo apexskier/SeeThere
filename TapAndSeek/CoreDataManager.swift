@@ -15,7 +15,7 @@ class CoreDataManager {
 
     private struct Constants {
         static let applicationDocumentsDirectoryName = NSBundle.mainBundle().bundleIdentifier!
-        static let mainStoreFileName = "SeeThere.datastore"
+        static let mainStoreFileName = "TapAndSeek.datastore"
         static let errorDomain = "CoreDataManager"
     }
 

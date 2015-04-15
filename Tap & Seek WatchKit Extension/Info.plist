@@ -22,14 +22,14 @@
     <key>CFBundlePackageType</key>
     <string>XPC!</string>
     <key>CFBundleDisplayName</key>
-    <string>Tap & Seek WatchKit Extension</string>
+    <string>Tap &amp; Seek WatchKit Extension</string>
     <key>CFBundleIdentifier</key>
     <string>com.camlittle.See-There.watchkitextension</string>
     <key>CFBundleShortVersionString</key>
     	<string>1.0</string>
     	<key>CFBundleVersion</key>
     		<string>1.0</string>
-    	
+
     <key>RemoteInterfacePrincipalClass</key>
     		<string>$(PRODUCT_MODULE_NAME).InterfaceController</string>
     		<key>NSExtension</key>
@@ -42,6 +42,6 @@
     				<string>com.camlittle.See-There.watchkitapp</string>
     			</dict>
     		</dict>
-    		
+
 </dict>
 </plist>

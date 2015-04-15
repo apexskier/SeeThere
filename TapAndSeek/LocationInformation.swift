@@ -1,6 +1,6 @@
 //
 //  LocationInformation.swift
-//  SeeThere
+//  TapAndSeek
 //
 //  Created by Cameron Little on 3/30/15.
 //  Copyright (c) 2015 Cameron Little. All rights reserved.
