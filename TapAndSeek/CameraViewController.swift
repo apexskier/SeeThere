@@ -118,9 +118,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
 
     func die(error: NSError?) {
         var message = "A fatal error happened.\n\(error?.usefulDescription)"
-        appDelegate.window?.rootViewController?.alertError(message) {
-            fatalError(message)
-        }
+        appDelegate.window?.rootViewController?.alertError(message) {}
     }
 
     private var fovVertical: Double = 0

@@ -86,9 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             locationManager.startUpdatingHeading()
         } else {
             let alert = UIAlertController(title:  NSLocalizedString("Error", comment: "failed, heading not available"), message: NSLocalizedString("FailedHeading", comment: "failed, heading not available"), preferredStyle: UIAlertControllerStyle.Alert)
-            let navigationController = application.windows[0].rootViewController as! UINavigationController
-            let activeViewController = navigationController.visibleViewController
-            activeViewController.presentViewController(alert, animated: true, completion: nil)
+            UIApplication.sharedApplication().keyWindow?.rootViewController!.presentViewController(alert, animated: true, completion: nil)
         }
 
         // start getting motion

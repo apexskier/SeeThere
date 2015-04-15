@@ -15,6 +15,11 @@ extension UIViewController {
         alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: { (alert: UIAlertAction!) -> Void in
             handler()
         }))
-        self.presentViewController(alert, animated: true) {}
+        if (isViewLoaded() && view.window != nil) {
+            self.presentViewController(alert, animated: true) {}
+        } else {
+            // recurse up window hierarchy
+            self.parentViewController?.alertError(message, handler: handler)
+        }
     }
 }
