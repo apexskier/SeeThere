@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+    <key>CFBundleIdentifier</key>
+    <string>com.camlittle.See-There.$(PRODUCT_NAME:rfc1034identifier)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>CFBundlePackageType</key>
+    <string>XPC!</string>
+    <key>CFBundleDisplayName</key>
+    <string>Tap & Seek WatchKit Extension</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.camlittle.See-There.watchkitextension</string>
+    <key>CFBundleShortVersionString</key>
+    	<string>1.0</string>
+    	<key>CFBundleVersion</key>
+    		<string>1.0</string>
+    	
+    <key>RemoteInterfacePrincipalClass</key>
+    		<string>$(PRODUCT_MODULE_NAME).InterfaceController</string>
+    		<key>NSExtension</key>
+    		<dict>
+    			<key>NSExtensionPointIdentifier</key>
+    			<string>com.apple.watchkit</string>
+    			<key>NSExtensionAttributes</key>
+    			<dict>
+    				<key>WKAppBundleIdentifier</key>
+    				<string>com.camlittle.See-There.watchkitapp</string>
+    			</dict>
+    		</dict>
+    		
+</dict>
+</plist>
