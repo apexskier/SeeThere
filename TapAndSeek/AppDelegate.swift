@@ -54,6 +54,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Override point for customization after application launch.
         locationManager.delegate = self
 
+        /*let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
+        new.location = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 47.1234, longitude: -122.1234), altitude: 60, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate())
+        new.heading = 0.1234
+        new.pitch = 0.5678
+        new.dateTime = NSDate()
+        new.image = NSData()
+        new.name = "Test Location"
+
+        let found = NSEntityDescription.insertNewObjectForEntityForName("FoundLocation", inManagedObjectContext: self.managedObjectContext) as! FoundLocation
+        found.location = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 47.5678, longitude: -122.5678), altitude: 70, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate())
+        new.foundLocation = found
+
+        var error: NSError?
+        managedObjectContext.save(&error)*/
+
         return true
     }
 
@@ -77,6 +92,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+
+
+
+        println(CoreDataManager.sharedManager.applicationDocumentsDirectory)
 
         // start getting location and heading
         locationManager.requestWhenInUseAuthorization()
@@ -138,20 +157,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     /// Mark: WatchKit
     func application(application: UIApplication, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]?, reply: (([NSObject : AnyObject]!) -> Void)!) {
-        if userInfo?["request"] == nil {
-            // assuming they want the initial data for app
-            var error: NSError?
-            let request = NSFetchRequest(entityName: "LocationInformation")
-            let fetched = self.managedObjectContext.executeFetchRequest(request, error: &error) as? [LocationInformation]
-            if error != nil {
-                //DEBUG
-                fatalError("major error in watchkit app")
-            }
+        var backgroundTask: UIBackgroundTaskIdentifier?
+        backgroundTask = UIApplication.sharedApplication().beginBackgroundTaskWithName("watchCommunication", expirationHandler: {
             var response = [String:[LocationInformation]]()
-            if let sources = fetched {
-                response = ["data": sources as [LocationInformation]]
+            if userInfo?["request"] == nil {
+                // assuming they want the initial data for app
+                var error: NSError?
+                let request = NSFetchRequest(entityName: "LocationInformation")
+                let fetched = self.managedObjectContext.executeFetchRequest(request, error: &error) as? [LocationInformation]
+                if error != nil {
+                    //DEBUG
+                    fatalError("major error in watchkit app")
+                }
+                if let sources = fetched {
+                    response = ["data": sources as [LocationInformation]]
+                }
             }
             reply(response)
-        }
+            UIApplication.sharedApplication().endBackgroundTask(backgroundTask!)
+        })
     }
 }

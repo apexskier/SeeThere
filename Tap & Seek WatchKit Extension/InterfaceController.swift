@@ -30,7 +30,7 @@ class InterfaceController: WKInterfaceController {
             if error != nil {
                 println(error.usefulDescription)
                 self.errorGroup.setHidden(false)
-                self.errorText.setText(error.usefulDescription)
+                self.errorText.setText("Error")
             } else {
                 let data = response["data"] as! [LocationInformation]
                 self.table.setNumberOfRows(data.count, withRowType: "LocationWKRow")
