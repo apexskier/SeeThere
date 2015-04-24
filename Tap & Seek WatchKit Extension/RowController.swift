@@ -10,6 +10,7 @@ import WatchKit
 
 class RowController: NSObject {
     @IBOutlet weak var textLabel: WKInterfaceLabel!
+    @IBOutlet weak var dateLabel: WKInterfaceLabel!
     @IBOutlet weak var imageBox: WKInterfaceImage!
 
     // MARK: Methods
@@ -20,5 +21,12 @@ class RowController: NSObject {
 
     func setImage(image: UIImage) {
         imageBox.setImage(image)
+    }
+
+    func setDate(date: NSDate) {
+        let formatter = NSDateFormatter()
+        formatter.dateStyle = .ShortStyle
+        formatter.timeStyle = .ShortStyle
+        dateLabel.setText(formatter.stringFromDate(date))
     }
 }

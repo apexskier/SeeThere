@@ -12,7 +12,6 @@ import CoreLocation
 
 @objc(FoundLocation)
 class FoundLocation: NSManagedObject {
-
     @NSManaged var elevation: Double
     @NSManaged var latitude: Double
     @NSManaged var longitude: Double
@@ -31,5 +30,4 @@ class FoundLocation: NSManagedObject {
             }
         }
     }
-
 }

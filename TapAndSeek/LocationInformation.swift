@@ -12,7 +12,6 @@ import CoreLocation
 
 @objc(LocationInformation)
 class LocationInformation: NSManagedObject {
-
     @NSManaged var elevation: Double
     @NSManaged var heading: Double
     @NSManaged var image: NSData
@@ -40,5 +39,4 @@ class LocationInformation: NSManagedObject {
             }
         }
     }
-
 }

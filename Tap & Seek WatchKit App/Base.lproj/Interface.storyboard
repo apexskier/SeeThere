@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7702" systemVersion="14D131" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="3737"/>
     </dependencies>
     <scenes>
@@ -10,22 +10,7 @@
             <objects>
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="Tap___Seek_WatchKit_Extension">
                     <items>
-                        <table alignment="left" id="gKj-mD-m7J">
-                            <items>
-                                <tableRow identifier="RowController" id="Rpk-QH-STI" customClass="RowController" customModule="Tap___Seek_WatchKit_Extension">
-                                    <group key="rootItem" width="1" alignment="left" id="6gn-r7-FN8">
-                                        <items>
-                                            <label alignment="left" text="Label" id="goa-wQ-HZH"/>
-                                            <imageView width="48" height="1" alignment="right" verticalAlignment="center" contentMode="scaleAspectFill" id="9XZ-6U-K2c"/>
-                                        </items>
-                                    </group>
-                                    <connections>
-                                        <outlet property="imageBox" destination="9XZ-6U-K2c" id="qNX-9j-A5d"/>
-                                        <outlet property="textLabel" destination="goa-wQ-HZH" id="u3n-hd-Ico"/>
-                                    </connections>
-                                </tableRow>
-                            </items>
-                        </table>
+                        <label alignment="center" verticalAlignment="center" text="Go explore!" id="Y3G-5B-Y2U"/>
                         <group width="1" alignment="left" id="sjV-kk-AtI">
                             <items>
                                 <label alignment="center" verticalAlignment="center" text="No Locations" id="So6-nv-GSQ">
@@ -33,7 +18,30 @@
                                 </label>
                             </items>
                         </group>
-                        <label alignment="center" verticalAlignment="center" text="Go explore!" id="Y3G-5B-Y2U"/>
+                        <table alignment="left" id="gKj-mD-m7J">
+                            <items>
+                                <tableRow identifier="RowController" id="Rpk-QH-STI" customClass="RowController" customModule="Tap___Seek_WatchKit_Extension">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" id="6gn-r7-FN8">
+                                        <items>
+                                            <group alignment="left" layout="vertical" id="bMN-dj-b3D">
+                                                <items>
+                                                    <label alignment="left" text="Name" textAlignment="left" id="goa-wQ-HZH"/>
+                                                    <label alignment="left" text="Date" id="CZ9-Il-GMb">
+                                                        <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                                    </label>
+                                                </items>
+                                            </group>
+                                            <imageView height="1" alignment="right" verticalAlignment="center" contentMode="scaleAspectFill" id="9XZ-6U-K2c"/>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="dateLabel" destination="CZ9-Il-GMb" id="VCH-H5-uyb"/>
+                                        <outlet property="imageBox" destination="9XZ-6U-K2c" id="qNX-9j-A5d"/>
+                                        <outlet property="textLabel" destination="goa-wQ-HZH" id="u3n-hd-Ico"/>
+                                    </connections>
+                                </tableRow>
+                            </items>
+                        </table>
                     </items>
                     <connections>
                         <outlet property="errorGroup" destination="sjV-kk-AtI" id="XF8-vq-D4N"/>
@@ -42,6 +50,34 @@
                     </connections>
                 </controller>
             </objects>
+        </scene>
+        <!--LocationView-->
+        <scene sceneID="La3-WX-5uD">
+            <objects>
+                <controller identifier="LocationView" id="0tO-jq-pp2" customClass="LocationInterfaceController" customModule="Tap___Seek_WatchKit_Extension">
+                    <items>
+                        <map height="100" alignment="left" id="SDq-Vy-bef"/>
+                        <label alignment="left" text="Name" id="fWP-ds-5s6">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Elevation" id="igQ-dR-O2T"/>
+                        <imageView width="1" alignment="left" id="ARP-gQ-hO2"/>
+                        <button width="1" alignment="left" title="Go!" id="j52-lv-Ufz">
+                            <connections>
+                                <action selector="goButtonTap" destination="0tO-jq-pp2" id="0Zz-ZB-lzd"/>
+                            </connections>
+                        </button>
+                    </items>
+                    <connections>
+                        <outlet property="elevationLabel" destination="igQ-dR-O2T" id="QKU-0O-aux"/>
+                        <outlet property="goButton" destination="j52-lv-Ufz" id="Etu-u1-xHl"/>
+                        <outlet property="imageBox" destination="ARP-gQ-hO2" id="5lx-WP-mgl"/>
+                        <outlet property="map" destination="SDq-Vy-bef" id="9bi-tl-fz4"/>
+                        <outlet property="nameLabel" destination="fWP-ds-5s6" id="uAF-2B-EmT"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="481" y="284.25"/>
         </scene>
     </scenes>
 </document>

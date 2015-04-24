@@ -11,7 +11,6 @@
 		C506E2861ACA061D005CC002 /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2851ACA061D005CC002 /* PageController.swift */; };
 		C506E28F1ACA0F4F005CC002 /* FoundLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */; };
 		C506E2911ACA0F50005CC002 /* LocationInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2901ACA0F50005CC002 /* LocationInformation.swift */; };
-		C506E2931ACA0FC9005CC002 /* FoundLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */; };
 		C506E2941ACA0FCC005CC002 /* LocationInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2901ACA0F50005CC002 /* LocationInformation.swift */; };
 		C506E2971ACA11D3005CC002 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2961ACA11D3005CC002 /* CoreDataManager.swift */; };
 		C506E2981ACA1219005CC002 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2961ACA11D3005CC002 /* CoreDataManager.swift */; };
@@ -19,6 +18,8 @@
 		C51C94161A7F1B2700F5B49D /* locationspotter.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C51C94151A7F1B2700F5B49D /* locationspotter.gpx */; };
 		C51C94181A80002800F5B49D /* Private.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51C94171A80002800F5B49D /* Private.swift */; };
 		C51C94191A80002800F5B49D /* Private.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51C94171A80002800F5B49D /* Private.swift */; };
+		C5360D251AE9E198000B3EE9 /* FoundLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */; };
+		C5360D271AE9EDAA000B3EE9 /* testimage.png in Resources */ = {isa = PBXBuildFile; fileRef = C5360D261AE9EDAA000B3EE9 /* testimage.png */; };
 		C53D5F2F1ADDF58D00B01D57 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D5F2D1ADDF58A00B01D57 /* Shared.swift */; };
 		C53D5F301ADDF58D00B01D57 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D5F2D1ADDF58A00B01D57 /* Shared.swift */; };
 		C53D5F3B1ADDFA5500B01D57 /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D5F3A1ADDFA5500B01D57 /* InterfaceController.swift */; };
@@ -29,12 +30,12 @@
 		C53D5F4D1ADDFA5500B01D57 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C53D5F4B1ADDFA5500B01D57 /* Interface.storyboard */; };
 		C53D5F4F1ADDFA5500B01D57 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C53D5F4E1ADDFA5500B01D57 /* Images.xcassets */; };
 		C53D5F521ADDFA5500B01D57 /* Tap & Seek WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C53D5F351ADDFA5500B01D57 /* Tap & Seek WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		C53D5F591ADDFB0D00B01D57 /* LocationInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2901ACA0F50005CC002 /* LocationInformation.swift */; };
-		C53D5F5A1ADDFB1D00B01D57 /* FoundLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E28E1ACA0F4F005CC002 /* FoundLocation.swift */; };
 		C53D5F5B1ADDFB2800B01D57 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D5F2D1ADDF58A00B01D57 /* Shared.swift */; };
 		C53D5F5C1ADDFB3400B01D57 /* RowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D5F291ADDF44600B01D57 /* RowController.swift */; };
 		C550B7B01ACB19720016442E /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C506E2851ACA061D005CC002 /* PageController.swift */; };
 		C5672DBC1AC9EC2D0013E2D4 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C5672DBA1AC9EC2D0013E2D4 /* Model.xcdatamodeld */; };
+		C56B04421AE9F350009A95B2 /* LocationInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5360D291AE9F04E000B3EE9 /* LocationInterfaceController.swift */; };
+		C56B04431AE9F43D009A95B2 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C53D5F4B1ADDFA5500B01D57 /* Interface.storyboard */; };
 		C57298531AD1F6E400C224C5 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57298521AD1F6E400C224C5 /* ViewExtensions.swift */; };
 		C57298541AD1F73E00C224C5 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57298521AD1F6E400C224C5 /* ViewExtensions.swift */; };
 		C57B50AD1A81A93600D477E1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C57B50AC1A81A93600D477E1 /* Localizable.strings */; };
@@ -107,6 +108,10 @@
 		C506E2991ACA1661005CC002 /* SavedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SavedViewController.swift; path = TapAndSeek/SavedViewController.swift; sourceTree = "<group>"; };
 		C51C94151A7F1B2700F5B49D /* locationspotter.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = locationspotter.gpx; sourceTree = "<group>"; };
 		C51C94171A80002800F5B49D /* Private.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Private.swift; sourceTree = "<group>"; };
+		C52D6C6B1AE9D33D00BDF226 /* Tap & Seek WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "Tap & Seek WatchKit Extension.entitlements"; path = "Tap & Seek WatchKit Extension/Tap & Seek WatchKit Extension.entitlements"; sourceTree = "<group>"; };
+		C52D6C6C1AE9D34700BDF226 /* Tap & Seek.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Tap & Seek.entitlements"; sourceTree = "<group>"; };
+		C5360D261AE9EDAA000B3EE9 /* testimage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testimage.png; sourceTree = "<group>"; };
+		C5360D291AE9F04E000B3EE9 /* LocationInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationInterfaceController.swift; sourceTree = "<group>"; };
 		C53D5F291ADDF44600B01D57 /* RowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RowController.swift; sourceTree = "<group>"; };
 		C53D5F2D1ADDF58A00B01D57 /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		C53D5F351ADDFA5500B01D57 /* Tap & Seek WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Tap & Seek WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -172,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				C53D5F3A1ADDFA5500B01D57 /* InterfaceController.swift */,
+				C5360D291AE9F04E000B3EE9 /* LocationInterfaceController.swift */,
 				C53D5F291ADDF44600B01D57 /* RowController.swift */,
 				C53D5F3C1ADDFA5500B01D57 /* NotificationController.swift */,
 				C53D5F3E1ADDFA5500B01D57 /* GlanceController.swift */,
@@ -258,6 +264,9 @@
 		C5FCB7521A7C750C00B6607A = {
 			isa = PBXGroup;
 			children = (
+				C52D6C6C1AE9D34700BDF226 /* Tap & Seek.entitlements */,
+				C52D6C6B1AE9D33D00BDF226 /* Tap & Seek WatchKit Extension.entitlements */,
+				C5360D261AE9EDAA000B3EE9 /* testimage.png */,
 				C5D7CB181A817A9200F5823F /* MapKit.framework */,
 				C51C94151A7F1B2700F5B49D /* locationspotter.gpx */,
 				C53D5F2D1ADDF58A00B01D57 /* Shared.swift */,
@@ -408,6 +417,11 @@
 					C53D5F341ADDFA5500B01D57 = {
 						CreatedOnToolsVersion = 6.3;
 						DevelopmentTeam = 6D9DLTQJSN;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					C53D5F431ADDFA5500B01D57 = {
 						CreatedOnToolsVersion = 6.3;
@@ -416,6 +430,9 @@
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = 6D9DLTQJSN;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.Maps.iOS = {
 								enabled = 0;
 							};
@@ -454,6 +471,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C53D5F411ADDFA5500B01D57 /* Images.xcassets in Resources */,
+				C56B04431AE9F43D009A95B2 /* Interface.storyboard in Resources */,
 				C53D5F451ADDFA5500B01D57 /* Tap & Seek WatchKit App.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -474,6 +492,7 @@
 				C5FA6AD01AD2E1D6004D449A /* Main.storyboard in Resources */,
 				C5FCB76B1A7C750C00B6607A /* LaunchScreen.xib in Resources */,
 				C5D7CB1C1A817DE100F5823F /* open-in-icon.png in Resources */,
+				C5360D271AE9EDAA000B3EE9 /* testimage.png in Resources */,
 				C57B50AD1A81A93600D477E1 /* Localizable.strings in Resources */,
 				C51C94161A7F1B2700F5B49D /* locationspotter.gpx in Resources */,
 				C5D7CB1E1A817E9B00F5823F /* open-in-icon@2x.png in Resources */,
@@ -499,11 +518,10 @@
 			files = (
 				C53D5F5B1ADDFB2800B01D57 /* Shared.swift in Sources */,
 				C53D5F3D1ADDFA5500B01D57 /* NotificationController.swift in Sources */,
+				C56B04421AE9F350009A95B2 /* LocationInterfaceController.swift in Sources */,
 				C53D5F3B1ADDFA5500B01D57 /* InterfaceController.swift in Sources */,
 				C53D5F3F1ADDFA5500B01D57 /* GlanceController.swift in Sources */,
-				C53D5F5A1ADDFB1D00B01D57 /* FoundLocation.swift in Sources */,
 				C53D5F5C1ADDFB3400B01D57 /* RowController.swift in Sources */,
-				C53D5F591ADDFB0D00B01D57 /* LocationInformation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,6 +554,7 @@
 				C53D5F301ADDF58D00B01D57 /* Shared.swift in Sources */,
 				C5F2740F1A7EA5C300D4CB5D /* AppDelegate.swift in Sources */,
 				C506E2941ACA0FCC005CC002 /* LocationInformation.swift in Sources */,
+				C5360D251AE9E198000B3EE9 /* FoundLocation.swift in Sources */,
 				C5FCB7831A7D45B800B6607A /* LocationUtils.swift in Sources */,
 				C5FCB7801A7D44E100B6607A /* CameraViewController.swift in Sources */,
 				C5D7CB131A8171D100F5823F /* GPX.swift in Sources */,
@@ -543,7 +562,6 @@
 				C5F274101A7EA5EA00D4CB5D /* MapViewController.swift in Sources */,
 				C5D7CB1A1A817C4600F5823F /* OpenInActivity.swift in Sources */,
 				C57298541AD1F73E00C224C5 /* ViewExtensions.swift in Sources */,
-				C506E2931ACA0FC9005CC002 /* FoundLocation.swift in Sources */,
 				C5FCB7771A7C750C00B6607A /* TapAndSeekTests.swift in Sources */,
 				C51C94191A80002800F5B49D /* Private.swift in Sources */,
 				C506E2981ACA1219005CC002 /* CoreDataManager.swift in Sources */,
@@ -639,6 +657,7 @@
 		C53D5F571ADDFA5600B01D57 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Tap & Seek WatchKit Extension/Tap & Seek WatchKit Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -651,6 +670,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -658,6 +678,7 @@
 		C53D5F581ADDFA5600B01D57 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Tap & Seek WatchKit Extension/Tap & Seek WatchKit Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -667,6 +688,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -755,6 +777,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Tap & Seek.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TapAndSeek/Info.plist;
@@ -772,6 +795,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Tap & Seek.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TapAndSeek/Info.plist;

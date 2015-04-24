@@ -54,12 +54,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Override point for customization after application launch.
         locationManager.delegate = self
 
-        /*let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
+        let new = NSEntityDescription.insertNewObjectForEntityForName("LocationInformation", inManagedObjectContext: self.managedObjectContext) as! LocationInformation
         new.location = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 47.1234, longitude: -122.1234), altitude: 60, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate())
         new.heading = 0.1234
         new.pitch = 0.5678
         new.dateTime = NSDate()
-        new.image = NSData()
+        new.image = UIImageJPEGRepresentation(UIImage(named: "testimage.png"), 90)
         new.name = "Test Location"
 
         let found = NSEntityDescription.insertNewObjectForEntityForName("FoundLocation", inManagedObjectContext: self.managedObjectContext) as! FoundLocation
@@ -67,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         new.foundLocation = found
 
         var error: NSError?
-        managedObjectContext.save(&error)*/
+        managedObjectContext.save(&error)
 
         return true
     }
@@ -84,6 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         locationManager.stopUpdatingLocation()
         locationManager.stopUpdatingHeading()
         motionManager.stopDeviceMotionUpdates()
+        saveWatchData()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -92,9 +93,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-
-
-
         println(CoreDataManager.sharedManager.applicationDocumentsDirectory)
 
         // start getting location and heading
@@ -151,30 +149,93 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
 
     func applicationWillTerminate(application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground.
+        saveWatchData()
     }
 
-    
-    /// Mark: WatchKit
-    func application(application: UIApplication, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]?, reply: (([NSObject : AnyObject]!) -> Void)!) {
-        var backgroundTask: UIBackgroundTaskIdentifier?
-        backgroundTask = UIApplication.sharedApplication().beginBackgroundTaskWithName("watchCommunication", expirationHandler: {
-            var response = [String:[LocationInformation]]()
-            if userInfo?["request"] == nil {
-                // assuming they want the initial data for app
-                var error: NSError?
-                let request = NSFetchRequest(entityName: "LocationInformation")
-                let fetched = self.managedObjectContext.executeFetchRequest(request, error: &error) as? [LocationInformation]
-                if error != nil {
-                    //DEBUG
-                    fatalError("major error in watchkit app")
+    func saveWatchData() {
+        let fileManager = NSFileManager.defaultManager()
+        if let groupUrl = fileManager.containerURLForSecurityApplicationGroupIdentifier("group.camlittle.see-there") {
+            var error: NSError?
+            let request = NSFetchRequest(entityName: "LocationInformation")
+            let fetched = self.managedObjectContext.executeFetchRequest(request, error: &error) as? [LocationInformation]
+            if error != nil {
+                //DEBUG
+                fatalError("problem fetching data")
+            }
+            if let sources = fetched {
+                var transformed = [WatchLocationInformation]()
+                for location in sources {
+                    if let fl = location.foundLocation {
+                        let imageData = UIImageJPEGRepresentation(squareImageToSize(UIImage(data: location.image)!, 96), 90)
+
+                        transformed.append(WatchLocationInformation(
+                            elevation: location.elevation,
+                            heading: location.heading,
+                            image: imageData,
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                            pitch: location.pitch,
+                            dateTime: location.dateTime,
+                            name: location.name,
+                            foundElevation: fl.elevation,
+                            foundLatitude: fl.latitude,
+                            foundLongitude: fl.longitude))
+                    }
                 }
-                if let sources = fetched {
-                    response = ["data": sources as [LocationInformation]]
+                if transformed.count > 0 {
+                    NSKeyedUnarchiver.setClass(WatchLocationInformation.self, forClassName: "WatchLocationInformation")
+                    NSKeyedArchiver.setClassName("WatchLocationInformation", forClass: WatchLocationInformation.self)
+                    if !NSKeyedArchiver.archiveRootObject(transformed, toFile: groupUrl.URLByAppendingPathComponent("locations.data").path!) {
+                        println("Failed to encode and write data.")
+                    }
                 }
             }
-            reply(response)
-            UIApplication.sharedApplication().endBackgroundTask(backgroundTask!)
-        })
+        } else {
+            println("Failed to save data")
+        }
     }
+
+
+    /// Mark: WatchKit
+    func application(application: UIApplication, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]?, reply: (([NSObject : AnyObject]!) -> Void)!) {
+        println("watchkit talked to me")
+    }
+}
+
+func squareImageToSize(image: UIImage, newSize: CGFloat) -> UIImage {
+    let squareSize = CGSize(width: newSize, height: newSize)
+
+    var ratio: CGFloat
+    var delta: CGFloat
+    var offset: CGPoint
+
+    //figure out if the picture is landscape or portrait, then
+    //calculate scale factor and offset
+    if (image.size.width > image.size.height) {
+        ratio = newSize / image.size.width;
+        delta = (ratio * image.size.width - ratio * image.size.height);
+        offset = CGPointMake(delta/2, 0);
+    } else {
+        ratio = newSize / image.size.height;
+        delta = (ratio * image.size.height - ratio * image.size.width);
+        offset = CGPointMake(0, delta/2);
+    }
+    let clipRect = CGRect(x: -offset.x, y: -offset.y,
+        width: (ratio * image.size.width) + delta,
+        height: (ratio * image.size.height) + delta)
+
+    if UIScreen.mainScreen().respondsToSelector("scale") {
+        UIGraphicsBeginImageContextWithOptions(squareSize, true, 0)
+    } else {
+        // NOTE: This one will be faster, since it's less data.
+        UIGraphicsBeginImageContext(squareSize)
+    }
+
+    UIRectClip(clipRect)
+    image.drawInRect(clipRect)
+    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    return newImage
 }

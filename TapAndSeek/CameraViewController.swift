@@ -429,7 +429,7 @@ class CameraViewController: UIViewController, UIGestureRecognizerDelegate {
                             self.work!.start()
                         })
                     } else {
-                        self.alertError("Faile to get image") {}
+                        self.alertError("Failed to get image") {}
                     }
                 }
             })
