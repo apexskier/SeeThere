@@ -60,17 +60,11 @@
                         <label alignment="left" text="Name" id="fWP-ds-5s6">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Elevation" id="igQ-dR-O2T"/>
+                        <label alignment="left" text="Elevation" numberOfLines="0" id="igQ-dR-O2T"/>
                         <imageView width="1" alignment="left" id="ARP-gQ-hO2"/>
-                        <button width="1" alignment="left" title="Go!" id="j52-lv-Ufz">
-                            <connections>
-                                <action selector="goButtonTap" destination="0tO-jq-pp2" id="0Zz-ZB-lzd"/>
-                            </connections>
-                        </button>
                     </items>
                     <connections>
                         <outlet property="elevationLabel" destination="igQ-dR-O2T" id="QKU-0O-aux"/>
-                        <outlet property="goButton" destination="j52-lv-Ufz" id="Etu-u1-xHl"/>
                         <outlet property="imageBox" destination="ARP-gQ-hO2" id="5lx-WP-mgl"/>
                         <outlet property="map" destination="SDq-Vy-bef" id="9bi-tl-fz4"/>
                         <outlet property="nameLabel" destination="fWP-ds-5s6" id="uAF-2B-EmT"/>

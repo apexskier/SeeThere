@@ -15,7 +15,6 @@ class LocationInterfaceController: WKInterfaceController {
     @IBOutlet weak var nameLabel: WKInterfaceLabel!
     @IBOutlet weak var imageBox: WKInterfaceImage!
     @IBOutlet weak var elevationLabel: WKInterfaceLabel!
-    @IBOutlet weak var goButton: WKInterfaceButton!
 
     var location: WatchLocationInformation?
 
@@ -51,22 +50,10 @@ class LocationInterfaceController: WKInterfaceController {
             map.setRegion(region)
 
             nameLabel.setText(location.name)
-            elevationLabel.setText("\(location.elevation)m")
+            elevationLabel.setText(String(format: "Elevation: %00fm", location.elevation))
             imageBox.setImage(UIImage(data: location.image))
         } else {
             popController()
-        }
-    }
-
-    @IBAction func goButtonTap() {
-        let coord = CLLocationCoordinate2D(latitude: location!.latitude, longitude: location!.longitude)
-        let placemark = MKPlacemark(coordinate: coord, addressDictionary: nil)
-        let mapItem = MKMapItem(placemark: placemark)
-
-        let launchOptions: [NSObject : AnyObject] = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking]
-
-        if !MKMapItem.openMapsWithItems([mapItem], launchOptions: launchOptions) {
-            println("Failed to open map")
         }
     }
 

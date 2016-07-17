@@ -4,6 +4,7 @@
       "size" : "24x24",
       "idiom" : "watch",
       "scale" : "2x",
+      "filename" : "NotificationCenter38@2x.png",
       "role" : "notificationCenter",
       "subtype" : "38mm"
     },
@@ -11,18 +12,21 @@
       "size" : "27.5x27.5",
       "idiom" : "watch",
       "scale" : "2x",
+      "filename" : "NotificationCenter42@2x.png",
       "role" : "notificationCenter",
       "subtype" : "42mm"
     },
     {
       "size" : "29x29",
       "idiom" : "watch",
+      "filename" : "Companion@2x.png",
       "role" : "companionSettings",
       "scale" : "2x"
     },
     {
       "size" : "29x29",
       "idiom" : "watch",
+      "filename" : "Companion@3x.png",
       "role" : "companionSettings",
       "scale" : "3x"
     },
@@ -30,6 +34,7 @@
       "size" : "40x40",
       "idiom" : "watch",
       "scale" : "2x",
+      "filename" : "LongLook38@2x.png",
       "role" : "appLauncher",
       "subtype" : "38mm"
     },
@@ -37,6 +42,7 @@
       "size" : "44x44",
       "idiom" : "watch",
       "scale" : "2x",
+      "filename" : "LongLook42@2x.png",
       "role" : "longLook",
       "subtype" : "42mm"
     },
@@ -44,6 +50,7 @@
       "size" : "86x86",
       "idiom" : "watch",
       "scale" : "2x",
+      "filename" : "ShortLook38@2x.png",
       "role" : "quickLook",
       "subtype" : "38mm"
     },
@@ -51,6 +58,7 @@
       "size" : "98x98",
       "idiom" : "watch",
       "scale" : "2x",
+      "filename" : "ShortLook42@2x.png",
       "role" : "quickLook",
       "subtype" : "42mm"
     }
