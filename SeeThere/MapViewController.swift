@@ -90,9 +90,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func setMapStandard(animated: Bool) {
         mapView.mapType = MKMapType.Standard
         if mapView.pitchEnabled {
-            var eye: CLLocationCoordinate2D = locationInformation!.location.coordinate
-            var alt: CLLocationDistance = locationInformation!.location.altitude
-            var camera = MKMapCamera(lookingAtCenterCoordinate: foundLocation.coordinate, fromEyeCoordinate: eye, eyeAltitude: 1)
+            let eye: CLLocationCoordinate2D = locationInformation!.location.coordinate
+            // let alt: CLLocationDistance = locationInformation!.location.altitude
+            let camera = MKMapCamera(lookingAtCenterCoordinate: foundLocation.coordinate, fromEyeCoordinate: eye, eyeAltitude: 1)
             mapView.camera = camera
         } else {
             setMapRegion(animated)
@@ -114,11 +114,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     func actionLocation() {
         let geoCoder = CLGeocoder()
-        geoCoder.reverseGeocodeLocation(foundLocation, completionHandler: { (placemarks: [AnyObject]!, error: NSError!) in
+        geoCoder.reverseGeocodeLocation(foundLocation, completionHandler: { (placemarks: [CLPlacemark]?, error: NSError?) in
             let coord = self.foundLocation.coordinate
             let lat = self.foundLocation.coordinate.latitude
             let lng = self.foundLocation.coordinate.longitude
-            let elv = self.foundLocation.altitude
+            // let alt = self.foundLocation.altitude
 
             let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
 
@@ -175,7 +175,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // Share GPX action
             let shareGPXAction = UIAlertAction(title: NSLocalizedString("GPXFile", comment: "a gpx file"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 let actpro = GPXFileActivityProvider(location: self.foundLocation)
-                let share = self.toolbarItems![1] as! UIBarButtonItem
+                let share = self.toolbarItems![1]
                 let activity = OpenInActivity(url: actpro.fileURL, barItem: share)
 
                 let sheet = UIActivityViewController(activityItems: [actpro], applicationActivities: [activity])
@@ -194,7 +194,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // Share VCard action
             let shareVCardAction = UIAlertAction(title: NSLocalizedString("VCard", comment: "a v card with contact information"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
                 // Generate VCard with location as home
-                let rootPlacemark = placemarks[0] as! CLPlacemark
+                let rootPlacemark = placemarks!.first!
                 let evolvedPlacemark = MKPlacemark(placemark: rootPlacemark)
 
                 let persona: ABRecord = ABPersonCreate().takeUnretainedValue()
@@ -207,22 +207,26 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     ABRecordSetValue(persona, kABPersonAddressProperty, multiHome, nil)
                     let vcards = ABPersonCreateVCardRepresentationWithPeople([persona]).takeUnretainedValue()
                     let vcardString = NSString(data: vcards, encoding: NSASCIIStringEncoding)
-                    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! NSString
-                    var error: NSError?
+                    let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
                     let filePath = documentsDirectory.stringByAppendingPathComponent("pin.loc.vcf")
-                    vcardString?.writeToFile(filePath, atomically: true, encoding: NSUTF8StringEncoding, error: &error)
-                    let fileURL = NSURL(fileURLWithPath: filePath)!
+                    let fileURL = NSURL(fileURLWithPath: filePath)
 
-                    let sheet = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
-                    sheet.excludedActivityTypes =
-                        [UIActivityTypePostToWeibo,
-                            UIActivityTypePrint,
-                            UIActivityTypeSaveToCameraRoll,
-                            UIActivityTypeAddToReadingList,
-                            UIActivityTypePostToFlickr,
-                            UIActivityTypePostToVimeo,
-                            UIActivityTypePostToTencentWeibo]
-                    self.presentViewController(sheet, animated: true, completion: nil)
+                    do {
+                        try vcardString!.writeToURL(fileURL, atomically: true, encoding: NSUTF8StringEncoding)
+                        
+                        let sheet = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+                        sheet.excludedActivityTypes =
+                            [UIActivityTypePostToWeibo,
+                                UIActivityTypePrint,
+                                UIActivityTypeSaveToCameraRoll,
+                                UIActivityTypeAddToReadingList,
+                                UIActivityTypePostToFlickr,
+                                UIActivityTypePostToVimeo,
+                                UIActivityTypePostToTencentWeibo]
+                        self.presentViewController(sheet, animated: true, completion: nil)
+                    } catch {
+                        
+                    }
                 } else {
                     let alert = UIAlertController(title: NSLocalizedString("Failed", comment: "failed"), message: NSLocalizedString("FailedVCardMessage", comment: "failed to generate vcard"), preferredStyle: UIAlertControllerStyle.Alert)
                     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "okay"), style: UIAlertActionStyle.Cancel, handler: nil))
@@ -291,9 +295,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             latlngText.text = "\(lat),\(lng)"
         case .Standard:
             let format = "%d° %d' %d\""
-            var (latDeg, latMin, latSec) = convertToDegrees(lat)
+            let (latDeg, latMin, latSec) = convertToDegrees(lat)
             let lat_ = String(format: format, latDeg, latMin, latSec)
-            var (lngDeg, lngMin, lngSec) = convertToDegrees(lng)
+            let (lngDeg, lngMin, lngSec) = convertToDegrees(lng)
             let lng_ = String(format: format, lngDeg, lngMin, lngSec)
             latlngText.text = "\(lat_), \(lng_)"
         }
@@ -351,28 +355,29 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     func deleteItem() {
         managedObjectContext.deleteObject(locationInformation!)
-        var error: NSError?
-        managedObjectContext.save(&error)
-        if error != nil {
+        do {
+            try managedObjectContext.save()
+            parentViewController?.dismissViewControllerAnimated(true) {}
+        } catch {
             alertError("Error saving") {}
         }
-        parentViewController?.dismissViewControllerAnimated(true) {}
     }
 
     func closeMapSave() {
-        var mes = NSLocalizedString("NameQuestion", comment: "asking for save")
+        let mes = NSLocalizedString("NameQuestion", comment: "asking for save")
         let alert = UIAlertController(title: NSLocalizedString("SaveQTitle", comment: "ask to save"), message: mes, preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
             textField.placeholder = "Name this location"
         }
         alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: "okay"), style: .Default, handler: { (action: UIAlertAction!) -> Void in
-            let textField = alert.textFields![0] as! UITextField
-            self.locationInformation!.name = textField.text
-            var error: NSError?
-            if !self.managedObjectContext.save(&error) {
+            let textField = alert.textFields![0]
+            self.locationInformation!.name = textField.text!
+            do {
+                try self.managedObjectContext.save()
+                self.parentViewController?.dismissViewControllerAnimated(true) {}
+            } catch {
                 self.alertError("Error saving: \(error)") {}
             }
-            self.parentViewController?.dismissViewControllerAnimated(true) {}
         }))
         alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: "no"), style: .Cancel, handler: { (action: UIAlertAction!) -> Void in
             self.managedObjectContext.reset()
